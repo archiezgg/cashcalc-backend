@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"github.com/gorilla/mux"
@@ -16,17 +15,28 @@ var (
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/", indexHandler).Methods("GET")
 
+	http.HandleFunc("/favicon.ico", faviconHandler)
+	
 	api := router.PathPrefix(apiPathPrefix).Subrouter()
 	api.HandleFunc("/countries", countriesHandler).Methods("GET")
+
+	buildHandler := http.FileServer(http.Dir("frontend/"))
+	router.PathPrefix("/").Handler(buildHandler)
+
+	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("frontend/static")))
+	router.PathPrefix("/static/").Handler(staticHandler)
 	
 	log.Println("CashCalc 2020 is up and running on port", port)
 	log.Fatal(http.ListenAndServe(port, router))
 }
 
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "frontend/favicon.ico")
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Welcome to CashCalc 2020!")
+		
 }
 
 func countriesHandler(w http.ResponseWriter, r *http.Request) {

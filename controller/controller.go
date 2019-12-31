@@ -15,3 +15,7 @@ func Startup(router *httprouter.Router) {
 func faviconHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	http.ServeFile(w, r, "frontend/favicon.ico")
 }
+
+func setContentTypeToJSON(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+}

@@ -13,6 +13,6 @@ func registerCountriesRoutes(router *httprouter.Router) {
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	countries := model.GetAirCountriesFromJSON()
-	w.Header().Set("Content-Type", "application/json")
+	setContentTypeToJSON(w)
 	json.NewEncoder(w).Encode(countries)
 }

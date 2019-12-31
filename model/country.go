@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"log"
@@ -11,16 +11,19 @@ const (
 	airCountriesJSON = "data/countries_air.json"
 )
 
-type country struct {
+// Country stores the countries with name and a zone number
+type Country struct {
 	Name       string `json:"name"`
 	ZoneNumber int    `json:"zone_number"`
 }
 
-type countries struct {
-	Countries []country `json:"countries"`
+// Countries has a list of country types
+type Countries struct {
+	Countries []Country `json:"countries"`
 }
 
-func getAirCountriesFromJSON() (countries countries) {
+// GetAirCountriesFromJSON returns all countries from a data JSON file
+func GetAirCountriesFromJSON() (countries Countries) {
 	dataFile, err := os.Open(airCountriesJSON)
 	if err != nil {
 		log.Fatalln("error opening air country data:", err)

@@ -16,12 +16,12 @@ func allCountriesHandler(w http.ResponseWriter, r *http.Request) {
 	switch t := mux.Vars(r)["type"]; t {
 	case "air":
 		setContentTypeToJSON(w)
-		countries := model.GetAirCountriesFromDB()
-		json.NewEncoder(w).Encode(countries)
+		airCountries := model.GetAirCountriesFromDB()
+		json.NewEncoder(w).Encode(airCountries)
 	case "road":
 		setContentTypeToJSON(w)
-		countries := model.GetRoadCountriesFromDB()
-		json.NewEncoder(w).Encode(countries)
+		roadCountries := model.GetRoadCountriesFromDB()
+		json.NewEncoder(w).Encode(roadCountries)
 	default:
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 	}

@@ -5,11 +5,12 @@ import (
 	"net/http"
 )
 
-// StartupRouter creates instance of router and registers all the routes of the subroutes, supposed to be called in main func
-func StartupRouter() {
-	router := httprouter.New()
+// StartupRouter creates instance of registers all the routes of the subroutes, supposed to be called in main func
+func StartupRouter() (router *httprouter.Router) {
+	router = httprouter.New()
 	router.GET("/favicon.ico", faviconHandler)
 	registerCountriesRoutes(router)
+	return
 }
 
 func faviconHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

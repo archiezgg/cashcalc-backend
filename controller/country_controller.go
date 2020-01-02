@@ -13,13 +13,12 @@ func registerCountriesRoutes(router *mux.Router) {
 }
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request) {
+	setContentTypeToJSON(w)
 	switch t := mux.Vars(r)["type"]; t {
 	case "air":
-		setContentTypeToJSON(w)
 		airCountries := model.GetAirCountriesFromDB()
 		json.NewEncoder(w).Encode(airCountries)
 	case "road":
-		setContentTypeToJSON(w)
 		roadCountries := model.GetRoadCountriesFromDB()
 		json.NewEncoder(w).Encode(roadCountries)
 	default:

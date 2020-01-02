@@ -8,14 +8,9 @@ import (
 // StartupRouter creates instance of registers all the routes of the subroutes, supposed to be called in main func
 func StartupRouter() (router *mux.Router) {
 	router = mux.NewRouter()
-	router.HandleFunc("/favicon.ico", faviconHandler).Methods("GET")
 	router.HandleFunc("/", welcomeHandler).Methods("GET")
 	registerCountriesRoutes(router)
 	return
-}
-
-func faviconHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "frontend/favicon.ico")
 }
 
 func welcomeHandler(w http.ResponseWriter, r *http.Request) {

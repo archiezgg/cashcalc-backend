@@ -26,14 +26,14 @@ func Startup() *mongo.Client {
 	var err error
 	mongoClient, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(dbSpec))
 	if err != nil {
-		log.Fatal("Couldn't connect to database: ", err)
+		log.Fatal("couldn't connect to database: ", err)
 	}
 
 	err = mongoClient.Ping(context.TODO(), nil)
 	if err != nil {
-		log.Fatal("Database is not responding!")
+		log.Fatal("database is not responding!")
 	}
-	log.Println(("Successfully connected to the database!"))
+	log.Println(("successfully connected to the database!"))
 	return mongoClient
 }
 

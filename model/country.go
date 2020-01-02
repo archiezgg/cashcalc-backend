@@ -2,7 +2,7 @@ package model
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/IstvanN/cashcalc-backend/database"
@@ -22,11 +22,13 @@ type Country struct {
 }
 
 // GetAirCountriesFromDB returns with a slice of all elements of the airCountries collection
-func GetAirCountriesFromDB() []Country {
+func GetAirCountriesFromDB() ([]Country, error) {
 	coll := database.GetCollectionByName(airCountriesCollectionName)
+
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
+	defer cur.Close(context.TODO())
 	if err != nil {
-		log.Printf("retrieving collection %v failed: %v\n", airCountriesCollectionName, err)
+		return nil, fmt.Errorf("retrieving collection %v failed: %v", airCountriesCollectionName, err)
 	}
 
 	var airCountries []Country
@@ -34,21 +36,21 @@ func GetAirCountriesFromDB() []Country {
 		var c Country
 		err := cur.Decode(&c)
 		if err != nil {
-			log.Println("error while decoding air country: ", err)
-		} else {
-			airCountries = append(airCountries, c)
+			return nil, fmt.Errorf("error while decoding air country: %v", err)
 		}
+		airCountries = append(airCountries, c)
 	}
-	cur.Close(context.TODO())
-	return airCountries
+	return airCountries, nil
 }
 
 // GetRoadCountriesFromDB returns with an array of all the elements of the roadCountries collection
-func GetRoadCountriesFromDB() []Country {
+func GetRoadCountriesFromDB() ([]Country, error) {
 	coll := database.GetCollectionByName(roadCountriesCollectionName)
+
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
+	defer cur.Close(context.TODO())
 	if err != nil {
-		log.Printf("retrieving collection %v failed: %v\n", roadCountriesCollectionName, err)
+		return nil, fmt.Errorf("retrieving collection %v failed: %v", roadCountriesCollectionName, err)
 	}
 
 	var roadCountries []Country
@@ -56,11 +58,10 @@ func GetRoadCountriesFromDB() []Country {
 		var c Country
 		err := cur.Decode(&c)
 		if err != nil {
-			log.Println("error while decoding road country: ", err)
-		} else {
-			roadCountries = append(roadCountries, c)
+			return nil, fmt.Errorf("error while decoding road country: %v", err)
 		}
+		roadCountries = append(roadCountries, c)
 	}
 	cur.Close(context.TODO())
-	return roadCountries
+	return roadCountries, nil
 }

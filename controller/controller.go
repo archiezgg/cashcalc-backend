@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"net/http"
 	"github.com/julienschmidt/httprouter"
-
+	"net/http"
 )
 
-// Startup registers all the routes of the subroutes, supposed to be called in main func
-func Startup(router *httprouter.Router) {
+// StartupRouter creates instance of router and registers all the routes of the subroutes, supposed to be called in main func
+func StartupRouter() {
+	router := httprouter.New()
 	router.GET("/favicon.ico", faviconHandler)
 	registerCountriesRoutes(router)
 }

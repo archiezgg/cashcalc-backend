@@ -3,21 +3,22 @@ package model
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/IstvanN/cashcalc-backend/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const (
-	airCountriesCollectionName  = "countries_air"
-	roadCountriesCollectionName = "countries_road"
+var (
+	airCountriesCollectionName  = os.Getenv("COUNTRIES_AIR_COLL")
+	roadCountriesCollectionName = os.Getenv("COUNTRIES_ROAD_COLL")
 )
 
 // Country stores the countries with name and a zone number
 type Country struct {
-	Name       string `json:"name"`
-	ZoneNumber int    `json:"zone_number"`
+	Name       string
+	ZoneNumber int
 }
 
 // GetAirCountriesFromDB returns with an array of all elements of the airCountries collection

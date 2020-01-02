@@ -1,14 +1,16 @@
 package model
 
 import (
+	"context"
 	"log"
-	"encoding/json"
-	"io/ioutil"
-	"os"
+
+	"github.com/IstvanN/cashcalc-backend/database"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
-	airCountriesJSON = "data/countries_air.json"
+	airCountriesCollectionName = "countries_air"
 )
 
 // Country stores the countries with name and a zone number
@@ -17,26 +19,23 @@ type Country struct {
 	ZoneNumber int    `json:"zone_number"`
 }
 
-// Countries has a list of country types
-type Countries struct {
-	Countries []Country `json:"countries"`
-}
-
-// GetAirCountriesFromJSON returns all countries from a data JSON file
-func GetAirCountriesFromJSON() (countries Countries) {
-	dataFile, err := os.Open(airCountriesJSON)
+// GetAirCountriesFromDB returns with an array of all elements of the airCountries collection
+func GetAirCountriesFromDB() (airCountries []Country) {
+	coll := database.GetCollectionByName(airCountriesCollectionName)
+	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
 	if err != nil {
-		log.Fatalln("error opening air country data:", err)
-	}
-	defer dataFile.Close()
-	b, err := ioutil.ReadAll(dataFile)
-	if err != nil {
-		log.Fatalln("failed to read air country data into bytes:", err)
+		log.Printf("retrieving collection %v failed: %v\n", airCountriesCollectionName, err)
 	}
 
-	json.Unmarshal(b, &countries)
+	for cur.Next(context.TODO()) {
+		var c Country
+		err := cur.Decode(&c)
+		if err != nil {
+			log.Println("error while retrieving air countries, ", err)
+		} else {
+			airCountries = append(airCountries, c)
+		}
+	}
+	cur.Close(context.TODO())
 	return
 }
-
-
-

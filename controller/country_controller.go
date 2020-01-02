@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"net/http"
 	"encoding/json"
 	"github.com/IstvanN/cashcalc-backend/model"
 	"github.com/julienschmidt/httprouter"
+	"net/http"
 )
 
 func registerCountriesRoutes(router *httprouter.Router) {
@@ -12,7 +12,7 @@ func registerCountriesRoutes(router *httprouter.Router) {
 }
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	countries := model.GetAirCountriesFromJSON()
+	countries := model.GetAirCountriesFromDB()
 	setContentTypeToJSON(w)
 	json.NewEncoder(w).Encode(countries)
 }

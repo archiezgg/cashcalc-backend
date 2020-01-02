@@ -22,13 +22,14 @@ type Country struct {
 }
 
 // GetAirCountriesFromDB returns with a slice of all elements of the airCountries collection
-func GetAirCountriesFromDB() (airCountries []Country) {
+func GetAirCountriesFromDB() []Country {
 	coll := database.GetCollectionByName(airCountriesCollectionName)
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
 	if err != nil {
 		log.Printf("retrieving collection %v failed: %v\n", airCountriesCollectionName, err)
 	}
 
+	var airCountries []Country
 	for cur.Next(context.TODO()) {
 		var c Country
 		err := cur.Decode(&c)
@@ -39,17 +40,18 @@ func GetAirCountriesFromDB() (airCountries []Country) {
 		}
 	}
 	cur.Close(context.TODO())
-	return
+	return airCountries
 }
 
 // GetRoadCountriesFromDB returns with an array of all the elements of the roadCountries collection
-func GetRoadCountriesFromDB() (roadCountries []Country) {
+func GetRoadCountriesFromDB() []Country {
 	coll := database.GetCollectionByName(roadCountriesCollectionName)
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
 	if err != nil {
 		log.Printf("retrieving collection %v failed: %v\n", airCountriesCollectionName, err)
 	}
 
+	var roadCountries []Country
 	for cur.Next(context.TODO()) {
 		var c Country
 		err := cur.Decode(&c)
@@ -60,5 +62,5 @@ func GetRoadCountriesFromDB() (roadCountries []Country) {
 		}
 	}
 	cur.Close(context.TODO())
-	return
+	return roadCountries
 }

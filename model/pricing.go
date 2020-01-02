@@ -21,13 +21,14 @@ type Pricing struct {
 }
 
 // GetAirPricingsFromDB returns with a slice of all elements of the air pricings collection
-func GetAirPricingsFromDB() (airPricings []Pricing) {
+func GetAirPricingsFromDB() []Pricing {
 	coll := database.GetCollectionByName(airPricingsCollectionName)
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
 	if err != nil {
 		log.Printf("retrieving collection %v failed: %v\n", airCountriesCollectionName, err)
 	}
 
+	var airPricings []Pricing
 	for cur.Next(context.TODO()) {
 		var p Pricing
 		err := cur.Decode(&p)
@@ -38,5 +39,6 @@ func GetAirPricingsFromDB() (airPricings []Pricing) {
 		}
 	}
 	cur.Close(context.TODO())
-	return
+
+	return airPricings
 }

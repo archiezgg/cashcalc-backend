@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	airPricingsCollectionName = os.Getenv("PRICINGS_AIR_COLL")
+	airPricingsCollectionName  = os.Getenv("PRICINGS_AIR_COLL")
+	roadPricingsCollectionName = os.Getenv("PRICINGS_ROAD_COLL")
 )
 
 // Pricing is the struct to store zone numbers and the matching fares
@@ -54,4 +55,27 @@ func GetAirPricingFaresByZoneNumber(zn int) []int {
 	}
 	log.Printf("zone number '%v' is invalid\n", zn)
 	return nil
+}
+
+// GetRoadPricingsFromDB returns with a slice of all elements of the air pricings collection
+func GetRoadPricingsFromDB() []Pricing {
+	coll := database.GetCollectionByName(roadPricingsCollectionName)
+	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
+	if err != nil {
+		log.Printf("retrieving collection %v failed: %v\n", roadPricingsCollectionName, err)
+	}
+
+	var roadPricings []Pricing
+	for cur.Next(context.TODO()) {
+		var p Pricing
+		err := cur.Decode(&p)
+		if err != nil {
+			log.Println("error while decoding road pricing: ", err)
+		} else {
+			roadPricings = append(roadPricings, p)
+		}
+	}
+	cur.Close(context.TODO())
+
+	return roadPricings
 }

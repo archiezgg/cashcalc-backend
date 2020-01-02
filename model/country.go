@@ -54,7 +54,7 @@ func GetRoadCountriesFromDB() (roadCountries []Country) {
 		var c Country
 		err := cur.Decode(&c)
 		if err != nil {
-			log.Println("error while retrieving air countries, ", err)
+			log.Println("error while retrieving road countries, ", err)
 		} else {
 			roadCountries = append(roadCountries, c)
 		}

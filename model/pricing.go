@@ -57,7 +57,7 @@ func GetAirPricingFaresByZoneNumber(zn int) []int {
 	return nil
 }
 
-// GetRoadPricingsFromDB returns with a slice of all elements of the air pricings collection
+// GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection
 func GetRoadPricingsFromDB() []Pricing {
 	coll := database.GetCollectionByName(roadPricingsCollectionName)
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
@@ -78,4 +78,17 @@ func GetRoadPricingsFromDB() []Pricing {
 	cur.Close(context.TODO())
 
 	return roadPricings
+}
+
+// GetRoadPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding road pricing fares as slice of ints
+func GetRoadPricingFaresByZoneNumber(zn int) []int {
+	rp := GetRoadPricingsFromDB()
+
+	for _, p := range rp {
+		if p.ZoneNumber == zn {
+			return p.Fares
+		}
+	}
+	log.Printf("zone number '%v' is invalid\n", zn)
+	return nil
 }

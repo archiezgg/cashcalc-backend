@@ -1,24 +1,24 @@
 package controller
 
 import (
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 // StartupRouter creates instance of registers all the routes of the subroutes, supposed to be called in main func
-func StartupRouter() (router *httprouter.Router) {
-	router = httprouter.New()
-	router.GET("/favicon.ico", faviconHandler)
-	router.GET("/", welcomeHandler)
+func StartupRouter() (router *mux.Router) {
+	router = mux.NewRouter()
+	router.HandleFunc("/favicon.ico", faviconHandler).Methods("GET")
+	router.HandleFunc("/", welcomeHandler).Methods("GET")
 	registerCountriesRoutes(router)
 	return
 }
 
-func faviconHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "frontend/favicon.ico")
 }
 
-func welcomeHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome to CashCalc 2020!"))
 }
 

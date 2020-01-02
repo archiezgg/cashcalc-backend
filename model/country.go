@@ -21,7 +21,7 @@ type Country struct {
 	ZoneNumber int
 }
 
-// GetAirCountriesFromDB returns with an array of all elements of the airCountries collection
+// GetAirCountriesFromDB returns with a slice of all elements of the airCountries collection
 func GetAirCountriesFromDB() (airCountries []Country) {
 	coll := database.GetCollectionByName(airCountriesCollectionName)
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())

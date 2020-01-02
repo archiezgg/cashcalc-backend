@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -22,11 +23,13 @@ type Pricing struct {
 }
 
 // GetAirPricingsFromDB returns with a slice of all elements of the air pricings collection
-func GetAirPricingsFromDB() []Pricing {
+func GetAirPricingsFromDB() ([]Pricing, error) {
 	coll := database.GetCollectionByName(airPricingsCollectionName)
+
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
+	defer cur.Close(context.TODO())
 	if err != nil {
-		log.Printf("retrieving collection %v failed: %v\n", airPricingsCollectionName, err)
+		return nil, fmt.Errorf("retrieving collection %v failed: %v", airPricingsCollectionName, err)
 	}
 
 	var airPricings []Pricing
@@ -34,14 +37,12 @@ func GetAirPricingsFromDB() []Pricing {
 		var p Pricing
 		err := cur.Decode(&p)
 		if err != nil {
-			log.Println("error while decoding air pricing: ", err)
-		} else {
-			airPricings = append(airPricings, p)
+			return nil, fmt.Errorf("error while decoding air pricing: %v", err)
 		}
+		airPricings = append(airPricings, p)
 	}
-	cur.Close(context.TODO())
 
-	return airPricings
+	return airPricings, nil
 }
 
 // GetAirPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding air pricing fares as slice of ints
@@ -58,11 +59,13 @@ func GetAirPricingFaresByZoneNumber(zn int) []int {
 }
 
 // GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection
-func GetRoadPricingsFromDB() []Pricing {
+func GetRoadPricingsFromDB() ([]Pricing, error) {
 	coll := database.GetCollectionByName(roadPricingsCollectionName)
+
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
+	defer cur.Close(context.TODO())
 	if err != nil {
-		log.Printf("retrieving collection %v failed: %v\n", roadPricingsCollectionName, err)
+		return nil, fmt.Errorf("retrieving collection %v failed: %v", roadPricingsCollectionName, err)
 	}
 
 	var roadPricings []Pricing
@@ -70,14 +73,12 @@ func GetRoadPricingsFromDB() []Pricing {
 		var p Pricing
 		err := cur.Decode(&p)
 		if err != nil {
-			log.Println("error while decoding road pricing: ", err)
-		} else {
-			roadPricings = append(roadPricings, p)
+			return nil, fmt.Errorf("error while decoding road pricing: %v", err)
 		}
+		roadPricings = append(roadPricings, p)
 	}
-	cur.Close(context.TODO())
 
-	return roadPricings
+	return roadPricings, nil
 }
 
 // GetRoadPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding road pricing fares as slice of ints

@@ -25,7 +25,7 @@ func GetAirPricingsFromDB() []Pricing {
 	coll := database.GetCollectionByName(airPricingsCollectionName)
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
 	if err != nil {
-		log.Printf("retrieving collection %v failed: %v\n", airCountriesCollectionName, err)
+		log.Printf("retrieving collection %v failed: %v\n", airPricingsCollectionName, err)
 	}
 
 	var airPricings []Pricing
@@ -33,7 +33,7 @@ func GetAirPricingsFromDB() []Pricing {
 		var p Pricing
 		err := cur.Decode(&p)
 		if err != nil {
-			log.Println("error while retrieving air pricings, ", err)
+			log.Println("error while decoding air pricing: ", err)
 		} else {
 			airPricings = append(airPricings, p)
 		}

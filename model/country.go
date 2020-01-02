@@ -34,7 +34,7 @@ func GetAirCountriesFromDB() []Country {
 		var c Country
 		err := cur.Decode(&c)
 		if err != nil {
-			log.Println("error while retrieving air countries, ", err)
+			log.Println("error while decoding air country: ", err)
 		} else {
 			airCountries = append(airCountries, c)
 		}
@@ -48,7 +48,7 @@ func GetRoadCountriesFromDB() []Country {
 	coll := database.GetCollectionByName(roadCountriesCollectionName)
 	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
 	if err != nil {
-		log.Printf("retrieving collection %v failed: %v\n", airCountriesCollectionName, err)
+		log.Printf("retrieving collection %v failed: %v\n", roadCountriesCollectionName, err)
 	}
 
 	var roadCountries []Country
@@ -56,7 +56,7 @@ func GetRoadCountriesFromDB() []Country {
 		var c Country
 		err := cur.Decode(&c)
 		if err != nil {
-			log.Println("error while retrieving road countries, ", err)
+			log.Println("error while decoding road country: ", err)
 		} else {
 			roadCountries = append(roadCountries, c)
 		}

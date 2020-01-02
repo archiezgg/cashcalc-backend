@@ -22,7 +22,9 @@ var (
 // Startup is the init call of the mongo DB, supposed to be called in the main function
 func Startup() *mongo.Client {
 	dbSpec := fmt.Sprintf("mongodb+srv://%v:%v@%v", mongoUser, mongoPassword, mongoHostURL)
-	mongoClient, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dbSpec))
+
+	var err error
+	mongoClient, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(dbSpec))
 	if err != nil {
 		log.Fatal("Couldn't connect to database: ", err)
 	}

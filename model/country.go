@@ -21,7 +21,7 @@ type Country struct {
 	ZoneNumber int
 }
 
-// GetAirCountriesFromDB returns with a slice of all elements of the airCountries collection
+// GetAirCountriesFromDB returns with a slice of all elements of the airCountries collection, or an error
 func GetAirCountriesFromDB() ([]Country, error) {
 	coll := database.GetCollectionByName(airCountriesCollectionName)
 
@@ -43,7 +43,7 @@ func GetAirCountriesFromDB() ([]Country, error) {
 	return airCountries, nil
 }
 
-// GetRoadCountriesFromDB returns with an array of all the elements of the roadCountries collection
+// GetRoadCountriesFromDB returns with an array of all the elements of the roadCountries collection, or an error
 func GetRoadCountriesFromDB() ([]Country, error) {
 	coll := database.GetCollectionByName(roadCountriesCollectionName)
 

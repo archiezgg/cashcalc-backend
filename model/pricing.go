@@ -22,7 +22,7 @@ type Pricing struct {
 	Fares, DocFares []int
 }
 
-// GetAirPricingsFromDB returns with a slice of all elements of the air pricings collection
+// GetAirPricingsFromDB returns with a slice of all elements of the air pricings collection, or an error
 func GetAirPricingsFromDB() ([]Pricing, error) {
 	coll := database.GetCollectionByName(airPricingsCollectionName)
 
@@ -45,7 +45,7 @@ func GetAirPricingsFromDB() ([]Pricing, error) {
 	return airPricings, nil
 }
 
-// GetAirPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding air pricing fares as slice of ints
+// GetAirPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding air pricing fares as slice of ints, or an error
 func GetAirPricingFaresByZoneNumber(zn int) []int {
 	ap := GetAirPricingsFromDB()
 
@@ -81,7 +81,7 @@ func GetRoadPricingsFromDB() ([]Pricing, error) {
 	return roadPricings, nil
 }
 
-// GetRoadPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding road pricing fares as slice of ints
+// GetRoadPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding road pricing fares as slice of ints, or an error
 func GetRoadPricingFaresByZoneNumber(zn int) []int {
 	rp := GetRoadPricingsFromDB()
 

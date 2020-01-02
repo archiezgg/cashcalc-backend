@@ -42,3 +42,16 @@ func GetAirPricingsFromDB() []Pricing {
 
 	return airPricings
 }
+
+// GetAirPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding air pricing fares as slice of ints
+func GetAirPricingFaresByZoneNumber(zn int) []int {
+	ap := GetAirPricingsFromDB()
+
+	for _, p := range ap {
+		if p.ZoneNumber == zn {
+			return p.Fares
+		}
+	}
+	log.Printf("zone number '%v' is invalid\n", zn)
+	return nil
+}

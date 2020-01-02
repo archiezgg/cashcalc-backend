@@ -15,5 +15,5 @@
 # vendor/
 
 tmp/
-
 frontend/
+.env

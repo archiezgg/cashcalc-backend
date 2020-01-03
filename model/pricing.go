@@ -66,8 +66,8 @@ func GetAirPricingFaresByZoneNumber(zn int) ([]int, error) {
 
 // GetAirPricingDocFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding air pricing doc fares as slice of ints, or an error
 func GetAirPricingDocFaresByZoneNumber(zn int) ([]int, error) {
-	if err := validateZoneNumber(zn); err != nil {
-		return nil, err
+	if zn < 5 || zn > 9 {
+		return nil, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
 	}
 
 	ap, err := GetAirPricingsFromDB()
@@ -80,6 +80,7 @@ func GetAirPricingDocFaresByZoneNumber(zn int) ([]int, error) {
 			return p.DocFares, nil
 		}
 	}
+	return nil, fmt.Errorf("can't find number %v in air pricing doc fares", zn)
 }
 
 // GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection or an error
@@ -126,7 +127,7 @@ func GetRoadPricingFaresByZoneNumber(zn int) ([]int, error) {
 }
 
 func validateZoneNumber(zn int) error {
-	if zn < 0 && zn > 9 {
+	if zn < 0 || zn > 9 {
 		return fmt.Errorf("the zone number %v is invalid", zn)
 	}
 

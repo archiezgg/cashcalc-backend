@@ -62,6 +62,5 @@ func GetRoadCountriesFromDB() ([]Country, error) {
 		}
 		roadCountries = append(roadCountries, c)
 	}
-	cur.Close(context.TODO())
 	return roadCountries, nil
 }

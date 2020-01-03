@@ -12,9 +12,10 @@ import (
 var port = ":8080"
 
 func main() {
-	router := controller.StartupRouter()
 	db := database.Startup()
 	defer db.Disconnect(context.TODO())
+
+	router := controller.StartupRouter()
 
 	log.Println("CashCalc 2020 is up and running on port", port)
 	log.Fatal(http.ListenAndServe(port, router))

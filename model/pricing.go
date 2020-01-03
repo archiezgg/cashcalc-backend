@@ -56,6 +56,7 @@ func GetAirPricingFaresByZoneNumber(zn int) ([]int, error) {
 			return p.Fares, nil
 		}
 	}
+
 	return nil, fmt.Errorf("can't find number %v in air pricing fares", zn)
 }
 
@@ -94,5 +95,6 @@ func GetRoadPricingFaresByZoneNumber(zn int) ([]int, error) {
 			return p.Fares, nil
 		}
 	}
+
 	return nil, fmt.Errorf("can't find number %v in road pricing fares", zn)
 }

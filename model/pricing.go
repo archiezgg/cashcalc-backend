@@ -64,6 +64,24 @@ func GetAirPricingFaresByZoneNumber(zn int) ([]int, error) {
 	return nil, fmt.Errorf("can't find number %v in air pricing fares", zn)
 }
 
+// GetAirPricingDocFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding air pricing doc fares as slice of ints, or an error
+func GetAirPricingDocFaresByZoneNumber(zn int) ([]int, error) {
+	if err := validateZoneNumber(zn); err != nil {
+		return nil, err
+	}
+
+	ap, err := GetAirPricingsFromDB()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range ap {
+		if p.ZoneNumber == zn {
+			return p.DocFares, nil
+		}
+	}
+}
+
 // GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection or an error
 func GetRoadPricingsFromDB() ([]Pricing, error) {
 	coll := database.GetCollectionByName(roadPricingsCollectionName)

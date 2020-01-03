@@ -3,7 +3,6 @@ package model
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/IstvanN/cashcalc-backend/database"
@@ -46,19 +45,21 @@ func GetAirPricingsFromDB() ([]Pricing, error) {
 }
 
 // GetAirPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding air pricing fares as slice of ints, or an error
-func GetAirPricingFaresByZoneNumber(zn int) []int {
-	ap := GetAirPricingsFromDB()
+func GetAirPricingFaresByZoneNumber(zn int) ([]int, error) {
+	ap, err := GetAirPricingsFromDB()
+	if err != nil {
+		return nil, err
+	}
 
 	for _, p := range ap {
 		if p.ZoneNumber == zn {
-			return p.Fares
+			return p.Fares, nil
 		}
 	}
-	log.Printf("zone number '%v' is invalid\n", zn)
-	return nil
+	return nil, fmt.Errorf("can't find number %v in air pricing fares", zn)
 }
 
-// GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection
+// GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection or an error
 func GetRoadPricingsFromDB() ([]Pricing, error) {
 	coll := database.GetCollectionByName(roadPricingsCollectionName)
 
@@ -82,14 +83,16 @@ func GetRoadPricingsFromDB() ([]Pricing, error) {
 }
 
 // GetRoadPricingFaresByZoneNumber takes a zone number int as parameter and returns with the corresponding road pricing fares as slice of ints, or an error
-func GetRoadPricingFaresByZoneNumber(zn int) []int {
-	rp := GetRoadPricingsFromDB()
+func GetRoadPricingFaresByZoneNumber(zn int) ([]int, error) {
+	rp, err := GetRoadPricingsFromDB()
+	if err != nil {
+		return nil, err
+	}
 
 	for _, p := range rp {
 		if p.ZoneNumber == zn {
-			return p.Fares
+			return p.Fares, nil
 		}
 	}
-	log.Printf("zone number '%v' is invalid\n", zn)
-	return nil
+	return nil, fmt.Errorf("can't find number %v in road pricing fares", zn)
 }

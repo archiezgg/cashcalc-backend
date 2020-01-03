@@ -10,6 +10,7 @@ func StartupRouter() (router *mux.Router) {
 	router = mux.NewRouter()
 	router.HandleFunc("/", welcomeHandler).Methods("GET")
 	registerCountriesRoutes(router)
+	registerPricingsRoutes(router)
 	return
 }
 

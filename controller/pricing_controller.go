@@ -12,7 +12,8 @@ import (
 
 func registerPricingsRoutes(router *mux.Router) {
 	router.HandleFunc("/pricings", allPricingsHandler).Methods("GET").Queries("type", "{type:[a-zA-Z]+}")
-	router.HandleFunc("/pricings/{zn:[0-9]}", pricingFaresByZoneNumberHandler).Methods("GET").Queries("type", "{type:[a-zA-Z]+}")
+	router.HandleFunc("/pricings/fares/{zn:[0-9]}", pricingFaresByZoneNumberHandler).Methods("GET").Queries("type", "{type:[a-zA-Z]+}")
+	router.HandleFunc("/pricings/docfares/{zn:[5-9]}", pricingDocFaresByZoneNumberHandler).Methods("GET")
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {
@@ -55,4 +56,15 @@ func pricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Error(w, http.StatusText(400), http.StatusBadRequest)
 	}
+}
+
+func pricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
+	setContentTypeToJSON(w)
+
+	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
+	airDocFares, err := model.GetAirPricingDocFaresByZoneNumber(zn)
+	if err != nil {
+		log.Println(err)
+	}
+	json.NewEncoder(w).Encode(airDocFares)
 }

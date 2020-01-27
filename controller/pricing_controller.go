@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/IstvanN/cashcalc-backend/model"
+	"github.com/IstvanN/cashcalc-backend/service"
 	"github.com/gorilla/mux"
 )
 
@@ -42,13 +43,13 @@ func pricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	switch t := mux.Vars(r)["type"]; t {
 	case "air":
-		airFares, err := model.GetAirPricingFaresByZoneNumber(zn)
+		airFares, err := service.GetAirPricingFaresByZoneNumber(zn)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(airFares)
 	case "road":
-		roadFares, err := model.GetRoadPricingFaresByZoneNumber(zn)
+		roadFares, err := service.GetRoadPricingFaresByZoneNumber(zn)
 		if err != nil {
 			log.Println(err)
 		}
@@ -62,7 +63,7 @@ func pricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) 
 	setContentTypeToJSON(w)
 
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
-	airDocFares, err := model.GetAirPricingDocFaresByZoneNumber(zn)
+	airDocFares, err := service.GetAirPricingDocFaresByZoneNumber(zn)
 	if err != nil {
 		log.Println(err)
 	}

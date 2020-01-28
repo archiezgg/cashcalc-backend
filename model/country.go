@@ -1,13 +1,10 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"os"
 
 	"github.com/IstvanN/cashcalc-backend/database"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var (
@@ -25,20 +22,10 @@ type Country struct {
 func GetAirCountriesFromDB() ([]Country, error) {
 	coll := database.GetCollectionByName(airCountriesCollectionName)
 
-	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
-	defer cur.Close(context.TODO())
-	if err != nil {
-		return nil, fmt.Errorf("retrieving collection %v failed: %v", airCountriesCollectionName, err)
-	}
-
 	var airCountries []Country
-	for cur.Next(context.TODO()) {
-		var c Country
-		err := cur.Decode(&c)
-		if err != nil {
-			return nil, fmt.Errorf("error while decoding air country: %v", err)
-		}
-		airCountries = append(airCountries, c)
+	err := coll.Find(nil).All(&airCountries)
+	if err != nil {
+		return nil, fmt.Errorf("error while retrieving collection %v from database: %v", airCountriesCollectionName, err)
 	}
 	return airCountries, nil
 }
@@ -47,20 +34,10 @@ func GetAirCountriesFromDB() ([]Country, error) {
 func GetRoadCountriesFromDB() ([]Country, error) {
 	coll := database.GetCollectionByName(roadCountriesCollectionName)
 
-	cur, err := coll.Find(context.TODO(), bson.D{{}}, options.Find())
-	defer cur.Close(context.TODO())
-	if err != nil {
-		return nil, fmt.Errorf("retrieving collection %v failed: %v", roadCountriesCollectionName, err)
-	}
-
 	var roadCountries []Country
-	for cur.Next(context.TODO()) {
-		var c Country
-		err := cur.Decode(&c)
-		if err != nil {
-			return nil, fmt.Errorf("error while decoding road country: %v", err)
-		}
-		roadCountries = append(roadCountries, c)
+	err := coll.Find(nil).All(&roadCountries)
+	if err != nil {
+		return nil, fmt.Errorf("error while retrieving collection %v from database: %v", roadCountriesCollectionName, err)
 	}
 	return roadCountries, nil
 }

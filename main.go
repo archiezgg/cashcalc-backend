@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
 
@@ -13,7 +12,7 @@ var port = ":8080"
 
 func main() {
 	db := database.Startup()
-	defer db.Disconnect(context.TODO())
+	defer db.Close()
 
 	router := controller.StartupRouter()
 

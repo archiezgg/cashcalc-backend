@@ -1,13 +1,11 @@
 package database
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"gopkg.in/mgo.v2"
 )
 
 var (
@@ -16,29 +14,25 @@ var (
 	mongoHostURL  = os.Getenv("MONGO_HOST")
 	mongoDBName   = os.Getenv("MONG_DB_NAME")
 
-	mongoClient *mongo.Client
+	dbSession *mgo.Session
 )
 
 // Startup is the init call of the mongo DB, supposed to be called in the main function
-func Startup() *mongo.Client {
-	dbSpec := fmt.Sprintf("mongodb+srv://%v:%v@%v", mongoUser, mongoPassword, mongoHostURL)
+func Startup() *mgo.Session {
+	dbSpec := fmt.Sprintf("mongodb://%v:%v@%v/%v", mongoUser, mongoPassword, mongoHostURL, mongoDBName)
 
 	var err error
-	mongoClient, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(dbSpec))
+	dbSession, err = mgo.Dial(dbSpec)
 	if err != nil {
 		log.Fatal("couldn't connect to database: ", err)
 	}
 
-	err = mongoClient.Ping(context.TODO(), nil)
-	if err != nil {
-		log.Fatal("database is not responding!")
-	}
 	log.Println(("successfully connected to the database!"))
-	return mongoClient
+	return dbSession
 }
 
 // GetCollectionByName returns a collection type from the db by its name
-func GetCollectionByName(collectionName string) *mongo.Collection {
-	coll := mongoClient.Database(mongoDBName).Collection(collectionName)
+func GetCollectionByName(collectionName string) *mgo.Collection {
+	coll := dbSession.DB(mongoDBName).C(collectionName)
 	return coll
 }

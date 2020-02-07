@@ -3,7 +3,6 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.11
-      - image: circleci/
     working_directory: /go/src/github.com/IstvanN/cashcalc-backend
     steps:
       - checkout

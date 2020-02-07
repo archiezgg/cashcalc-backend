@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.11
+      - image: circleci/
+    working_directory: /go/src/github.com/IstvanN/cashcalc-backend
+    steps:
+      - checkout
+      - run: 
+        name: download dependencies
+        command: go get -v -t -d ./...
+      - run: 
+        name: run unit tests
+        command: go test -v ./...

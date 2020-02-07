@@ -12,7 +12,7 @@ var (
 	mongoUser     = os.Getenv("MONGO_USER")
 	mongoPassword = os.Getenv("MONGO_PW")
 	mongoHostURL  = os.Getenv("MONGO_HOST")
-	mongoDBName   = os.Getenv("MONG_DB_NAME")
+	mongoDBName   = os.Getenv("MONGO_DB_NAME")
 
 	dbSession *mgo.Session
 )

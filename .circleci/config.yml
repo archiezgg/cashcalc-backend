@@ -7,8 +7,11 @@ jobs:
     steps:
       - checkout
       - run: 
-          name: download dependencies
+          name: Download dependencies
           command: go get -v -t -d ./...
       - run: 
-          name: run unit tests
+          name: Run unit tests
           command: go test -v ./...
+      - run:
+          name: Build binary
+          command: go build -x

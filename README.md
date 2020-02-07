@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/IstvanN/cashcalc-backend.svg?style=svg)](https://circleci.com/gh/IstvanN/cashcalc-backend)
+
 # cashcalc-backend
 Backend for the CashCalc 2020 application.
 

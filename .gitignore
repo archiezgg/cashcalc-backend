@@ -17,4 +17,5 @@
 tmp/
 frontend/
 .env
+.env_debug
 .vscode/

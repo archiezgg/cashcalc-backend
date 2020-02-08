@@ -1,6 +1,6 @@
 # cashcalc-backend
 [![CircleCI](https://circleci.com/gh/IstvanN/cashcalc-backend.svg?style=svg)](https://circleci.com/gh/IstvanN/cashcalc-backend)
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=IstvanN_cashcalc-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=IstvanN_cashcalc-backend)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=IstvanN_cashcalc-backend)](https://sonarcloud.io/dashboard?id=IstvanN_cashcalc-backend)
 
 Backend for the CashCalc 2020 application.
 

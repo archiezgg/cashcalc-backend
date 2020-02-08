@@ -11,7 +11,8 @@ import (
 var (
 	mongoUser     = os.Getenv("MONGO_USER")
 	mongoPassword = os.Getenv("MONGO_PW")
-	mongoHostURL  = os.Getenv("MONGO_HOST")
+	mongoHost     = os.Getenv("MONGO_HOST")
+	mongoPort     = os.Getenv("MONGO_PORT")
 	mongoDBName   = os.Getenv("MONGO_DB_NAME")
 
 	dbSession *mgo.Session
@@ -19,10 +20,9 @@ var (
 
 // Startup is the init call of the mongo DB, supposed to be called in the main function
 func Startup() *mgo.Session {
-	dbSpec := fmt.Sprintf("mongodb://%v:%v@%v/%v", mongoUser, mongoPassword, mongoHostURL, mongoDBName)
+	dbSpec := fmt.Sprintf("mongodb+srv://%v:%v@%v:%v/%v", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDBName)
 
-	var err error
-	dbSession, err = mgo.Dial(dbSpec)
+	dbSession, err := mgo.Dial(dbSpec)
 	if err != nil {
 		log.Fatal("couldn't connect to database: ", err)
 	}

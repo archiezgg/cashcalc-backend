@@ -13,6 +13,9 @@ workflows:
     jobs:
       - build
       - heroku/deploy-via-git:
+          context: Heroku
+          environment:
+            HEROKU_APP: "cashcalc-backend"
           requires:
             - build
           filters:

@@ -12,9 +12,14 @@ import (
 )
 
 func registerPricingsRoutes(router *mux.Router) {
-	router.HandleFunc("/pricings", allPricingsHandler).Methods("GET").Queries("type", "{type:[a-zA-Z]+}")
-	router.HandleFunc("/pricings/fares/{zn:[0-9]}", pricingFaresByZoneNumberHandler).Methods("GET").Queries("type", "{type:[a-zA-Z]+}")
-	router.HandleFunc("/pricings/docfares/{zn:[5-9]}", pricingDocFaresByZoneNumberHandler).Methods("GET")
+	router.HandleFunc("/pricings", allPricingsHandler).
+		Methods("GET").
+		Queries("type", "{type:[a-zA-Z]+}")
+	router.HandleFunc("/pricings/fares/{zn:[0-9]}", pricingFaresByZoneNumberHandler).
+		Methods("GET").
+		Queries("type", "{type:[a-zA-Z]+}")
+	router.HandleFunc("/pricings/docfares/{zn:[5-9]}", pricingDocFaresByZoneNumberHandler).
+		Methods("GET")
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {

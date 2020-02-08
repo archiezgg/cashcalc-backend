@@ -10,7 +10,9 @@ import (
 )
 
 func registerCountriesRoutes(router *mux.Router) {
-	router.HandleFunc("/countries", allCountriesHandler).Methods("GET").Queries("type", "{type:[a-zA-Z]+}")
+	router.HandleFunc("/countries", allCountriesHandler).
+		Methods("GET").
+		Queries("type", "{type:[a-zA-Z]+}")
 }
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request) {

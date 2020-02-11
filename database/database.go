@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	mongoURI    = os.Getenv("MONGO_URI")
+	mongoURI    = os.Getenv("MONGODB_URI")
 	mongoDBName = os.Getenv("MONGO_DB_NAME")
 
 	dbSession *mgo.Session

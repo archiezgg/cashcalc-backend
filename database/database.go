@@ -8,12 +8,8 @@ import (
 )
 
 var (
-	mongoUser     = os.Getenv("MONGO_USER")
-	mongoPassword = os.Getenv("MONGO_PW")
-	mongoHost     = os.Getenv("MONGO_HOST")
-	mongoPort     = os.Getenv("MONGO_PORT")
-	mongoDBName   = os.Getenv("MONGO_DB_NAME")
-	mongoURI      = os.Getenv("MONGO_URI")
+	mongoURI    = os.Getenv("MONGO_URI")
+	mongoDBName = os.Getenv("MONGO_DB_NAME")
 
 	dbSession *mgo.Session
 )

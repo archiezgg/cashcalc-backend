@@ -3,12 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/IstvanN/cashcalc-backend/controller"
 	"github.com/IstvanN/cashcalc-backend/database"
 )
 
-var port = ":8080"
+var port = ":" + os.Getenv("PORT")
 
 func main() {
 	db := database.Startup()

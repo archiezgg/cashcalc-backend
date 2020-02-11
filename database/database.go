@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -14,15 +13,15 @@ var (
 	mongoHost     = os.Getenv("MONGO_HOST")
 	mongoPort     = os.Getenv("MONGO_PORT")
 	mongoDBName   = os.Getenv("MONGO_DB_NAME")
+	mongoURI      = os.Getenv("MONGO_URI")
 
 	dbSession *mgo.Session
 )
 
 // Startup is the init call of the mongo DB, supposed to be called in the main function
 func Startup() *mgo.Session {
-	dbSpec := fmt.Sprintf("mongodb+srv://%v:%v@%v:%v/%v", mongoUser, mongoPassword, mongoHost, mongoPort, mongoDBName)
-
-	dbSession, err := mgo.Dial(dbSpec)
+	var err error
+	dbSession, err = mgo.Dial(mongoURI)
 	if err != nil {
 		log.Fatal("couldn't connect to database: ", err)
 	}
@@ -33,6 +32,6 @@ func Startup() *mgo.Session {
 
 // GetCollectionByName returns a collection type from the db by its name
 func GetCollectionByName(collectionName string) *mgo.Collection {
-	coll := dbSession.DB(mongoDBName).C(collectionName)
+	coll := dbSession.Clone().DB(mongoDBName).C(collectionName)
 	return coll
 }

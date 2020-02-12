@@ -8,36 +8,49 @@ import (
 )
 
 var (
-	airCountriesCollectionName  = os.Getenv("COUNTRIES_AIR_COLL")
-	roadCountriesCollectionName = os.Getenv("COUNTRIES_ROAD_COLL")
+	countriesCollectionName = os.Getenv("COUNTRIES_COLL")
 )
 
 // Country stores the countries with name and a zone number
 type Country struct {
-	Name       string
-	ZoneNumber int
+	Name       string `bson:"name"`
+	ZoneNumber int    `bson:"zoneNumber"`
 }
 
-// GetAirCountriesFromDB returns with a slice of all elements of the airCountries collection, or an error
-func GetAirCountriesFromDB() ([]Country, error) {
-	coll := database.GetCollectionByName(airCountriesCollectionName)
-
-	var airCountries []Country
-	err := coll.Find(nil).All(&airCountries)
-	if err != nil {
-		return nil, fmt.Errorf("error while retrieving collection %v from database: %v", airCountriesCollectionName, err)
-	}
-	return airCountries, nil
+// Countries stores both air and road lists as fields
+type Countries struct {
+	CountriesAir  []Country `bson:"countriesAir"`
+	CountriesRoad []Country `bson:"countriesRoad"`
 }
 
-// GetRoadCountriesFromDB returns with an array of all the elements of the roadCountries collection, or an error
-func GetRoadCountriesFromDB() ([]Country, error) {
-	coll := database.GetCollectionByName(roadCountriesCollectionName)
-
-	var roadCountries []Country
-	err := coll.Find(nil).All(&roadCountries)
+// GetCountriesAirFromDB returns with a slice of all air elements of the Countries collection, or an error
+func GetCountriesAirFromDB() ([]Country, error) {
+	c, err := getCountriesFromColl()
 	if err != nil {
-		return nil, fmt.Errorf("error while retrieving collection %v from database: %v", roadCountriesCollectionName, err)
+		return nil, err
 	}
-	return roadCountries, nil
+
+	return c.CountriesAir, nil
+}
+
+// GetCountriesRoadFromDB returns with an array of all road elements of the Countries collection, or an error
+func GetCountriesRoadFromDB() ([]Country, error) {
+	c, err := getCountriesFromColl()
+	if err != nil {
+		return nil, err
+	}
+
+	return c.CountriesRoad, nil
+}
+
+func getCountriesFromColl() (Countries, error) {
+	coll := database.GetCollectionByName(countriesCollectionName)
+
+	var c Countries
+	err := coll.Find(nil).One(&c)
+	if err != nil {
+		return Countries{}, fmt.Errorf("error while retrieving collection %v from database: %v", countriesCollectionName, err)
+	}
+
+	return c, nil
 }

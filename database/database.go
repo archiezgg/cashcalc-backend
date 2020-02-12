@@ -31,3 +31,5 @@ func GetCollectionByName(collectionName string) *mgo.Collection {
 	coll := dbSession.Clone().DB(mongoDBName).C(collectionName)
 	return coll
 }
+
+//TODO: write a function to strip the DB name from the URI and store it in env variable

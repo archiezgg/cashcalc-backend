@@ -25,7 +25,7 @@ type Countries struct {
 
 // GetCountriesAirFromDB returns with a slice of all air elements of the Countries collection, or an error
 func GetCountriesAirFromDB() ([]Country, error) {
-	c, err := getCountriesFromColl()
+	c, err := getCountriesFromDB()
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func GetCountriesAirFromDB() ([]Country, error) {
 
 // GetCountriesRoadFromDB returns with an array of all road elements of the Countries collection, or an error
 func GetCountriesRoadFromDB() ([]Country, error) {
-	c, err := getCountriesFromColl()
+	c, err := getCountriesFromDB()
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func GetCountriesRoadFromDB() ([]Country, error) {
 	return c.CountriesRoad, nil
 }
 
-func getCountriesFromColl() (Countries, error) {
+func getCountriesFromDB() (Countries, error) {
 	coll := database.GetCollectionByName(countriesCollectionName)
 
 	var c Countries

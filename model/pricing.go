@@ -8,36 +8,48 @@ import (
 )
 
 var (
-	airPricingsCollectionName  = os.Getenv("PRICINGS_AIR_COLL")
-	roadPricingsCollectionName = os.Getenv("PRICINGS_ROAD_COLL")
+	pricingsCollectionName = os.Getenv("PRICINGS_COLL")
 )
 
 // Pricing is the struct to store zone numbers and the matching fares
 type Pricing struct {
-	ZoneNumber      int
-	Fares, DocFares []int
+	ZoneNumber int   `bson:"zoneNumber"`
+	Fares      []int `bson:"fares"`
+	DocFares   []int `bson:"docFares"`
+}
+
+//Pricings stores both air and road pricings as fields
+type Pricings struct {
+	AirPricings  []Pricing `bson:"airPricings"`
+	RoadPricings []Pricing `bson:"roadPricings"`
 }
 
 // GetAirPricingsFromDB returns with a slice of all elements of the air pricings collection, or an error
 func GetAirPricingsFromDB() ([]Pricing, error) {
-	coll := database.GetCollectionByName(airPricingsCollectionName)
-
-	var airPricings []Pricing
-	err := coll.Find(nil).All(&airPricings)
+	p, err := getPricingsFromDB()
 	if err != nil {
-		return nil, fmt.Errorf("error while retrieving collection %v from database: %v", airPricingsCollectionName, err)
+		return nil, err
 	}
-	return airPricings, nil
+	return p.AirPricings, nil
 }
 
 // GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection or an error
 func GetRoadPricingsFromDB() ([]Pricing, error) {
-	coll := database.GetCollectionByName(roadPricingsCollectionName)
-
-	var roadPricings []Pricing
-	err := coll.Find(nil).All(&roadPricings)
+	p, err := getPricingsFromDB()
 	if err != nil {
-		return nil, fmt.Errorf("error while retrieving collection %v from database: %v", roadPricingsCollectionName, err)
+		return nil, err
 	}
-	return roadPricings, nil
+	return p.RoadPricings, nil
+}
+
+func getPricingsFromDB() (Pricings, error) {
+	coll := database.GetCollectionByName(pricingsCollectionName)
+
+	var p Pricings
+	err := coll.Find(nil).One(&p)
+	if err != nil {
+		return Pricings{}, fmt.Errorf("error while retrieving collection %v from database: %v", pricingsCollectionName, err)
+	}
+
+	return p, nil
 }

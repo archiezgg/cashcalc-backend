@@ -25,14 +25,14 @@ func GetAirPricingsFromDB() ([]Pricing, error) {
 	var airPricings []Pricing
 	err := coll.Find(nil).All(&airPricings)
 	if err != nil {
-		return nil, fmt.Errorf("error while retrieving collection %v from database: %v", airCountriesCollectionName, err)
+		return nil, fmt.Errorf("error while retrieving collection %v from database: %v", airPricingsCollectionName, err)
 	}
 	return airPricings, nil
 }
 
 // GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection or an error
 func GetRoadPricingsFromDB() ([]Pricing, error) {
-	coll := database.GetCollectionByName(roadCountriesCollectionName)
+	coll := database.GetCollectionByName(roadPricingsCollectionName)
 
 	var roadPricings []Pricing
 	err := coll.Find(nil).All(&roadPricings)

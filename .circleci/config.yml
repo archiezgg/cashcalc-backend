@@ -33,7 +33,10 @@ jobs:
           command: go get -v -t -d ./...
       - run: 
           name: Run unit tests
-          command: go test -v ./...
+          command: go test -v -json ./... > test-report.out
+      - run:
+          name: Run go vet
+          command: go vet -v ./... > govet-report.out
       - run:
           name: Build binary
           command: go build -x

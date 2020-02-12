@@ -8,7 +8,7 @@ import (
 
 func TestValidateZoneNumber(t *testing.T) {
 	e := errors.New("")
-	tables := []struct {
+	testCases := []struct {
 		x   int
 		err error
 	}{
@@ -20,10 +20,10 @@ func TestValidateZoneNumber(t *testing.T) {
 		{10, e},
 	}
 
-	for _, table := range tables {
-		err := validateZoneNumber(table.x)
-		if reflect.TypeOf(err) != reflect.TypeOf(table.err) {
-			t.Errorf("validateZoneNumber(%v) failed: expected type: %T, got: %T", table.x, table.err, err)
+	for _, tc := range testCases {
+		err := validateZoneNumber(tc.x)
+		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
+			t.Errorf("validateZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
 		}
 	}
 }

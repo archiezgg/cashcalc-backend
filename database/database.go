@@ -3,13 +3,13 @@ package database
 import (
 	"log"
 	"os"
+	"strings"
 
 	"gopkg.in/mgo.v2"
 )
 
 var (
-	mongoURI    = os.Getenv("MONGODB_URI")
-	mongoDBName = os.Getenv("MONGO_DB_NAME")
+	mongoURI = os.Getenv("MONGODB_URI")
 
 	dbSession *mgo.Session
 )
@@ -28,8 +28,13 @@ func Startup() *mgo.Session {
 
 // GetCollectionByName returns a collection type from the db by its name
 func GetCollectionByName(collectionName string) *mgo.Collection {
-	coll := dbSession.Clone().DB(mongoDBName).C(collectionName)
+	dbName := getDBNameFromURI(mongoURI)
+	coll := dbSession.Clone().DB(dbName).C(collectionName)
 	return coll
 }
 
 //TODO: write a function to strip the DB name from the URI and store it in env variable
+func getDBNameFromURI(uri string) string {
+	splitURI := strings.SplitAfter(uri, "/")
+	return splitURI[len(splitURI)-1]
+}

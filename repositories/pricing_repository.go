@@ -6,6 +6,7 @@ import (
 
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/models"
+	"github.com/IstvanN/cashcalc-backend/services"
 )
 
 var (
@@ -34,11 +35,11 @@ func GetRoadPricingsFromDB() ([]models.Pricing, error) {
 // GetAirPricingFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing fares as slice of ints, or an error
 func GetAirPricingFaresByZoneNumber(zn int) ([]int, error) {
-	if err := validateZoneNumber(zn); err != nil {
+	if err := services.ValidateZoneNumber(zn); err != nil {
 		return nil, err
 	}
 
-	ap, err := models.GetAirPricingsFromDB()
+	ap, err := GetAirPricingsFromDB()
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +60,7 @@ func GetAirPricingDocFaresByZoneNumber(zn int) ([]int, error) {
 		return nil, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
 	}
 
-	ap, err := models.GetAirPricingsFromDB()
+	ap, err := GetAirPricingsFromDB()
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +76,7 @@ func GetAirPricingDocFaresByZoneNumber(zn int) ([]int, error) {
 // GetRoadPricingFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding road pricing fares as slice of ints, or an error
 func GetRoadPricingFaresByZoneNumber(zn int) ([]int, error) {
-	if err := service.ValidateZoneNumber(zn); err != nil {
+	if err := services.ValidateZoneNumber(zn); err != nil {
 		return nil, err
 	}
 

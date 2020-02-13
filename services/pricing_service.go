@@ -2,14 +2,11 @@ package services
 
 import (
 	"fmt"
-
-	"github.com/IstvanN/cashcalc-backend/model"
 )
 
-func getVatAsMultiplier() float64 {
-	pv := getPricingVariablesFromDB()	
-	return 1 + ()
-}
+// func getVatAsMultiplier() float64 {
+// 	return 1 + ()
+// }
 
 // ValidateZoneNumber takes an int as parameter and checks if it between 0 and 9
 // returns with error if not

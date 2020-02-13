@@ -1,4 +1,4 @@
-package model
+package models
 
 // Country stores the countries with name and a zone number
 type Country struct {

@@ -1,11 +1,11 @@
-package service
+package repositories
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/IstvanN/cashcalc-backend/database"
-	"github.com/IstvanN/cashcalc-backend/model"
+	"github.com/IstvanN/cashcalc-backend/models"
 )
 
 var (
@@ -13,7 +13,7 @@ var (
 )
 
 // GetCountriesAirFromDB returns with a slice of all air elements of the Countries collection, or an error
-func GetCountriesAirFromDB() ([]model.Country, error) {
+func GetCountriesAirFromDB() ([]models.Country, error) {
 	c, err := getCountriesFromDB()
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func GetCountriesAirFromDB() ([]model.Country, error) {
 }
 
 // GetCountriesRoadFromDB returns with an array of all road elements of the Countries collection, or an error
-func GetCountriesRoadFromDB() ([]model.Country, error) {
+func GetCountriesRoadFromDB() ([]models.Country, error) {
 	c, err := getCountriesFromDB()
 	if err != nil {
 		return nil, err
@@ -32,13 +32,13 @@ func GetCountriesRoadFromDB() ([]model.Country, error) {
 	return c.CountriesRoad, nil
 }
 
-func getCountriesFromDB() (model.Countries, error) {
+func getCountriesFromDB() (models.Countries, error) {
 	coll := database.GetCollectionByName(countriesCollectionName)
 
-	var c model.Countries
+	var c models.Countries
 	err := coll.Find(nil).One(&c)
 	if err != nil {
-		return model.Countries{}, fmt.Errorf("error while retrieving collection %v from database: %v", countriesCollectionName, err)
+		return models.Countries{}, fmt.Errorf("error while retrieving collection %v from database: %v", countriesCollectionName, err)
 	}
 
 	return c, nil

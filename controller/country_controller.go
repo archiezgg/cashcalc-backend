@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/IstvanN/cashcalc-backend/model"
+	"github.com/IstvanN/cashcalc-backend/service"
 	"github.com/gorilla/mux"
 )
 
@@ -19,13 +19,13 @@ func allCountriesHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
 	switch t := mux.Vars(r)["type"]; t {
 	case "air":
-		countriesAir, err := model.GetCountriesAirFromDB()
+		countriesAir, err := service.GetCountriesAirFromDB()
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(countriesAir)
 	case "road":
-		countriesRoad, err := model.GetCountriesRoadFromDB()
+		countriesRoad, err := service.GetCountriesRoadFromDB()
 		if err != nil {
 			log.Println(err)
 		}

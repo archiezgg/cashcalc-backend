@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"errors"
@@ -21,7 +21,7 @@ func TestValidateZoneNumber(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		err := validateZoneNumber(tc.x)
+		err := ValidateZoneNumber(tc.x)
 		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
 			t.Errorf("validateZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
 		}

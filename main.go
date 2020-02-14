@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/IstvanN/cashcalc-backend/controller"
+	"github.com/IstvanN/cashcalc-backend/controllers"
 	"github.com/IstvanN/cashcalc-backend/database"
 )
 
@@ -15,7 +15,7 @@ func main() {
 	db := database.Startup()
 	defer db.Close()
 
-	router := controller.StartupRouter()
+	router := controllers.StartupRouter()
 
 	log.Println("CashCalc 2020 is up and running on port", port)
 	log.Fatal(http.ListenAndServe(port, router))

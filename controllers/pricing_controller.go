@@ -1,4 +1,4 @@
-package controller
+package controllers
 
 import (
 	"encoding/json"
@@ -6,8 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/IstvanN/cashcalc-backend/model"
-	"github.com/IstvanN/cashcalc-backend/service"
+	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/gorilla/mux"
 )
 
@@ -26,13 +25,13 @@ func allPricingsHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
 	switch t := mux.Vars(r)["type"]; t {
 	case "air":
-		airPricings, err := model.GetAirPricingsFromDB()
+		airPricings, err := repositories.GetAirPricingsFromDB()
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(airPricings)
 	case "road":
-		roadPricings, err := model.GetRoadPricingsFromDB()
+		roadPricings, err := repositories.GetRoadPricingsFromDB()
 		if err != nil {
 			log.Println(err)
 		}
@@ -48,13 +47,13 @@ func pricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	switch t := mux.Vars(r)["type"]; t {
 	case "air":
-		airFares, err := service.GetAirPricingFaresByZoneNumber(zn)
+		airFares, err := repositories.GetAirPricingFaresByZoneNumber(zn)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(airFares)
 	case "road":
-		roadFares, err := service.GetRoadPricingFaresByZoneNumber(zn)
+		roadFares, err := repositories.GetRoadPricingFaresByZoneNumber(zn)
 		if err != nil {
 			log.Println(err)
 		}
@@ -68,7 +67,7 @@ func pricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) 
 	setContentTypeToJSON(w)
 
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
-	airDocFares, err := service.GetAirPricingDocFaresByZoneNumber(zn)
+	airDocFares, err := repositories.GetAirPricingDocFaresByZoneNumber(zn)
 	if err != nil {
 		log.Println(err)
 	}

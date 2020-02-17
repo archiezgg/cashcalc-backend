@@ -33,7 +33,7 @@ jobs:
           command: go get -v -t -d ./...
       - run: 
           name: Run unit tests
-          command: go test -v -json ./... > test-report.out
+          command: go test -v -cover ./... > test-report.out
       - run:
           name: Run go vet
           command: go vet -v ./... > govet-report.out

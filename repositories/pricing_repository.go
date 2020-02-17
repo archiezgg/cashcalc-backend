@@ -34,14 +34,14 @@ func GetRoadPricingsFromDB() ([]models.Pricing, error) {
 
 // GetAirPricingFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing fares as slice of ints, or an error
-func GetAirPricingFaresByZoneNumber(zn int) ([]int, error) {
+func GetAirPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	if err := services.ValidateZoneNumber(zn); err != nil {
-		return nil, err
+		return []models.Fare{}, err
 	}
 
 	ap, err := GetAirPricingsFromDB()
 	if err != nil {
-		return nil, err
+		return []models.Fare{}, err
 	}
 
 	for _, p := range ap {
@@ -50,19 +50,19 @@ func GetAirPricingFaresByZoneNumber(zn int) ([]int, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("can't find number %v in air pricing fares", zn)
+	return []models.Fare{}, fmt.Errorf("can't find number %v in air pricing fares", zn)
 }
 
 // GetAirPricingDocFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing doc fares as slice of ints, or an error
-func GetAirPricingDocFaresByZoneNumber(zn int) ([]int, error) {
+func GetAirPricingDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	if zn < 5 || zn > 9 {
-		return nil, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
+		return []models.Fare{}, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
 	}
 
 	ap, err := GetAirPricingsFromDB()
 	if err != nil {
-		return nil, err
+		return []models.Fare{}, err
 	}
 
 	for _, p := range ap {
@@ -70,19 +70,19 @@ func GetAirPricingDocFaresByZoneNumber(zn int) ([]int, error) {
 			return p.DocFares, nil
 		}
 	}
-	return nil, fmt.Errorf("can't find number %v in air pricing doc fares", zn)
+	return []models.Fare{}, fmt.Errorf("can't find number %v in air pricing doc fares", zn)
 }
 
 // GetRoadPricingFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding road pricing fares as slice of ints, or an error
-func GetRoadPricingFaresByZoneNumber(zn int) ([]int, error) {
+func GetRoadPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	if err := services.ValidateZoneNumber(zn); err != nil {
-		return nil, err
+		return []models.Fare{}, err
 	}
 
 	rp, err := GetRoadPricingsFromDB()
 	if err != nil {
-		return nil, err
+		return []models.Fare{}, err
 	}
 
 	for _, p := range rp {
@@ -91,7 +91,7 @@ func GetRoadPricingFaresByZoneNumber(zn int) ([]int, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("can't find number %v in road pricing fares", zn)
+	return []models.Fare{}, fmt.Errorf("can't find number %v in road pricing fares", zn)
 }
 
 // GetPricingVariablesFromDB retreives the pricing variables

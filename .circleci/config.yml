@@ -36,7 +36,7 @@ jobs:
           command: go test -json ./... > test-report.json
       - run:
           name: Create test coverage report
-          command: go test -coverprofile=coverage-report.out github.com/IstvanN/cashcalc-backend/database github.com/IstvanN/cashcalc-backend/services
+          command: go test -coverprofile=coverage-report.out ./...
       - run:
           name: Run go vet
           command: go vet -json ./... > govet-report.json

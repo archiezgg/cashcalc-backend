@@ -25,7 +25,7 @@ jobs:
   build:
     docker:
       - image: cimg/go:1.14
-    working_directory: /go/src/github.com/IstvanN/cashcalc-backend
+    working_directory: ~/go/src/github.com/IstvanN/cashcalc-backend
     steps:
       - checkout
       - run: 

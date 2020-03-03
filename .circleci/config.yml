@@ -24,7 +24,7 @@ workflows:
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/go:1.14
     working_directory: /go/src/github.com/IstvanN/cashcalc-backend
     steps:
       - checkout
@@ -32,11 +32,14 @@ jobs:
           name: Download dependencies
           command: go get -v -t -d ./...
       - run: 
-          name: Run unit tests
-          command: go test -v -cover ./... > test-report.out
+          name: Run unit tests and create report
+          command: go test -json ./... > test-report.json
+      - run:
+          name: Create test coverage report
+          command: go test -coverprofile=coverage-report.out ./...
       - run:
           name: Run go vet
-          command: go vet -v ./... > govet-report.out
+          command: go vet -json ./... > govet-report.json
       - run:
           name: Build binary
           command: go build -x

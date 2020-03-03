@@ -24,7 +24,7 @@ workflows:
 jobs:
   build:
     docker:
-      - image: circleci/go:1.14
+      - image: cimg/go:1.14
     working_directory: /go/src/github.com/IstvanN/cashcalc-backend
     steps:
       - checkout

@@ -33,7 +33,7 @@ jobs:
           command: go get -v -t -d ./...
       - run: 
           name: Run unit tests and create report
-          command: go test -json ./... > test-report.json
+          command: go test -json github.com/IstvanN/cashcalc-backend/database github.com/IstvanN/cashcalc-backend/services > test-report.json
       - run:
           name: Create test coverage report
           command: go test -coverprofile=coverage-report.out ./...

@@ -4,13 +4,16 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/gorilla/mux"
 )
 
+var countriesEndpoint = os.Getenv("COUNTRIES_ENDPOINT")
+
 func registerCountriesRoutes(router *mux.Router) {
-	router.HandleFunc("/countries", allCountriesHandler).
+	router.HandleFunc(countriesEndpoint, allCountriesHandler).
 		Methods("GET").
 		Queries("type", "{type:[a-zA-Z]+}")
 }

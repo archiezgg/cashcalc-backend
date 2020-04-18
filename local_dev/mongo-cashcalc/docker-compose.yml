@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+    mongo-cashcalc:
+        build: .
+        image: archiezgg/cashcalc-mongo
+        ports:
+            - "27017:27017"
+        container_name: mongo-cashcalc

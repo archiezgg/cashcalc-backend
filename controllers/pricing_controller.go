@@ -4,20 +4,27 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/gorilla/mux"
 )
 
+var (
+	pricingsEndpoint = os.Getenv("PRICINGS_ENDPOINT")
+	faresEndpoint    = os.Getenv("FARES_ENDPOINT")
+	docFaresEndpoint = os.Getenv("DOCFARES_ENDPOINT")
+)
+
 func registerPricingsRoutes(router *mux.Router) {
-	router.HandleFunc("/pricings", allPricingsHandler).
+	router.HandleFunc(pricingsEndpoint, allPricingsHandler).
 		Methods("GET").
 		Queries("type", "{type:[a-zA-Z]+}")
-	router.HandleFunc("/pricings/fares/{zn:[0-9]}", pricingFaresByZoneNumberHandler).
+	router.HandleFunc(faresEndpoint+"/{zn:[0-9]}", pricingFaresByZoneNumberHandler).
 		Methods("GET").
 		Queries("type", "{type:[a-zA-Z]+}")
-	router.HandleFunc("/pricings/docfares/{zn:[5-9]}", pricingDocFaresByZoneNumberHandler).
+	router.HandleFunc(docFaresEndpoint+"/{zn:[5-9]}", pricingDocFaresByZoneNumberHandler).
 		Methods("GET")
 }
 

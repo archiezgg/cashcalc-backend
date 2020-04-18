@@ -19,5 +19,3 @@ frontend/
 .env
 .env_debug
 .vscode/
-
-scripts/

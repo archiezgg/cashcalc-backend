@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -35,13 +34,15 @@ func allPricingsHandler(w http.ResponseWriter, r *http.Request) {
 	case "air":
 		airPricings, err := repositories.GetAirPricingsFromDB()
 		if err != nil {
-			log.Println(err)
+			logErrorAndSendHTTPError(w, err, 500)
+			return
 		}
 		json.NewEncoder(w).Encode(airPricings)
 	case "road":
 		roadPricings, err := repositories.GetRoadPricingsFromDB()
 		if err != nil {
-			log.Println(err)
+			logErrorAndSendHTTPError(w, err, 500)
+			return
 		}
 		json.NewEncoder(w).Encode(roadPricings)
 	default:
@@ -57,13 +58,15 @@ func pricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	case "air":
 		airFares, err := repositories.GetAirPricingFaresByZoneNumber(zn)
 		if err != nil {
-			log.Println(err)
+			logErrorAndSendHTTPError(w, err, 400)
+			return
 		}
 		json.NewEncoder(w).Encode(airFares)
 	case "road":
 		roadFares, err := repositories.GetRoadPricingFaresByZoneNumber(zn)
 		if err != nil {
-			log.Println(err)
+			logErrorAndSendHTTPError(w, err, 400)
+			return
 		}
 		json.NewEncoder(w).Encode(roadFares)
 	default:
@@ -77,7 +80,8 @@ func pricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) 
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	airDocFares, err := repositories.GetAirPricingDocFaresByZoneNumber(zn)
 	if err != nil {
-		log.Println(err)
+		logErrorAndSendHTTPError(w, err, 400)
+		return
 	}
 	json.NewEncoder(w).Encode(airDocFares)
 }

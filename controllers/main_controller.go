@@ -1,8 +1,10 @@
 package controllers
 
 import (
-	"github.com/gorilla/mux"
+	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // StartupRouter creates instance of registers all the routes of the subroutes, supposed to be called in main func
@@ -20,4 +22,9 @@ func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 
 func setContentTypeToJSON(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
+}
+
+func logErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
+	log.Println(err)
+	http.Error(w, http.StatusText(httpStatusCode), httpStatusCode)
 }

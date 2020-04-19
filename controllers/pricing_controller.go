@@ -21,11 +21,12 @@ func registerPricingsRoutes(router *mux.Router) {
 	router.HandleFunc(pricingsEndpoint, allPricingsHandler).
 		Methods("GET").
 		Queries("type", "{type:[a-zA-Z]+}")
-	router.HandleFunc(faresEndpoint+"/{zn:[0-9]}", pricingFaresByZoneNumberHandler).
+	router.HandleFunc(faresEndpoint, pricingFaresByZoneNumberHandler).
 		Methods("GET").
-		Queries("type", "{type:[a-zA-Z]+}")
-	router.HandleFunc(docFaresEndpoint+"/{zn:[5-9]}", pricingDocFaresByZoneNumberHandler).
-		Methods("GET")
+		Queries("type", "{type:[a-zA-Z]+}", "zn", "{zn:[0-9]}")
+	router.HandleFunc(docFaresEndpoint, pricingDocFaresByZoneNumberHandler).
+		Methods("GET").
+		Queries("zn", "{zn:[5-9]}")
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {

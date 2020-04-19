@@ -18,6 +18,10 @@ Retrieves all countries with their zone numbers based on the type (road or air).
 * Queries:
    * "type" (mandatory): _road | air_
 * Example: _/countries?type=air_
+* Sample JSON response:
+```
+[{"Name":"Andorra","ZoneNumber":5},{"Name":"Ausztria","ZoneNumber":1}]
+```
 
 ### /pricings
 Retrieves all the pricings with their zone numbers, weight and basefare pairings.
@@ -26,6 +30,10 @@ Retrieves all the pricings with their zone numbers, weight and basefare pairings
 * Queries:
   * "type" (mandatory): _road | air_
 * Example: _/pricings?type=road_
+* Sample JSON response:
+```
+[{"ZoneNumber":0,"Fares":[{"Weight":0.5,"BaseFare":2950},{"Weight":1,"BaseFare":3005}]
+```
 
 ### /pricings/fares
 Retrieves the weight-basefare pairings based on the queries.
@@ -35,6 +43,10 @@ Retrieves the weight-basefare pairings based on the queries.
   * "type" (mandatory): _road | air_
   * "zn" (mandatory): _the zone number of the pricing (0-9)_
 * Example: _/pricings/fares?type=road&zn=1_
+* Sample JSON response:
+```
+[{"Weight":1,"BaseFare":18652},{"Weight":2,"BaseFare":22106}]
+```
 
 ### /pricings/docfares
 Retrieves the document fares based on the queries.
@@ -46,5 +58,9 @@ __NOTE that only air pricings have document fares, and only for the pricings wit
 * Queries:
   * "zn" (mandatory): _the zone number of the pricing (5-9)_
 * Example: _/pricings/docfares?zn=7_
+* Sample JSON response:
+```
+[{"Weight":0.5,"BaseFare":16329},{"Weight":1,"BaseFare":20786},{"Weight":1.5,"BaseFare":24735},{"Weight":2,"BaseFare":28684}]
+```
 
 

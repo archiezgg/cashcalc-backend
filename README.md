@@ -20,11 +20,11 @@ Retrieves all countries with their zone numbers based on the type (road or air).
 * Example: _/countries?type=air_
 * Sample JSON response:
 ```
-[{"Name":"Andorra","ZoneNumber":5},{"Name":"Ausztria","ZoneNumber":1}]
+[{"name":"Andorra","zoneNumber":5},{"name":"Ausztria","zoneNumber":1}]
 ```
 
 ### /pricings
-Retrieves all the pricings with their zone numbers, weight and basefare pairings.
+Retrieves all the pricings with their zone numbers, weight and baseFare pairings.
 * HTTP method: _GET_
 * HTTP response: _200 if successful, 400 if the request is badly formed_
 * Queries:
@@ -32,11 +32,11 @@ Retrieves all the pricings with their zone numbers, weight and basefare pairings
 * Example: _/pricings?type=road_
 * Sample JSON response:
 ```
-[{"ZoneNumber":0,"Fares":[{"Weight":0.5,"BaseFare":2950},{"Weight":1,"BaseFare":3005}]
+[{"zoneNumber":0,"fares":[{"weight":0.5,"baseFare":2950},{"weight":1,"baseFare":3005}]
 ```
 
 ### /pricings/fares
-Retrieves the weight-basefare pairings based on the queries.
+Retrieves the weight-base fare pairings based on the queries.
 * HTTP method: _GET_
 * HTTP response: _200 if successful, 400 if the request is badly formed_
 * Queries:
@@ -45,7 +45,7 @@ Retrieves the weight-basefare pairings based on the queries.
 * Example: _/pricings/fares?type=road&zn=1_
 * Sample JSON response:
 ```
-[{"Weight":1,"BaseFare":18652},{"Weight":2,"BaseFare":22106}]
+[{"weight":1,"baseFare":18652},{"weight":2,"baseFare":22106}]
 ```
 
 ### /pricings/docfares
@@ -60,7 +60,7 @@ __NOTE that only air pricings have document fares, and only for the pricings wit
 * Example: _/pricings/docfares?zn=7_
 * Sample JSON response:
 ```
-[{"Weight":0.5,"BaseFare":16329},{"Weight":1,"BaseFare":20786},{"Weight":1.5,"BaseFare":24735},{"Weight":2,"BaseFare":28684}]
+[{"weight":0.5,"baseFare":16329},{"weight":1,"baseFare":20786},{"weight":1.5,"baseFare":24735},{"weight":2,"baseFare":28684}]
 ```
 
 

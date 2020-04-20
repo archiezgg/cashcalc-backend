@@ -12,15 +12,57 @@ It is a collaboration between me and [@mark182182](https://github.com/mark182182
 This section serves as an API documentation for the frontend side to be able to query data succesfully.
 
 ### /countries
-Retrieves all countries with their zone numbers based on the type (road or air).
+Retrieves all both air and road countries.
 * HTTP method: _GET_
-* HTTP response: _200 if successful, 400 if the request is badly formed_
-* Queries:
-   * "type" (mandatory): _road | air_
-* Example: _/countries?type=air_
+* HTTP response: 
+	* _200 if successful_ 
+	* _500 if the server cannot process the data properly_
 * Sample JSON response:
 ```
-[{"name":"Andorra","zoneNumber":5},{"name":"Ausztria","zoneNumber":1}]
+{
+	"countriesAir": [{
+		"name": "Afganisztán",
+		"zoneNumber": 9
+	}],
+	"countriesRoad": [{
+		"name": "Andorra",
+		"zoneNumber": 5
+	}]
+}
+```
+
+### /countries/air
+Retrieves only air countries.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if successful_ 
+	* _500 if the server cannot process the data properly_
+* Sample JSON response:
+```
+[{
+	"name": "Afganisztán",
+	"zoneNumber": 9
+}, {
+	"name": "Albánia",
+	"zoneNumber": 5
+}]
+```
+
+### /countries/road
+Retrieves only road countries.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if successful_ 
+	* _500 if the server cannot process the data properly_
+* Sample JSON response:
+```
+[{
+	"name": "Andorra",
+	"zoneNumber": 5
+}, {
+	"name": "Ausztria",
+	"zoneNumber": 1
+}]
 ```
 
 ### /pricings
@@ -79,6 +121,7 @@ Retrieves only the road pricings.
 	}
 ]
 ```
+
 ### /pricings/air
 Retrieves only the air pricings.
 * HTTP method: _GET_

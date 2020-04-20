@@ -89,7 +89,7 @@ func GetAirPricingFaresByZoneNumberAndWeight(zn int, weight float64) (models.Far
 		}
 	}
 
-	return models.Fare{}, fmt.Errorf("can't find fare with zone number: %v and weight: %v", zn, weight)
+	return models.Fare{}, fmt.Errorf("can't find air fare with zone number: %v and weight: %v", zn, weight)
 }
 
 // GetAirPricingDocFaresByZoneNumber takes a zone number int as parameter
@@ -129,7 +129,7 @@ func GetAirPricingDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.
 		}
 	}
 
-	return models.Fare{}, fmt.Errorf("can't find docfare with zone number: %v and weight: %v", zn, weight)
+	return models.Fare{}, fmt.Errorf("can't find air docfare with zone number: %v and weight: %v", zn, weight)
 }
 
 // GetRoadPricingFaresByZoneNumber takes a zone number int as parameter
@@ -170,5 +170,5 @@ func GetRoadPricingFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fa
 		}
 	}
 
-	return models.Fare{}, fmt.Errorf("can't find fare with zone number: %v and weight: %v", zn, weight)
+	return models.Fare{}, fmt.Errorf("can't find road fare with zone number: %v and weight: %v", zn, weight)
 }

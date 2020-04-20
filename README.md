@@ -24,43 +24,155 @@ Retrieves all countries with their zone numbers based on the type (road or air).
 ```
 
 ### /pricings
-Retrieves all the pricings with their zone numbers, weight and baseFare pairings.
+Retrieves both air and road pricings with their zone numbers, weight and baseFare pairings.
 * HTTP method: _GET_
-* HTTP response: _200 if successful, 400 if the request is badly formed_
-* Queries:
-  * "type" (mandatory): _road | air_
-* Example: _/pricings?type=road_
+* HTTP response: 
+  * _200 if successful_
+  * _500 if the server cannot process the data properly_
 * Sample JSON response:
 ```
-[{"zoneNumber":0,"fares":[{"weight":0.5,"baseFare":2950},{"weight":1,"baseFare":3005}]
+{
+	"airPricings": [{
+		"zoneNumber": 0,
+		"fares": [{
+			"weight": 0.5,
+			"baseFare": 2950
+		}, {
+			"weight": 1,
+			"baseFare": 3005
+		}]
+	}],
+	"roadPricings": [{
+		"zoneNumber": 1,
+		"fares": [{
+			"weight": 1,
+			"baseFare": 18652
+		}, {
+			"weight": 2,
+			"baseFare": 22106
+		}]
+	}]
+}
 ```
 
-### /pricings/fares
-Retrieves the weight-base fare pairings based on the queries.
+### /pricings/road
+Retrieves only the road pricings.
 * HTTP method: _GET_
-* HTTP response: _200 if successful, 400 if the request is badly formed_
-* Queries:
-  * "type" (mandatory): _road | air_
-  * "zn" (mandatory): _the zone number of the pricing (0-9)_
-* Example: _/pricings/fares?type=road&zn=1_
+* HTTP response: 
+  * _200 if successful_
+  * _500 if the server cannot process the data properly_
 * Sample JSON response:
 ```
-[{"weight":1,"baseFare":18652},{"weight":2,"baseFare":22106}]
+[{
+		"zoneNumber": 1,
+		"fares": [{
+			"weight": 1,
+			"baseFare": 18652
+		}]
+	},
+	{
+		"zoneNumber": 5,
+		"fares": [{
+			"weight": 1,
+			"baseFare": 26456
+		}]
+	}
+]
+```
+### /pricings/air
+Retrieves only the air pricings.
+* HTTP method: _GET_
+* HTTP response: 
+  * _200 if successful_
+  * _500 if the server cannot process the data properly_
+* Sample JSON response:
+```
+[{
+		"zoneNumber": 1,
+		"fares": [{
+			"weight": 1,
+			"baseFare": 18652
+		}]
+	},
+	{
+		"zoneNumber": 5,
+		"fares": [{
+			"weight": 1,
+			"baseFare": 26456
+		}]
+	}
+]
 ```
 
-### /pricings/docfares
-Retrieves the document fares based on the queries.
-
-__NOTE that only air pricings have document fares, and only for the pricings with zone number of 5-9.__
-
+### /pricings/road/fares/{zoneNumber}
+Retrieves the road fares of the zone provided.
 * HTTP method: _GET_
-* HTTP response: _200 if successful, 400 if the request is badly formed_
+* HTTP response: 
+  * _200 if successful_
+  * _500 if the server cannot process the data properly_
+* Zone number: an integer between 1-5
 * Queries:
-  * "zn" (mandatory): _the zone number of the pricing (5-9)_
-* Example: _/pricings/docfares?zn=7_
+  * weight(optional): _retrieves only the fare of for the weight provided_
+* Example: _/pricings/road/fares/4_
+* Sample JSON response:
+```
+[{
+	"weight": 1,
+	"baseFare": 20674
+}, {
+	"weight": 2,
+	"baseFare": 25454
+}]
+```
+* Example _/pricings/road/fares/4?weight=1_
+* Sample JSON response:
+```
+{"weight":1,"baseFare":20674}
+```
+
+### /pricings/air/fares/{zoneNumber}
+Retrieves the air fares of the zone provided.
+* HTTP method: _GET_
+* HTTP response: 
+  * _200 if successful_
+  * _500 if the server cannot process the data properly_
+* Zone number: an integer between 0-9
+* Queries:
+  * weight(optional): _retrieves only the fare of for the weight provided_
+* Example: _/pricings/air/fares/4_
+* Sample JSON response:
+```
+[{
+	"weight": 0.5,
+	"baseFare": 16224
+}, {
+	"weight": 1,
+	"baseFare": 20534
+}]
+```
+* Example _/pricings/air/fares/4?weight=1_
+* Sample JSON response:
+```
+{"weight":1,"baseFare":20534}
+```
+
+### /pricings/air/docfares/{zoneNumber}
+Retrieves the air document fares of the zone provided.
+* HTTP method: _GET_
+* HTTP response: 
+  * _200 if successful_
+  * _500 if the server cannot process the data properly_
+* Zone number: an integer between 5-9
+* Queries:
+  * weight(optional): _retrieves only the fare of for the weight provided_
+* Example: _/pricings/air/docfares/5_
 * Sample JSON response:
 ```
 [{"weight":0.5,"baseFare":16329},{"weight":1,"baseFare":20786},{"weight":1.5,"baseFare":24735},{"weight":2,"baseFare":28684}]
 ```
-
+* Example _/pricings/air/docfares/5?weight=1.5_
+* Sample JSON response:
+```
+{"weight":1.5,"baseFare":24735}
+```
 

@@ -51,9 +51,9 @@ func GetRoadPricings() ([]models.Pricing, error) {
 	return p.RoadPricings, nil
 }
 
-// GetAirPricingFaresByZoneNumber takes a zone number int as parameter
+// GetAirFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing fares as slice of ints, or an error
-func GetAirPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
+func GetAirFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	if err := ValidateZoneNumber(zn); err != nil {
 		return []models.Fare{}, err
 	}
@@ -72,13 +72,13 @@ func GetAirPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	return []models.Fare{}, fmt.Errorf("can't find number %v in air pricing fares", zn)
 }
 
-// GetAirPricingFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
-func GetAirPricingFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
+// GetAirFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
+func GetAirFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
 	if err := ValidateZoneNumber(zn); err != nil {
 		return models.Fare{}, err
 	}
 
-	ap, err := GetAirPricingFaresByZoneNumber(zn)
+	ap, err := GetAirFaresByZoneNumber(zn)
 	if err != nil {
 		return models.Fare{}, err
 	}
@@ -92,9 +92,9 @@ func GetAirPricingFaresByZoneNumberAndWeight(zn int, weight float64) (models.Far
 	return models.Fare{}, fmt.Errorf("can't find air fare with zone number: %v and weight: %v", zn, weight)
 }
 
-// GetAirPricingDocFaresByZoneNumber takes a zone number int as parameter
+// GetAirDocFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing doc fares as slice of ints, or an error
-func GetAirPricingDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
+func GetAirDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	if zn < 5 || zn > 9 {
 		return []models.Fare{}, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
 	}
@@ -112,13 +112,13 @@ func GetAirPricingDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	return []models.Fare{}, fmt.Errorf("can't find number %v in air pricing doc fares", zn)
 }
 
-// GetAirPricingDocFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
-func GetAirPricingDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
+// GetAirDocFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
+func GetAirDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
 	if zn < 5 || zn > 9 {
 		return models.Fare{}, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
 	}
 
-	ap, err := GetAirPricingDocFaresByZoneNumber(zn)
+	ap, err := GetAirDocFaresByZoneNumber(zn)
 	if err != nil {
 		return models.Fare{}, err
 	}
@@ -132,9 +132,9 @@ func GetAirPricingDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.
 	return models.Fare{}, fmt.Errorf("can't find air docfare with zone number: %v and weight: %v", zn, weight)
 }
 
-// GetRoadPricingFaresByZoneNumber takes a zone number int as parameter
+// GetRoadFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding road pricing fares as slice of ints, or an error
-func GetRoadPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
+func GetRoadFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	if err := ValidateZoneNumber(zn); err != nil {
 		return []models.Fare{}, err
 	}
@@ -153,13 +153,13 @@ func GetRoadPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	return []models.Fare{}, fmt.Errorf("can't find number %v in road pricing fares", zn)
 }
 
-// GetRoadPricingFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
-func GetRoadPricingFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
+// GetRoadFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
+func GetRoadFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
 	if err := ValidateZoneNumber(zn); err != nil {
 		return models.Fare{}, err
 	}
 
-	rp, err := GetRoadPricingFaresByZoneNumber(zn)
+	rp, err := GetRoadFaresByZoneNumber(zn)
 	if err != nil {
 		return models.Fare{}, err
 	}

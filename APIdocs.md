@@ -2,7 +2,7 @@
 This section serves as an API documentation for the frontend side to be able to query data succesfully.
 
 ### /countries
-Retrieves all both air and road countries.
+Retrieves both air and road countries.
 * HTTP method: _GET_
 * HTTP response: 
 	* _200 if successful_ 

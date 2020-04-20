@@ -6,82 +6,135 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/IstvanN/cashcalc-backend/repositories"
+	"github.com/IstvanN/cashcalc-backend/services"
 	"github.com/gorilla/mux"
 )
 
-var (
-	pricingsEndpoint = os.Getenv("PRICINGS_ENDPOINT")
-	faresEndpoint    = os.Getenv("FARES_ENDPOINT")
-	docFaresEndpoint = os.Getenv("DOCFARES_ENDPOINT")
-)
+var pricingsEndpoint = os.Getenv("PRICINGS_ENDPOINT")
 
 func registerPricingsRoutes(router *mux.Router) {
-	router.HandleFunc(pricingsEndpoint, allPricingsHandler).
-		Methods("GET").
-		Queries("type", "{type:[a-zA-Z]+}")
-	router.HandleFunc(faresEndpoint, pricingFaresByZoneNumberHandler).
-		Methods("GET").
-		Queries("type", "{type:[a-zA-Z]+}", "zn", "{zn:[0-9]}")
-	router.HandleFunc(docFaresEndpoint, pricingDocFaresByZoneNumberHandler).
-		Methods("GET").
-		Queries("zn", "{zn:[5-9]}")
+	router.HandleFunc(pricingsEndpoint, allPricingsHandler).Methods(http.MethodGet)
+	router.HandleFunc(pricingsEndpoint+"/road", roadPricingsHandler).Methods(http.MethodGet)
+	router.HandleFunc(pricingsEndpoint+"/air", airPricingsHandler).Methods(http.MethodGet)
+	router.HandleFunc(pricingsEndpoint+"/road/fares/{zn:[1-5]}", roadPricingFaresByZoneNumberHandler).Methods(http.MethodGet)
+	router.HandleFunc(pricingsEndpoint+"/air/fares/{zn:[0-9]}", airPricingFaresByZoneNumberHandler).Methods(http.MethodGet)
+	router.HandleFunc(pricingsEndpoint+"/air/docfares/{zn:[5-9]}", airPricingDocFaresByZoneNumberHandler).Methods(http.MethodGet)
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
-	switch t := mux.Vars(r)["type"]; t {
-	case "air":
-		airPricings, err := repositories.GetAirPricingsFromDB()
-		if err != nil {
-			logErrorAndSendHTTPError(w, err, 500)
-			return
-		}
-		json.NewEncoder(w).Encode(airPricings)
-	case "road":
-		roadPricings, err := repositories.GetRoadPricingsFromDB()
-		if err != nil {
-			logErrorAndSendHTTPError(w, err, 500)
-			return
-		}
-		json.NewEncoder(w).Encode(roadPricings)
-	default:
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-	}
-}
-
-func pricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
-	setContentTypeToJSON(w)
-
-	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
-	switch t := mux.Vars(r)["type"]; t {
-	case "air":
-		airFares, err := repositories.GetAirPricingFaresByZoneNumber(zn)
-		if err != nil {
-			logErrorAndSendHTTPError(w, err, 400)
-			return
-		}
-		json.NewEncoder(w).Encode(airFares)
-	case "road":
-		roadFares, err := repositories.GetRoadPricingFaresByZoneNumber(zn)
-		if err != nil {
-			logErrorAndSendHTTPError(w, err, 400)
-			return
-		}
-		json.NewEncoder(w).Encode(roadFares)
-	default:
-		http.Error(w, http.StatusText(400), http.StatusBadRequest)
-	}
-}
-
-func pricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
-	setContentTypeToJSON(w)
-
-	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
-	airDocFares, err := repositories.GetAirPricingDocFaresByZoneNumber(zn)
+	p, err := services.GetPricings()
 	if err != nil {
-		logErrorAndSendHTTPError(w, err, 400)
+		logErrorAndSendHTTPError(w, err, 500)
 		return
 	}
-	json.NewEncoder(w).Encode(airDocFares)
+	json.NewEncoder(w).Encode(p)
+}
+
+func roadPricingsHandler(w http.ResponseWriter, r *http.Request) {
+	setContentTypeToJSON(w)
+	rp, err := services.GetRoadPricings()
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, 500)
+		return
+	}
+	json.NewEncoder(w).Encode(rp)
+}
+
+func airPricingsHandler(w http.ResponseWriter, r *http.Request) {
+	setContentTypeToJSON(w)
+	ap, err := services.GetAirPricings()
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, 500)
+		return
+	}
+	json.NewEncoder(w).Encode(ap)
+}
+
+func roadPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
+	setContentTypeToJSON(w)
+	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
+	weightAsString, queryIsPresent := r.URL.Query()["weight"]
+
+	if queryIsPresent {
+		weight, err := strconv.ParseFloat(weightAsString[0], 64)
+		if err != nil {
+			logErrorAndSendHTTPError(w, err, 500)
+			return
+		}
+
+		rp, err := services.GetRoadPricingFaresByZoneNumberAndWeight(zn, weight)
+		if err != nil {
+			logErrorAndSendHTTPError(w, err, 500)
+			return
+		}
+		json.NewEncoder(w).Encode(rp)
+		return
+	}
+
+	rp, err := services.GetRoadPricingFaresByZoneNumber(zn)
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, 500)
+		return
+	}
+	json.NewEncoder(w).Encode(rp)
+}
+
+func airPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
+	setContentTypeToJSON(w)
+	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
+	weightAsString, queryIsPresent := r.URL.Query()["weight"]
+
+	if queryIsPresent {
+		weight, err := strconv.ParseFloat(weightAsString[0], 64)
+		if err != nil {
+			logErrorAndSendHTTPError(w, err, 500)
+			return
+		}
+
+		ap, err := services.GetAirPricingFaresByZoneNumberAndWeight(zn, weight)
+		if err != nil {
+			logErrorAndSendHTTPError(w, err, 500)
+			return
+		}
+		json.NewEncoder(w).Encode(ap)
+		return
+	}
+
+	ap, err := services.GetAirPricingFaresByZoneNumber(zn)
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, 500)
+		return
+	}
+	json.NewEncoder(w).Encode(ap)
+}
+
+func airPricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
+	setContentTypeToJSON(w)
+	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
+	weightAsString, queryIsPresent := r.URL.Query()["weight"]
+
+	if queryIsPresent {
+		weight, err := strconv.ParseFloat(weightAsString[0], 64)
+		if err != nil {
+			logErrorAndSendHTTPError(w, err, 500)
+			return
+		}
+
+		ap, err := services.GetAirPricingDocFaresByZoneNumberAndWeight(zn, weight)
+		if err != nil {
+			logErrorAndSendHTTPError(w, err, 500)
+			return
+		}
+		json.NewEncoder(w).Encode(ap)
+		return
+	}
+
+	ap, err := services.GetAirPricingDocFaresByZoneNumber(zn)
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, 500)
+		return
+	}
+	json.NewEncoder(w).Encode(ap)
+
 }

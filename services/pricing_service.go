@@ -23,8 +23,18 @@ func ValidateZoneNumber(zn int) error {
 	return nil
 }
 
-// GetAirPricingsFromDB returns with a slice of all elements of the air pricings collection, or an error
-func GetAirPricingsFromDB() ([]models.Pricing, error) {
+// GetPricings returns Pricings struct of both air and road pricings
+func GetPricings() (models.Pricings, error) {
+	p, err := repositories.GetPricingsFromDB()
+	if err != nil {
+		return models.Pricings{}, err
+	}
+
+	return p, nil
+}
+
+// GetAirPricings returns with a slice of all elements of the air pricings collection, or an error
+func GetAirPricings() ([]models.Pricing, error) {
 	p, err := repositories.GetPricingsFromDB()
 	if err != nil {
 		return nil, err
@@ -32,8 +42,8 @@ func GetAirPricingsFromDB() ([]models.Pricing, error) {
 	return p.AirPricings, nil
 }
 
-// GetRoadPricingsFromDB returns with a slice of all elements of the road pricings collection or an error
-func GetRoadPricingsFromDB() ([]models.Pricing, error) {
+// GetRoadPricings returns with a slice of all elements of the road pricings collection or an error
+func GetRoadPricings() ([]models.Pricing, error) {
 	p, err := repositories.GetPricingsFromDB()
 	if err != nil {
 		return nil, err
@@ -48,7 +58,7 @@ func GetAirPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
 		return []models.Fare{}, err
 	}
 
-	ap, err := GetAirPricingsFromDB()
+	ap, err := GetAirPricings()
 	if err != nil {
 		return []models.Fare{}, err
 	}
@@ -69,7 +79,7 @@ func GetAirPricingDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
 		return []models.Fare{}, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
 	}
 
-	ap, err := GetAirPricingsFromDB()
+	ap, err := GetAirPricings()
 	if err != nil {
 		return []models.Fare{}, err
 	}
@@ -89,7 +99,7 @@ func GetRoadPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
 		return []models.Fare{}, err
 	}
 
-	rp, err := GetRoadPricingsFromDB()
+	rp, err := GetRoadPricings()
 	if err != nil {
 		return []models.Fare{}, err
 	}
@@ -101,4 +111,24 @@ func GetRoadPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	}
 
 	return []models.Fare{}, fmt.Errorf("can't find number %v in road pricing fares", zn)
+}
+
+// GetRoadPricingFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
+func GetRoadPricingFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
+	if err := ValidateZoneNumber(zn); err != nil {
+		return models.Fare{}, err
+	}
+
+	rp, err := GetRoadPricingFaresByZoneNumber(zn)
+	if err != nil {
+		return models.Fare{}, err
+	}
+
+	for _, p := range rp {
+		if p.Weight == weight {
+			return p, nil
+		}
+	}
+
+	return models.Fare{}, fmt.Errorf("can't find fare with zone number: %v and weight: %v", zn, weight)
 }

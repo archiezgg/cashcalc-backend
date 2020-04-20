@@ -13,7 +13,7 @@ var (
 	pricingVarsCollName    = os.Getenv("PRICING_VARS_COLL")
 )
 
-// GetPricingsFromDB returns with Pricings struct containing both air and road pricings
+// GetPricingsFromDB queries the db for both road and air pricings
 func GetPricingsFromDB() (models.Pricings, error) {
 	coll := database.GetCollectionByName(pricingsCollectionName)
 
@@ -26,8 +26,8 @@ func GetPricingsFromDB() (models.Pricings, error) {
 	return p, nil
 }
 
-// GetPricingVariablesFromDB retreives the pricing variables
-// that can be set by the admin
+// GetPricingVariablesFromDB queries the db for
+// the pricing variables that can be set by the admin
 func GetPricingVariablesFromDB() (models.PricingVariables, error) {
 	coll := database.GetCollectionByName(pricingVarsCollName)
 

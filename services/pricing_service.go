@@ -72,6 +72,26 @@ func GetAirPricingFaresByZoneNumber(zn int) ([]models.Fare, error) {
 	return []models.Fare{}, fmt.Errorf("can't find number %v in air pricing fares", zn)
 }
 
+// GetAirPricingFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
+func GetAirPricingFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
+	if err := ValidateZoneNumber(zn); err != nil {
+		return models.Fare{}, err
+	}
+
+	ap, err := GetAirPricingFaresByZoneNumber(zn)
+	if err != nil {
+		return models.Fare{}, err
+	}
+
+	for _, p := range ap {
+		if p.Weight == weight {
+			return p, nil
+		}
+	}
+
+	return models.Fare{}, fmt.Errorf("can't find fare with zone number: %v and weight: %v", zn, weight)
+}
+
 // GetAirPricingDocFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing doc fares as slice of ints, or an error
 func GetAirPricingDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
@@ -90,6 +110,26 @@ func GetAirPricingDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
 		}
 	}
 	return []models.Fare{}, fmt.Errorf("can't find number %v in air pricing doc fares", zn)
+}
+
+// GetAirPricingDocFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
+func GetAirPricingDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
+	if zn < 5 || zn > 9 {
+		return models.Fare{}, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
+	}
+
+	ap, err := GetAirPricingDocFaresByZoneNumber(zn)
+	if err != nil {
+		return models.Fare{}, err
+	}
+
+	for _, p := range ap {
+		if p.Weight == weight {
+			return p, nil
+		}
+	}
+
+	return models.Fare{}, fmt.Errorf("can't find docfare with zone number: %v and weight: %v", zn, weight)
 }
 
 // GetRoadPricingFaresByZoneNumber takes a zone number int as parameter

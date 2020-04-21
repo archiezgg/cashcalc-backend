@@ -139,3 +139,26 @@ func TestValidateAirDocFaresWeight(t *testing.T) {
 		}
 	}
 }
+
+func TestValidateRoadFaresWeight(t *testing.T) {
+	e := errors.New("")
+	testCases := []struct {
+		x   float64
+		err error
+	}{
+		{1, nil},
+		{100, nil},
+		{55, nil},
+		{32, nil},
+		{0, e},
+		{101, e},
+		{-1, e},
+	}
+
+	for _, tc := range testCases {
+		err := ValidateRoadFaresWeight(tc.x)
+		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
+			t.Errorf("ValidateRoadFaresWeight(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
+		}
+	}
+}

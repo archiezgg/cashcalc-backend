@@ -42,7 +42,7 @@ func TestValidateAirFaresZoneNumber(t *testing.T) {
 	for _, tc := range testCases {
 		err := ValidateAirFaresZoneNumber(tc.x)
 		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
-			t.Errorf("ValidateZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
+			t.Errorf("ValidateAirFaresZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
 		}
 	}
 }
@@ -113,6 +113,29 @@ func TestValidateAirFaresWeight(t *testing.T) {
 		err := ValidateAirFaresWeight(tc.x)
 		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
 			t.Errorf("ValidateAirFaresWeight(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
+		}
+	}
+}
+
+func TestValidateAirDocFaresWeight(t *testing.T) {
+	e := errors.New("")
+	testCases := []struct {
+		x   float64
+		err error
+	}{
+		{0.5, nil},
+		{2, nil},
+		{1, nil},
+		{1.5, nil},
+		{0, e},
+		{2.5, e},
+		{-1, e},
+	}
+
+	for _, tc := range testCases {
+		err := ValidateAirDocFaresWeight(tc.x)
+		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
+			t.Errorf("ValidateAirDocFaresWeight(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
 		}
 	}
 }

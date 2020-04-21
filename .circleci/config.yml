@@ -27,7 +27,7 @@ jobs:
       - image: cimg/go:1.14
     working_directory: ~/go/src/github.com/IstvanN/cashcalc-backend
     environment:
-      PROPERTIES_FILE: ~/go/src/github.com/IstvanN/cashcalc-backend/app.properties
+      PROPERTIES_FILE: /home/circleci/go/src/github.com/IstvanN/cashcalc-backend/app.properties
     steps:
       - checkout
       - run: 
@@ -35,7 +35,7 @@ jobs:
           command: go get -v -t -d ./...
       - run:
           name: check if app prop is there
-          command: ls -l ~/go/src/github.com/IstvanN/cashcalc-backend/app.properties
+          command: ls -l /home/circleci/go/src/github.com/IstvanN/cashcalc-backend/app.properties
       - run: 
           name: Run unit tests and create report
           # command: go test -json ./... > test-report.json

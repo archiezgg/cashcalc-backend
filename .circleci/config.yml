@@ -32,7 +32,7 @@ jobs:
       - checkout
       - run :
           name: eko prop file env
-          command: echo $PROPERTIES_FILE
+          command: ls $PWD
       - run: 
           name: Download dependencies
           command: go get -v -t -d ./...

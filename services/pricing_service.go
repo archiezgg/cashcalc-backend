@@ -44,3 +44,13 @@ func ValidateRoadFaresZoneNumber(zn int) error {
 	}
 	return nil
 }
+
+// ValidateAirFaresWeight validates the weight for air zone fares
+func ValidateAirFaresWeight(weight float64) error {
+	airFaresWeightMin := properties.Prop.GetFloat64(properties.AirFaresWeightMin, 0.5)
+	airFaresWeightMax := properties.Prop.GetFloat64(properties.AirFaresWeightMax, 200)
+	if weight < airFaresWeightMin || weight > airFaresWeightMax {
+		return fmt.Errorf("the weight %v is invalid for air fares", weight)
+	}
+	return nil
+}

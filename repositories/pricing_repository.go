@@ -82,7 +82,9 @@ func GetAirFaresByZoneNumber(zn int) ([]models.Fare, error) {
 
 // GetAirFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
 func GetAirFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
-	if err := services.ValidateAirFaresZoneNumber(zn); err != nil {
+	err := services.ValidateAirFaresZoneNumber(zn)
+	err2 := services.ValidateAirFaresWeight(weight)
+	if err != nil || err2 != nil {
 		return models.Fare{}, err
 	}
 

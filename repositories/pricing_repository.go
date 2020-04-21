@@ -11,7 +11,7 @@ import (
 
 var (
 	pricingsCollectionName = properties.Prop.GetString(properties.PricingsCollection, "pricings")
-	pricingVarsCollName    = properties.Prop.GetString(properties.PricingVarsCollection, "pricingvars")
+	pricingVarsCollName    = properties.Prop.GetString(properties.PricingVarsCollection, "pricingVariables")
 )
 
 // GetPricings queries the db for both road and air pricings

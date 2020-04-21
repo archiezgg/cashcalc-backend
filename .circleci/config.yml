@@ -26,6 +26,8 @@ jobs:
     docker:
       - image: cimg/go:1.14
     working_directory: ~/go/src/github.com/IstvanN/cashcalc-backend
+    environment:
+      PROPERTIES_FILE: /home/circleci/go/src/github.com/IstvanN/cashcalc-backend/app.properties
     steps:
       - checkout
       - run: 

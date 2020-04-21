@@ -11,7 +11,7 @@ import (
 
 var (
 	pricingsCollectionName = properties.Prop.GetString(properties.PricingsCollection, "pricings")
-	pricingVarsCollName    = properties.Prop.GetString(properties.PricingVarsCollection, "pricingvars")
+	pricingVarsCollName    = properties.Prop.GetString(properties.PricingVarsCollection, "pricingVariables")
 )
 
 // GetPricings queries the db for both road and air pricings
@@ -62,7 +62,7 @@ func GetRoadPricings() ([]models.Pricing, error) {
 // GetAirFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing fares as slice of ints, or an error
 func GetAirFaresByZoneNumber(zn int) ([]models.Fare, error) {
-	if err := services.ValidateZoneNumber(zn); err != nil {
+	if err := services.ValidateAirFaresZoneNumber(zn); err != nil {
 		return []models.Fare{}, err
 	}
 
@@ -82,7 +82,9 @@ func GetAirFaresByZoneNumber(zn int) ([]models.Fare, error) {
 
 // GetAirFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
 func GetAirFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
-	if err := services.ValidateZoneNumber(zn); err != nil {
+	err := services.ValidateAirFaresZoneNumber(zn)
+	err2 := services.ValidateAirFaresWeight(weight)
+	if err != nil || err2 != nil {
 		return models.Fare{}, err
 	}
 
@@ -103,8 +105,8 @@ func GetAirFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, erro
 // GetAirDocFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing doc fares as slice of ints, or an error
 func GetAirDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
-	if zn < 5 || zn > 9 {
-		return []models.Fare{}, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
+	if err := services.ValidateAirDocFaresZoneNumber(zn); err != nil {
+		return []models.Fare{}, err
 	}
 
 	ap, err := GetAirPricings()
@@ -122,8 +124,10 @@ func GetAirDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
 
 // GetAirDocFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
 func GetAirDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
-	if zn < 5 || zn > 9 {
-		return models.Fare{}, fmt.Errorf("the zone number %v is invalid, it doesn't contain doc fares", zn)
+	err := services.ValidateAirDocFaresZoneNumber(zn)
+	err2 := services.ValidateAirDocFaresWeight(weight)
+	if err != nil || err2 != nil {
+		return models.Fare{}, err
 	}
 
 	ap, err := GetAirDocFaresByZoneNumber(zn)
@@ -143,7 +147,7 @@ func GetAirDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, e
 // GetRoadFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding road pricing fares as slice of ints, or an error
 func GetRoadFaresByZoneNumber(zn int) ([]models.Fare, error) {
-	if err := services.ValidateZoneNumber(zn); err != nil {
+	if err := services.ValidateRoadFaresZoneNumber(zn); err != nil {
 		return []models.Fare{}, err
 	}
 
@@ -163,7 +167,7 @@ func GetRoadFaresByZoneNumber(zn int) ([]models.Fare, error) {
 
 // GetRoadFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
 func GetRoadFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
-	if err := services.ValidateZoneNumber(zn); err != nil {
+	if err := services.ValidateRoadFaresZoneNumber(zn); err != nil {
 		return models.Fare{}, err
 	}
 

@@ -2,14 +2,14 @@ package repositories
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/models"
+	"github.com/IstvanN/cashcalc-backend/properties"
 )
 
 var (
-	countriesCollectionName = os.Getenv("COUNTRIES_COLL")
+	countriesCollectionName = properties.Prop.GetString(properties.CountriesCollection, "countries")
 )
 
 // GetCountriesFromDB queries all countries from db

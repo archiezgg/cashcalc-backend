@@ -3,13 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 
+	"github.com/IstvanN/cashcalc-backend/properties"
 	"github.com/IstvanN/cashcalc-backend/services"
 	"github.com/gorilla/mux"
 )
 
-var countriesEndpoint = os.Getenv("COUNTRIES_ENDPOINT")
+var countriesEndpoint = properties.Prop.GetString(properties.CountriesEndpoint, "/countries")
 
 func registerCountriesRoutes(router *mux.Router) {
 	router.HandleFunc(countriesEndpoint, allCountriesHandler).Methods(http.MethodGet)

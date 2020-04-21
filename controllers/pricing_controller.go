@@ -3,14 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 	"strconv"
 
+	"github.com/IstvanN/cashcalc-backend/properties"
 	"github.com/IstvanN/cashcalc-backend/services"
 	"github.com/gorilla/mux"
 )
 
-var pricingsEndpoint = os.Getenv("PRICINGS_ENDPOINT")
+var pricingsEndpoint = properties.Prop.GetString(properties.PricingsEndpoint, "/pricings")
 
 func registerPricingsRoutes(router *mux.Router) {
 	router.HandleFunc(pricingsEndpoint, allPricingsHandler).Methods(http.MethodGet)

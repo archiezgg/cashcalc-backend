@@ -2,15 +2,15 @@ package repositories
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/models"
+	"github.com/IstvanN/cashcalc-backend/properties"
 )
 
 var (
-	pricingsCollectionName = os.Getenv("PRICINGS_COLL")
-	pricingVarsCollName    = os.Getenv("PRICING_VARS_COLL")
+	pricingsCollectionName = properties.Prop.GetString(properties.PricingsCollection, "pricings")
+	pricingVarsCollName    = properties.Prop.GetString(properties.PricingVarsCollection, "pricingvars")
 )
 
 // GetPricingsFromDB queries the db for both road and air pricings

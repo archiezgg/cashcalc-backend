@@ -2,18 +2,18 @@ package repositories
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/models"
+	"github.com/IstvanN/cashcalc-backend/properties"
 )
 
 var (
-	countriesCollectionName = os.Getenv("COUNTRIES_COLL")
+	countriesCollectionName = properties.Prop.GetString(properties.CountriesCollection, "countries")
 )
 
-// GetCountriesFromDB queries all countries from db
-func GetCountriesFromDB() (models.Countries, error) {
+// GetCountries queries all countries from db
+func GetCountries() (models.Countries, error) {
 	coll := database.GetCollectionByName(countriesCollectionName)
 
 	var c models.Countries
@@ -23,4 +23,24 @@ func GetCountriesFromDB() (models.Countries, error) {
 	}
 
 	return c, nil
+}
+
+// GetAirCountries returns with a slice of all air elements of the Countries collection, or an error
+func GetAirCountries() ([]models.Country, error) {
+	c, err := GetCountries()
+	if err != nil {
+		return nil, err
+	}
+
+	return c.CountriesAir, nil
+}
+
+// GetRoadCountries returns with an array of all road elements of the Countries collection, or an error
+func GetRoadCountries() ([]models.Country, error) {
+	c, err := GetCountries()
+	if err != nil {
+		return nil, err
+	}
+
+	return c.CountriesRoad, nil
 }

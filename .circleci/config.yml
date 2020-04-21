@@ -27,12 +27,9 @@ jobs:
       - image: cimg/go:1.14
     working_directory: ~/go/src/github.com/IstvanN/cashcalc-backend
     environment:
-      PROPERTIES_FILE: ~/go/src/github.com/IstvanN/cashcalc-backend/app.properties
+      PROPERTIES_FILE: app.properties
     steps:
       - checkout
-      - run :
-          name: eko prop file env
-          command: ls $PWD
       - run: 
           name: Download dependencies
           command: go get -v -t -d ./...

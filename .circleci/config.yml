@@ -26,8 +26,6 @@ jobs:
     docker:
       - image: cimg/go:1.14
     working_directory: ~/go/src/github.com/IstvanN/cashcalc-backend
-    environment:
-      PROPERTIES_FILE: ~/go/src/github.com/IstvanN/cashcalc-backend/app.properties
     steps:
       - checkout
       - run: 
@@ -36,6 +34,8 @@ jobs:
       - run: 
           name: Run unit tests and create report
           command: go test -json ./... > test-report.json
+          environment:
+            PROPERTIES_FILE: ~/go/src/github.com/IstvanN/cashcalc-backend/app.properties
       - run:
           name: Create test coverage report
           command: go test -coverprofile=coverage-report.out ./...

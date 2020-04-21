@@ -19,7 +19,8 @@ func GetCountries() (models.Countries, error) {
 	var c models.Countries
 	err := coll.Find(nil).One(&c)
 	if err != nil {
-		return models.Countries{}, fmt.Errorf("error while retrieving collection %v from database: %v", countriesCollectionName, err)
+		return models.Countries{}, fmt.Errorf("error while retrieving collection %v from database: %v",
+			countriesCollectionName, err)
 	}
 
 	return c, nil

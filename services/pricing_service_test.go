@@ -21,7 +21,7 @@ func TestValidateZoneNumber(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		err := ValidateZoneNumber(tc.x)
+		err := ValidateAirZoneNumber(tc.x)
 		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
 			t.Errorf("ValidateZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
 		}

@@ -25,6 +25,7 @@ const (
 	CountriesEndpoint = "endpoint.countries"
 )
 
+// This function gets executed automatically on initiation
 func init() {
 	Prop = properties.MustLoadFile(propertiesFile, properties.UTF8)
 }

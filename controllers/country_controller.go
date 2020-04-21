@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/IstvanN/cashcalc-backend/properties"
-	"github.com/IstvanN/cashcalc-backend/services"
+	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/gorilla/mux"
 )
 
@@ -19,7 +19,7 @@ func registerCountriesRoutes(router *mux.Router) {
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
-	c, err := services.GetCountries()
+	c, err := repositories.GetCountries()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return
@@ -29,7 +29,7 @@ func allCountriesHandler(w http.ResponseWriter, r *http.Request) {
 
 func airCountriesHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
-	ac, err := services.GetAirCountries()
+	ac, err := repositories.GetAirCountries()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return
@@ -39,7 +39,7 @@ func airCountriesHandler(w http.ResponseWriter, r *http.Request) {
 
 func roadCountriesHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
-	rc, err := services.GetRoadCountries()
+	rc, err := repositories.GetRoadCountries()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return

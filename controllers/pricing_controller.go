@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/IstvanN/cashcalc-backend/properties"
-	"github.com/IstvanN/cashcalc-backend/services"
+	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/gorilla/mux"
 )
 
@@ -23,7 +23,7 @@ func registerPricingsRoutes(router *mux.Router) {
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
-	p, err := services.GetPricings()
+	p, err := repositories.GetPricings()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return
@@ -33,7 +33,7 @@ func allPricingsHandler(w http.ResponseWriter, r *http.Request) {
 
 func roadPricingsHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
-	rp, err := services.GetRoadPricings()
+	rp, err := repositories.GetRoadPricings()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return
@@ -43,7 +43,7 @@ func roadPricingsHandler(w http.ResponseWriter, r *http.Request) {
 
 func airPricingsHandler(w http.ResponseWriter, r *http.Request) {
 	setContentTypeToJSON(w)
-	ap, err := services.GetAirPricings()
+	ap, err := repositories.GetAirPricings()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return
@@ -63,7 +63,7 @@ func roadPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request)
 			return
 		}
 
-		rp, err := services.GetRoadFaresByZoneNumberAndWeight(zn, weight)
+		rp, err := repositories.GetRoadFaresByZoneNumberAndWeight(zn, weight)
 		if err != nil {
 			logErrorAndSendHTTPError(w, err, 500)
 			return
@@ -72,7 +72,7 @@ func roadPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	rp, err := services.GetRoadFaresByZoneNumber(zn)
+	rp, err := repositories.GetRoadFaresByZoneNumber(zn)
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return
@@ -92,7 +92,7 @@ func airPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		ap, err := services.GetAirFaresByZoneNumberAndWeight(zn, weight)
+		ap, err := repositories.GetAirFaresByZoneNumberAndWeight(zn, weight)
 		if err != nil {
 			logErrorAndSendHTTPError(w, err, 500)
 			return
@@ -101,7 +101,7 @@ func airPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	ap, err := services.GetAirFaresByZoneNumber(zn)
+	ap, err := repositories.GetAirFaresByZoneNumber(zn)
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return
@@ -121,7 +121,7 @@ func airPricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Reques
 			return
 		}
 
-		ap, err := services.GetAirDocFaresByZoneNumberAndWeight(zn, weight)
+		ap, err := repositories.GetAirDocFaresByZoneNumberAndWeight(zn, weight)
 		if err != nil {
 			logErrorAndSendHTTPError(w, err, 500)
 			return
@@ -130,7 +130,7 @@ func airPricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	ap, err := services.GetAirDocFaresByZoneNumber(zn)
+	ap, err := repositories.GetAirDocFaresByZoneNumber(zn)
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
 		return

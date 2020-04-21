@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestValidateZoneNumber(t *testing.T) {
+func TestValidateAirZoneNumber(t *testing.T) {
 	e := errors.New("")
 	testCases := []struct {
 		x   int

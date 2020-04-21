@@ -16,9 +16,12 @@ func registerPricingsRoutes(router *mux.Router) {
 	router.HandleFunc(pricingsEndpoint, allPricingsHandler).Methods(http.MethodGet)
 	router.HandleFunc(pricingsEndpoint+"/road", roadPricingsHandler).Methods(http.MethodGet)
 	router.HandleFunc(pricingsEndpoint+"/air", airPricingsHandler).Methods(http.MethodGet)
-	router.HandleFunc(pricingsEndpoint+"/road/fares/{zn:[1-5]}", roadPricingFaresByZoneNumberHandler).Methods(http.MethodGet)
-	router.HandleFunc(pricingsEndpoint+"/air/fares/{zn:[0-9]}", airPricingFaresByZoneNumberHandler).Methods(http.MethodGet)
-	router.HandleFunc(pricingsEndpoint+"/air/docfares/{zn:[5-9]}", airPricingDocFaresByZoneNumberHandler).Methods(http.MethodGet)
+	router.HandleFunc(pricingsEndpoint+"/road/fares/{zn:[1-5]}", roadPricingFaresByZoneNumberHandler).
+		Methods(http.MethodGet)
+	router.HandleFunc(pricingsEndpoint+"/air/fares/{zn:[0-9]}", airPricingFaresByZoneNumberHandler).
+		Methods(http.MethodGet)
+	router.HandleFunc(pricingsEndpoint+"/air/docfares/{zn:[5-9]}", airPricingDocFaresByZoneNumberHandler).
+		Methods(http.MethodGet)
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {

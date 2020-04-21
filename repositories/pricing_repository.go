@@ -167,9 +167,7 @@ func GetRoadFaresByZoneNumber(zn int) ([]models.Fare, error) {
 
 // GetRoadFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
 func GetRoadFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
-	err := services.ValidateRoadFaresZoneNumber(zn)
-	err2 := services.ValidateRoadFaresWeight(weight)
-	if err != nil || err2 != nil {
+	if err := services.ValidateRoadFaresZoneNumber(zn); err != nil {
 		return models.Fare{}, err
 	}
 

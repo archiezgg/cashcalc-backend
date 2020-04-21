@@ -33,3 +33,14 @@ func ValidateAirDocFaresZoneNumber(zn int) error {
 	}
 	return nil
 }
+
+// ValidateRoadFaresZoneNumber validates the zone number for
+// road fares
+func ValidateRoadFaresZoneNumber(zn int) error {
+	roadFaresZnMin := properties.Prop.GetInt(properties.RoadFaresZnMin, 1)
+	roadFaresZnMax := properties.Prop.GetInt(properties.RoadFaresZnMax, 5)
+	if zn < roadFaresZnMin || zn > roadFaresZnMax {
+		return fmt.Errorf("the zone number %v is invalid for road zones in fares", zn)
+	}
+	return nil
+}

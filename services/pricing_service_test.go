@@ -70,3 +70,26 @@ func TestValidateAirDocFaresZoneNumber(t *testing.T) {
 		}
 	}
 }
+
+func TestValidateRoadFaresZoneNumber(t *testing.T) {
+	e := errors.New("")
+	testCases := []struct {
+		x   int
+		err error
+	}{
+		{1, nil},
+		{5, nil},
+		{3, nil},
+		{0, e},
+		{6, e},
+		{-1, e},
+		{11, e},
+	}
+
+	for _, tc := range testCases {
+		err := ValidateRoadFaresZoneNumber(tc.x)
+		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
+			t.Errorf("ValidateRoadFaresZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
+		}
+	}
+}

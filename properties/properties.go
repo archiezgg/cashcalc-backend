@@ -1,11 +1,15 @@
 package properties
 
-import "github.com/magiconair/properties"
+import (
+	"os"
+
+	"github.com/magiconair/properties"
+)
 
 var (
 	// Prop is the proprties that gets loaded when the app inits
 	Prop           *properties.Properties
-	propertiesFile = "./app.properties"
+	propertiesFile = os.Getenv("GOPATH") + "/src/github.com/IstvanN/cashcalc-backend/app.properties"
 )
 
 const (
@@ -21,7 +25,6 @@ const (
 	CountriesEndpoint = "endpoint.countries"
 )
 
-// GetConfig returns the configuration provided
 func init() {
 	Prop = properties.MustLoadFile(propertiesFile, properties.UTF8)
 }

@@ -33,7 +33,7 @@ jobs:
           command: go get -v -t -d ./...
       - run: 
           name: Run unit tests and create report
-          command: go test -json ./... > test-report.json
+          command: go test -json ./...
       - run:
           name: Create test coverage report
           command: go test -coverprofile=coverage-report.out ./...
@@ -43,6 +43,5 @@ jobs:
       - run:
           name: Build binary
           command: go build -x
-      - store_test_results
       - sonarcloud/scan
 

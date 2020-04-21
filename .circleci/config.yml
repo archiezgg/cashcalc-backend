@@ -33,13 +33,9 @@ jobs:
       - run: 
           name: Download dependencies
           command: go get -v -t -d ./...
-      - run:
-          name: check if app prop is there
-          command: ls -l /home/circleci/go/src/github.com/IstvanN/cashcalc-backend/app.properties
       - run: 
           name: Run unit tests and create report
-          # command: go test -json ./... > test-report.json
-          command: go test -v ./...
+          command: go test -json ./... > test-report.json
       - run:
           name: Create test coverage report
           command: go test -coverprofile=coverage-report.out ./...

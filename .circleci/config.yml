@@ -33,10 +33,12 @@ jobs:
       - run: 
           name: Download dependencies
           command: go get -v -t -d ./...
+      - run:
+          name: check if app prop is there
+          command: ls -l ~/go/src/github.com/IstvanN/cashcalc-backend/app.properties
       - run: 
           name: Run unit tests and create report
           # command: go test -json ./... > test-report.json
-          command: ls -l ~/go/src/github.com/IstvanN/cashcalc-backend/app.properties
           command: go test -v ./...
       - run:
           name: Create test coverage report

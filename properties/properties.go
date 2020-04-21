@@ -9,7 +9,7 @@ import (
 var (
 	// Prop is the proprties that gets loaded when the app inits
 	Prop           *properties.Properties
-	propertiesFile = os.Getenv("GOPATH") + "/src/github.com/IstvanN/cashcalc-backend/app.properties"
+	propertiesFile = os.Getenv("PROPERTIES_FILE")
 )
 
 const (
@@ -25,7 +25,7 @@ const (
 	CountriesEndpoint = "endpoint.countries"
 )
 
-// This function gets executed automatically on initiation
+// This function gets executed automatically when the app initializes
 func init() {
 	Prop = properties.MustLoadFile(propertiesFile, properties.UTF8)
 }

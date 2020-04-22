@@ -1,15 +1,13 @@
 package properties
 
 import (
-	"os"
-
 	"github.com/magiconair/properties"
 )
 
 var (
 	// Prop is the proprties that gets loaded when the app inits
 	Prop           *properties.Properties
-	propertiesFile = os.Getenv("PROPERTIES_FILE")
+	propertiesFile = "app.properties"
 )
 
 const (

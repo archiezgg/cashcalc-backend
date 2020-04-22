@@ -1,8 +1,6 @@
 package services
 
 import (
-	"errors"
-	"reflect"
 	"testing"
 )
 
@@ -25,117 +23,49 @@ func TestIncreaseWithVat(t *testing.T) {
 		}
 	}
 }
-func TestValidateAirFaresZoneNumber(t *testing.T) {
-	e := errors.New("")
+func TestIsZoneNumberInvalid(t *testing.T) {
 	testCases := []struct {
-		x   int
-		err error
+		zn       int
+		min      int
+		max      int
+		expected bool
 	}{
-		{0, nil},
-		{9, nil},
-		{3, nil},
-		{5, nil},
-		{-1, e},
-		{10, e},
+		{5, 2, 100, false},
+		{55, 1, 200, false},
+		{5, 5, 10, false},
+		{5, 1, 5, false},
+		{-1, 0, 200, true},
+		{0, 1, 50, true},
+		{10, 11, 100, true},
 	}
 
 	for _, tc := range testCases {
-		err := ValidateAirFaresZoneNumber(tc.x)
-		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
-			t.Errorf("ValidateAirFaresZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
+		actual := IsZoneNumberInvalid(tc.zn, tc.min, tc.max)
+		if actual != tc.expected {
+			t.Errorf("IsZoneNumberValid(%v, %v, %v) failed: expected %v, got: %v", tc.zn, tc.min, tc.max, tc.expected, actual)
 		}
 	}
 }
 
-func TestValidateAirDocFaresZoneNumber(t *testing.T) {
-	e := errors.New("")
+func TestIsWeightInvalid(t *testing.T) {
 	testCases := []struct {
-		x   int
-		err error
+		weight   float64
+		min      float64
+		max      float64
+		expected bool
 	}{
-		{5, nil},
-		{9, nil},
-		{6, nil},
-		{1, e},
-		{10, e},
-		{4, e},
-		{-1, e},
-		{11, e},
+		{0.5, 0, 100, false},
+		{50.5, 1, 100, false},
+		{100, 100, 200, false},
+		{100, 50, 100, false},
+		{3.5, 5, 10, true},
+		{9, 10, 20, true},
 	}
 
 	for _, tc := range testCases {
-		err := ValidateAirDocFaresZoneNumber(tc.x)
-		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
-			t.Errorf("ValidateAirDocFaresZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
-		}
-	}
-}
-
-func TestValidateRoadFaresZoneNumber(t *testing.T) {
-	e := errors.New("")
-	testCases := []struct {
-		x   int
-		err error
-	}{
-		{1, nil},
-		{5, nil},
-		{3, nil},
-		{0, e},
-		{6, e},
-		{-1, e},
-		{11, e},
-	}
-
-	for _, tc := range testCases {
-		err := ValidateRoadFaresZoneNumber(tc.x)
-		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
-			t.Errorf("ValidateRoadFaresZoneNumber(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
-		}
-	}
-}
-
-func TestValidateAirFaresWeight(t *testing.T) {
-	e := errors.New("")
-	testCases := []struct {
-		x   float64
-		err error
-	}{
-		{0.5, nil},
-		{200, nil},
-		{4.5, nil},
-		{70, nil},
-		{0, e},
-		{201, e},
-		{-1, e},
-	}
-
-	for _, tc := range testCases {
-		err := ValidateAirFaresWeight(tc.x)
-		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
-			t.Errorf("ValidateAirFaresWeight(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
-		}
-	}
-}
-
-func TestValidateAirDocFaresWeight(t *testing.T) {
-	e := errors.New("")
-	testCases := []struct {
-		x   float64
-		err error
-	}{
-		{0.5, nil},
-		{2, nil},
-		{1, nil},
-		{1.5, nil},
-		{0, e},
-		{2.5, e},
-		{-1, e},
-	}
-
-	for _, tc := range testCases {
-		err := ValidateAirDocFaresWeight(tc.x)
-		if reflect.TypeOf(err) != reflect.TypeOf(tc.err) {
-			t.Errorf("ValidateAirDocFaresWeight(%v) failed: expected type: %T, got: %T", tc.x, tc.err, err)
+		actual := IsWeightInvalid(tc.weight, tc.min, tc.max)
+		if actual != tc.expected {
+			t.Errorf("IsWeightInvalid(%v, %v, %v) failed: expected %v, got: %v", tc.weight, tc.min, tc.max, tc.expected, actual)
 		}
 	}
 }

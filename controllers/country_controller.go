@@ -9,12 +9,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var countriesEndpoint = properties.Prop.GetString(properties.CountriesEndpoint, "/countries")
-
 func registerCountriesRoutes(router *mux.Router) {
-	router.HandleFunc(countriesEndpoint, allCountriesHandler).Methods(http.MethodGet)
-	router.HandleFunc(countriesEndpoint+"/air", airCountriesHandler).Methods(http.MethodGet)
-	router.HandleFunc(countriesEndpoint+"/road", roadCountriesHandler).Methods(http.MethodGet)
+	ep := properties.CountriesEndpoint
+	router.HandleFunc(ep, allCountriesHandler).Methods(http.MethodGet)
+	router.HandleFunc(ep+"/air", airCountriesHandler).Methods(http.MethodGet)
+	router.HandleFunc(ep+"/road", roadCountriesHandler).Methods(http.MethodGet)
 }
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request) {

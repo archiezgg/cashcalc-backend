@@ -52,7 +52,7 @@ var (
 	// RoadFaresZnMax is the maxmimum zone number for road fares
 	RoadFaresZnMax int
 	// AirFaresWeightMin is the minimum weight for air fares
-	AirFaresWeightMin int
+	AirFaresWeightMin float64
 	// AirFaresWeightMax is the maxmimum weight for air fares
 	AirFaresWeightMax float64
 	// AirDocFaresWeightMin is the minimum weight for air document fares
@@ -68,5 +68,21 @@ var (
 // This function gets executed automatically when the app initializes
 func init() {
 	p := properties.MustLoadFile(propertiesFile, properties.UTF8)
-	PricingsCollection = p.GetString(pricingsCollectionProp, "/pricings")
+	PricingsCollection = p.MustGetString(pricingsCollectionProp)
+	CountriesCollection = p.MustGetString(countriesCollectionProp)
+	PricingVarsCollection = p.MustGetString(pricingVarsCollectionProp)
+	PricingsEndpoint = p.MustGetString(pricingsEndpointProp)
+	CountriesEndpoint = p.MustGetString(countriesEndpointProp)
+	AirFaresZnMin = p.MustGetInt(airFaresZnMinProp)
+	AirFaresZnMax = p.MustGetInt(airFaresZnMaxProp)
+	AirDocFaresZnMin = p.MustGetInt(airDocFaresZnMinProp)
+	AirDocFaresZnMax = p.MustGetInt(airDocFaresZnMaxProp)
+	RoadFaresZnMin = p.MustGetInt(roadFaresZnMinProp)
+	RoadFaresZnMax = p.MustGetInt(roadFaresZnMaxProp)
+	AirFaresWeightMin = p.MustGetFloat64(airFaresWeightMinProp)
+	AirFaresWeightMax = p.MustGetFloat64(airFaresWeightMaxProp)
+	AirDocFaresWeightMin = p.MustGetFloat64(airDocFaresWeightMinProp)
+	AirDocFaresWeightMax = p.MustGetFloat64(airDocFaresWeightMaxProp)
+	RoadFaresWeightMin = p.MustGetFloat64(roadFaresWeightMinProp)
+	RoadFaresWeightMax = p.MustGetFloat64(roadFaresWeightMaxProp)
 }

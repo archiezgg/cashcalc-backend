@@ -16,11 +16,11 @@ func registerPricingsRoutes(router *mux.Router) {
 	s.HandleFunc("", allPricingsHandler).Methods(http.MethodGet)
 	s.HandleFunc("/road", roadPricingsHandler).Methods(http.MethodGet)
 	s.HandleFunc("/air", airPricingsHandler).Methods(http.MethodGet)
-	s.HandleFunc("/road/fares/{zn:[1-5]}", roadPricingFaresByZoneNumberHandler).
+	s.HandleFunc("/road/fares/{zn:[1-5]}", roadFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
-	s.HandleFunc("/air/fares/{zn:[0-9]}", airPricingFaresByZoneNumberHandler).
+	s.HandleFunc("/air/fares/{zn:[0-9]}", airFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
-	s.HandleFunc("/air/docfares/{zn:[5-9]}", airPricingDocFaresByZoneNumberHandler).
+	s.HandleFunc("/air/docfares/{zn:[5-9]}", airDocFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
 }
 
@@ -51,7 +51,7 @@ func airPricingsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(ap)
 }
 
-func roadPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
+func roadFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	weightAsString, queryIsPresent := r.URL.Query()["weight"]
 
@@ -79,7 +79,7 @@ func roadPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request)
 	json.NewEncoder(w).Encode(rp)
 }
 
-func airPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
+func airFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	weightAsString, queryIsPresent := r.URL.Query()["weight"]
 
@@ -107,7 +107,7 @@ func airPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) 
 	json.NewEncoder(w).Encode(ap)
 }
 
-func airPricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
+func airDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	weightAsString, queryIsPresent := r.URL.Query()["weight"]
 

@@ -11,9 +11,10 @@ import (
 
 func registerCountriesRoutes(router *mux.Router) {
 	ep := properties.CountriesEndpoint
-	router.HandleFunc(ep, allCountriesHandler).Methods(http.MethodGet)
-	router.HandleFunc(ep+"/air", airCountriesHandler).Methods(http.MethodGet)
-	router.HandleFunc(ep+"/road", roadCountriesHandler).Methods(http.MethodGet)
+	s := router.PathPrefix(ep).Subrouter()
+	s.HandleFunc("", allCountriesHandler).Methods(http.MethodGet)
+	s.HandleFunc("/air", airCountriesHandler).Methods(http.MethodGet)
+	s.HandleFunc("/road", roadCountriesHandler).Methods(http.MethodGet)
 }
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request) {

@@ -13,6 +13,8 @@ workflows:
     jobs:
       - heroku/deploy-via-git:
           context: Heroku
+          requires:
+            - build
           filters:
             branches:
               only: master

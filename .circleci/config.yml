@@ -11,8 +11,11 @@ workflows:
           context: SonarCloud
   deploy:
     jobs:
+      - build
       - heroku/deploy-via-git:
           context: Heroku
+          requires:
+            - build
           filters:
             branches:
               only: master

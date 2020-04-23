@@ -24,7 +24,6 @@ func registerPricingsRoutes(router *mux.Router) {
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {
-	setContentTypeToJSON(w)
 	p, err := repositories.GetPricings()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
@@ -34,7 +33,6 @@ func allPricingsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func roadPricingsHandler(w http.ResponseWriter, r *http.Request) {
-	setContentTypeToJSON(w)
 	rp, err := repositories.GetRoadPricings()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
@@ -44,7 +42,6 @@ func roadPricingsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func airPricingsHandler(w http.ResponseWriter, r *http.Request) {
-	setContentTypeToJSON(w)
 	ap, err := repositories.GetAirPricings()
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, 500)
@@ -54,7 +51,6 @@ func airPricingsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func roadPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
-	setContentTypeToJSON(w)
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	weightAsString, queryIsPresent := r.URL.Query()["weight"]
 
@@ -83,7 +79,6 @@ func roadPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func airPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
-	setContentTypeToJSON(w)
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	weightAsString, queryIsPresent := r.URL.Query()["weight"]
 
@@ -112,7 +107,6 @@ func airPricingFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) 
 }
 
 func airPricingDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
-	setContentTypeToJSON(w)
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
 	weightAsString, queryIsPresent := r.URL.Query()["weight"]
 

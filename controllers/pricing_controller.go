@@ -10,17 +10,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var pricingsEndpoint = properties.Prop.GetString(properties.PricingsEndpoint, "/pricings")
-
 func registerPricingsRoutes(router *mux.Router) {
-	router.HandleFunc(pricingsEndpoint, allPricingsHandler).Methods(http.MethodGet)
-	router.HandleFunc(pricingsEndpoint+"/road", roadPricingsHandler).Methods(http.MethodGet)
-	router.HandleFunc(pricingsEndpoint+"/air", airPricingsHandler).Methods(http.MethodGet)
-	router.HandleFunc(pricingsEndpoint+"/road/fares/{zn:[1-5]}", roadPricingFaresByZoneNumberHandler).
+	ep := properties.PricingsEndpoint
+	router.HandleFunc(ep, allPricingsHandler).Methods(http.MethodGet)
+	router.HandleFunc(ep+"/road", roadPricingsHandler).Methods(http.MethodGet)
+	router.HandleFunc(ep+"/air", airPricingsHandler).Methods(http.MethodGet)
+	router.HandleFunc(ep+"/road/fares/{zn:[1-5]}", roadPricingFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
-	router.HandleFunc(pricingsEndpoint+"/air/fares/{zn:[0-9]}", airPricingFaresByZoneNumberHandler).
+	router.HandleFunc(ep+"/air/fares/{zn:[0-9]}", airPricingFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
-	router.HandleFunc(pricingsEndpoint+"/air/docfares/{zn:[5-9]}", airPricingDocFaresByZoneNumberHandler).
+	router.HandleFunc(ep+"/air/docfares/{zn:[5-9]}", airPricingDocFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
 }
 

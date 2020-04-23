@@ -8,19 +8,15 @@ import (
 	"github.com/IstvanN/cashcalc-backend/properties"
 )
 
-var (
-	countriesCollectionName = properties.Prop.GetString(properties.CountriesCollection, "countries")
-)
-
 // GetCountries queries all countries from db
 func GetCountries() (models.Countries, error) {
-	coll := database.GetCollectionByName(countriesCollectionName)
+	coll := database.GetCollectionByName(properties.CountriesCollection)
 
 	var c models.Countries
 	err := coll.Find(nil).One(&c)
 	if err != nil {
 		return models.Countries{}, fmt.Errorf("error while retrieving collection %v from database: %v",
-			countriesCollectionName, err)
+			properties.CountriesCollection, err)
 	}
 
 	return c, nil

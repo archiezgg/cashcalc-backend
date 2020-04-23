@@ -3,8 +3,8 @@ package database
 import (
 	"log"
 	"os"
-	"strings"
 
+	"github.com/IstvanN/cashcalc-backend/services"
 	"gopkg.in/mgo.v2"
 )
 
@@ -28,12 +28,7 @@ func Startup() *mgo.Session {
 
 // GetCollectionByName returns a collection type from the db by its name
 func GetCollectionByName(collectionName string) *mgo.Collection {
-	dbName := getDBNameFromURI(mongoURI)
+	dbName := services.GetDBNameFromURI(mongoURI)
 	coll := dbSession.Clone().DB(dbName).C(collectionName)
 	return coll
-}
-
-func getDBNameFromURI(uri string) string {
-	splitURI := strings.SplitAfter(uri, "/")
-	return splitURI[len(splitURI)-1]
 }

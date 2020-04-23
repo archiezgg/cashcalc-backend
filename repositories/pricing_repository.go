@@ -9,20 +9,15 @@ import (
 	"github.com/IstvanN/cashcalc-backend/services"
 )
 
-var (
-	pricingsCollectionName = properties.Prop.GetString(properties.PricingsCollection, "pricings")
-	pricingVarsCollName    = properties.Prop.GetString(properties.PricingVarsCollection, "pricingVariables")
-)
-
 // GetPricings queries the db for both road and air pricings
 func GetPricings() (models.Pricings, error) {
-	coll := database.GetCollectionByName(pricingsCollectionName)
+	coll := database.GetCollectionByName(properties.PricingsCollection)
 
 	var p models.Pricings
 	err := coll.Find(nil).One(&p)
 	if err != nil {
 		return models.Pricings{}, fmt.Errorf("error while retrieving collection %v from database: %v",
-			pricingsCollectionName, err)
+			properties.PricingsCollection, err)
 	}
 
 	return p, nil
@@ -31,13 +26,13 @@ func GetPricings() (models.Pricings, error) {
 // GetPricingVariables queries the db for
 // the pricing variables that can be set by the admin
 func GetPricingVariables() (models.PricingVariables, error) {
-	coll := database.GetCollectionByName(pricingVarsCollName)
+	coll := database.GetCollectionByName(properties.PricingVarsCollection)
 
 	var pv models.PricingVariables
 	err := coll.Find(nil).One(&pv)
 	if err != nil {
 		return models.PricingVariables{}, fmt.Errorf("error while retreiving collection %v from db: %v",
-			pricingVarsCollName, err)
+			properties.PricingVarsCollection, err)
 	}
 
 	return pv, nil
@@ -64,15 +59,13 @@ func GetRoadPricings() ([]models.Pricing, error) {
 // GetAirFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing fares as slice of ints, or an error
 func GetAirFaresByZoneNumber(zn int) ([]models.Fare, error) {
-	min := properties.Prop.GetInt(properties.AirFaresZnMin, 0)
-	max := properties.Prop.GetInt(properties.AirFaresZnMax, 9)
-	if services.IsZoneNumberInvalid(zn, min, max) {
-		return []models.Fare{}, fmt.Errorf("the zone number %v is invalid for air fares", zn)
+	if services.IsZoneNumberInvalid(zn, properties.AirFaresZnMin, properties.AirFaresZnMax) {
+		return nil, fmt.Errorf("the zone number %v is invalid for air fares", zn)
 	}
 
 	ap, err := GetAirPricings()
 	if err != nil {
-		return []models.Fare{}, err
+		return nil, err
 	}
 
 	for _, p := range ap {
@@ -81,17 +74,13 @@ func GetAirFaresByZoneNumber(zn int) ([]models.Fare, error) {
 		}
 	}
 
-	return []models.Fare{}, fmt.Errorf("can't find number %v in air pricing fares", zn)
+	return nil, fmt.Errorf("can't find number %v in air pricing fares", zn)
 }
 
 // GetAirFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
 func GetAirFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
-	minZn := properties.Prop.GetInt(properties.AirFaresZnMin, 0)
-	maxZn := properties.Prop.GetInt(properties.AirFaresZnMax, 9)
-	minWeight := properties.Prop.GetFloat64(properties.AirFaresWeightMin, 0.5)
-	maxWeight := properties.Prop.GetFloat64(properties.AirFaresWeightMax, 200)
-
-	if services.IsZoneNumberInvalid(zn, minZn, maxZn) || services.IsWeightInvalid(weight, minWeight, maxWeight) {
+	if services.IsZoneNumberInvalid(zn, properties.AirFaresZnMin, properties.AirFaresZnMax) ||
+		services.IsWeightInvalid(weight, properties.AirFaresWeightMin, properties.AirFaresWeightMax) {
 		return models.Fare{}, fmt.Errorf("the zone number %v and weight %v is invalid for air fares", zn, weight)
 	}
 
@@ -112,15 +101,13 @@ func GetAirFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, erro
 // GetAirDocFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding air pricing doc fares as slice of ints, or an error
 func GetAirDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
-	min := properties.Prop.GetInt(properties.AirDocFaresZnMin, 5)
-	max := properties.Prop.GetInt(properties.AirDocFaresZnMax, 9)
-	if services.IsZoneNumberInvalid(zn, min, max) {
-		return []models.Fare{}, fmt.Errorf("the zone number %v is invalid for air document fares", zn)
+	if services.IsZoneNumberInvalid(zn, properties.AirDocFaresZnMin, properties.AirDocFaresZnMax) {
+		return nil, fmt.Errorf("the zone number %v is invalid for air document fares", zn)
 	}
 
 	ap, err := GetAirPricings()
 	if err != nil {
-		return []models.Fare{}, err
+		return nil, err
 	}
 
 	for _, p := range ap {
@@ -128,16 +115,13 @@ func GetAirDocFaresByZoneNumber(zn int) ([]models.Fare, error) {
 			return p.DocFares, nil
 		}
 	}
-	return []models.Fare{}, fmt.Errorf("can't find number %v in air pricing doc fares", zn)
+	return nil, fmt.Errorf("can't find number %v in air pricing doc fares", zn)
 }
 
 // GetAirDocFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
 func GetAirDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
-	minZn := properties.Prop.GetInt(properties.AirDocFaresZnMin, 5)
-	maxZn := properties.Prop.GetInt(properties.AirDocFaresZnMax, 9)
-	minWeight := properties.Prop.GetFloat64(properties.AirDocFaresWeightMin, 0.5)
-	maxWeight := properties.Prop.GetFloat64(properties.AirDocFaresWeightMax, 2)
-	if services.IsZoneNumberInvalid(zn, minZn, maxZn) || services.IsWeightInvalid(weight, minWeight, maxWeight) {
+	if services.IsZoneNumberInvalid(zn, properties.AirDocFaresZnMin, properties.AirDocFaresZnMax) ||
+		services.IsWeightInvalid(weight, properties.AirDocFaresWeightMin, properties.AirDocFaresWeightMax) {
 		return models.Fare{}, fmt.Errorf("the zone number %v and weight %v is invalid for air document fares", zn, weight)
 	}
 
@@ -158,15 +142,13 @@ func GetAirDocFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, e
 // GetRoadFaresByZoneNumber takes a zone number int as parameter
 // and returns with the corresponding road pricing fares as slice of ints, or an error
 func GetRoadFaresByZoneNumber(zn int) ([]models.Fare, error) {
-	min := properties.Prop.GetInt(properties.RoadFaresZnMin, 1)
-	max := properties.Prop.GetInt(properties.RoadFaresZnMax, 5)
-	if services.IsZoneNumberInvalid(zn, min, max) {
-		return []models.Fare{}, fmt.Errorf("the zone number %v is invalid for road fares", zn)
+	if services.IsZoneNumberInvalid(zn, properties.RoadFaresZnMin, properties.RoadFaresZnMax) {
+		return nil, fmt.Errorf("the zone number %v is invalid for road fares", zn)
 	}
 
 	rp, err := GetRoadPricings()
 	if err != nil {
-		return []models.Fare{}, err
+		return nil, err
 	}
 
 	for _, p := range rp {
@@ -175,16 +157,13 @@ func GetRoadFaresByZoneNumber(zn int) ([]models.Fare, error) {
 		}
 	}
 
-	return []models.Fare{}, fmt.Errorf("can't find number %v in road pricing fares", zn)
+	return nil, fmt.Errorf("can't find number %v in road pricing fares", zn)
 }
 
 // GetRoadFaresByZoneNumberAndWeight returns the weight-base fare pairing of the given zone number and weight
 func GetRoadFaresByZoneNumberAndWeight(zn int, weight float64) (models.Fare, error) {
-	minZn := properties.Prop.GetInt(properties.RoadFaresZnMin, 1)
-	maxZn := properties.Prop.GetInt(properties.RoadFaresZnMax, 5)
-	minWeight := properties.Prop.GetFloat64(properties.RoadFaresWeightMin, 1)
-	maxWeight := properties.Prop.GetFloat64(properties.RoadFaresWeightMax, 100)
-	if services.IsZoneNumberInvalid(zn, minZn, maxZn) || services.IsWeightInvalid(weight, minWeight, maxWeight) {
+	if services.IsZoneNumberInvalid(zn, properties.RoadFaresZnMin, properties.RoadFaresZnMax) ||
+		services.IsWeightInvalid(weight, properties.RoadFaresWeightMin, properties.RoadFaresWeightMax) {
 		return models.Fare{}, fmt.Errorf("the zone number %v and weight %v is invalid for road fares", zn, weight)
 	}
 

@@ -1,4 +1,4 @@
-package database
+package services
 
 import "testing"
 
@@ -17,7 +17,7 @@ func TestGetDBNameFromURI(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		actual := getDBNameFromURI(tc.input)
+		actual := GetDBNameFromURI(tc.input)
 		if actual != tc.expected {
 			t.Errorf("getDBnameFromURI(%v) failed: expected: %v, got: %v", tc.input, tc.expected, actual)
 		}

@@ -13,18 +13,23 @@ func StartupRouter() (router *mux.Router) {
 	router.HandleFunc("/", welcomeHandler).Methods("GET")
 	registerCountriesRoutes(router)
 	registerPricingsRoutes(router)
+	router.Use(setJSONHeaderMiddleWare)
 	return
 }
 
 func welcomeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Welcome to CashCalc 2020!"))
-}
-
-func setContentTypeToJSON(w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(`{"message": "Welcome to CashCalc 2020"}`))
 }
 
 func logErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
 	log.Println(err)
 	http.Error(w, http.StatusText(httpStatusCode), httpStatusCode)
+}
+
+// setJSONHeaderMiddleWare sets the header to application/json for a given handler
+func setJSONHeaderMiddleWare(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
 }

@@ -8,9 +8,9 @@ services:
         ports:
             - "8080:8080"
         environment:
-            MONGODB_URI: "mongodb://mongo-db:27017/cashcalc"
+            MONGODB_URI: "mongodb://mongo:27017/cashcalc"
         depends_on:
-            - mongo-db
-    mongo-db:
+            - mongo
+    mongo:
         image: archiezgg/cashcalc-mongo
-        container_name: mongo-cashcalc-compose
+        container_name: cashcalc-mongo

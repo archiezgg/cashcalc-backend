@@ -1,0 +1,1 @@
+{"options":{"autoIndexId":true},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"heroku_nf79k3h1.pricings"}],"uuid":"29ea32f75ce74f438d3a397eb7380e91"}

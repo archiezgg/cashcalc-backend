@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+    backend:
+        build: .
+        image: archiezgg/cashcalc-backend
+        container_name: cashcalc-backend
+        ports:
+            - "8080:8080"
+        environment:
+            MONGODB_URI: "mongodb://mongo-db:27017/cashcalc"
+        depends_on:
+            - mongo-db
+    mongo-db:
+        image: archiezgg/cashcalc-mongo
+        container_name: mongo-cashcalc-compose

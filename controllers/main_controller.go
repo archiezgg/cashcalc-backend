@@ -13,6 +13,7 @@ func StartupRouter() (router *mux.Router) {
 	router.HandleFunc("/", welcomeHandler).Methods("GET")
 	registerCountriesRoutes(router)
 	registerPricingsRoutes(router)
+	registerPricingVarsRoutes(router)
 	router.Use(setJSONHeaderMiddleWare)
 	return
 }

@@ -23,21 +23,6 @@ func GetPricings() (models.Pricings, error) {
 	return p, nil
 }
 
-// GetPricingVariables queries the db for
-// the pricing variables that can be set by the admin
-func GetPricingVariables() (models.PricingVariables, error) {
-	coll := database.GetCollectionByName(properties.PricingVarsCollection)
-
-	var pv models.PricingVariables
-	err := coll.Find(nil).One(&pv)
-	if err != nil {
-		return models.PricingVariables{}, fmt.Errorf("error while retreiving collection %v from db: %v",
-			properties.PricingVarsCollection, err)
-	}
-
-	return pv, nil
-}
-
 // GetAirPricings returns with a slice of all elements of the air pricings collection, or an error
 func GetAirPricings() ([]models.Pricing, error) {
 	p, err := GetPricings()

@@ -209,3 +209,14 @@ Retrieves the air document fares of the zone provided.
 {"weight":1.5,"baseFare":24735}
 ```
 
+### /pricingvariables
+Retrieves the pricing variables.
+* HTTP method: _GET_
+* HTTP response: 
+  * _200 if successful_
+  * _500 if the server cannot process the data properly_
+
+* Sample JSON response:
+```
+{"vatPercent":27,"airFuelFarePercent":17.5,"roadFuelFarePercent":10,"express9h":8990,"express9hHun":3300,"express12h":2990,"express12hHun":1575,"insuranceLimit":330000,"minInsurance":3300,"ext":1320,"ras":6600,"tk":990}
+```

@@ -14,6 +14,7 @@ const (
 	pricingVarsCollectionProp = "collection.pricingvars"
 	pricingsEndpointProp      = "endpoint.pricings"
 	countriesEndpointProp     = "endpoint.countries"
+	pricingVarsEndpointProp   = "endpoint.pricingvars"
 	airFaresZnMinProp         = "air.fares.zn.min"
 	airFaresZnMaxProp         = "air.fares.zn.max"
 	airDocFaresZnMinProp      = "air.docfares.zn.min"
@@ -39,6 +40,8 @@ var (
 	PricingsEndpoint string
 	// CountriesEndpoint is the endpoint for countries
 	CountriesEndpoint string
+	// PricingVarsEndpoint is the endpoint for pricing variables
+	PricingVarsEndpoint string
 	// AirFaresZnMin is the minimum zone number for air fares
 	AirFaresZnMin int
 	// AirFaresZnMax is the maximum zone number for air fares
@@ -73,6 +76,7 @@ func init() {
 	PricingVarsCollection = p.MustGetString(pricingVarsCollectionProp)
 	PricingsEndpoint = p.MustGetString(pricingsEndpointProp)
 	CountriesEndpoint = p.MustGetString(countriesEndpointProp)
+	PricingVarsEndpoint = p.MustGetString(pricingVarsEndpointProp)
 	AirFaresZnMin = p.MustGetInt(airFaresZnMinProp)
 	AirFaresZnMax = p.MustGetInt(airFaresZnMaxProp)
 	AirDocFaresZnMin = p.MustGetInt(airDocFaresZnMinProp)

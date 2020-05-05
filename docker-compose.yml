@@ -12,5 +12,7 @@ services:
         depends_on:
             - mongo
     mongo:
+        build:
+            context: local_dev/mongo-cashcalc
         image: archiezgg/cashcalc-mongo
         container_name: cashcalc-mongo

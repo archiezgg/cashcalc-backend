@@ -13,7 +13,7 @@ import (
 func registerPricingVarsRoutes(router *mux.Router) {
 	ep := properties.PricingVarsEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("", allPricingVarsHandler)
+	s.HandleFunc("", allPricingVarsHandler).Methods(http.MethodGet)
 }
 
 func allPricingVarsHandler(w http.ResponseWriter, r *http.Request) {

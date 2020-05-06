@@ -11,6 +11,7 @@ import (
 func StartupRouter() (router *mux.Router) {
 	router = mux.NewRouter()
 	router.HandleFunc("/", welcomeHandler).Methods("GET")
+	registerLoginRoutes(router)
 	registerCountriesRoutes(router)
 	registerPricingsRoutes(router)
 	registerPricingVarsRoutes(router)

@@ -1,14 +1,15 @@
-FROM golang:latest
 
-ENV PORT 8080
-
-WORKDIR /go/src/github.com/Istvan/cashcalc-backend
-
+#build stage
+FROM golang:alpine AS builder
+WORKDIR /go/src/app
 COPY . .
+RUN go get -d -v ./...
+RUN go install -v ./...
 
-RUN go get -v ./...
-RUN go install ./...
-
-EXPOSE ${PORT}
-
-CMD ["/go/bin/cashcalc-backend"]
+#final stage
+FROM alpine:latest
+COPY --from=builder /go/bin/cashcalc-backend /cashcalc-backend
+COPY --from=builder /go/src/app/app.properties /app.properties
+LABEL Name=cashcalc-backend Version=0.0.1
+EXPOSE 8080
+CMD ["/cashcalc-backend"]

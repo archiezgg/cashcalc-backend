@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -25,7 +26,8 @@ func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 
 func logErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
 	log.Println(err)
-	http.Error(w, http.StatusText(httpStatusCode), httpStatusCode)
+	errorMsg := fmt.Sprintf(`{"error": "%v"}`, http.StatusText(httpStatusCode))
+	http.Error(w, errorMsg, httpStatusCode)
 }
 
 // setJSONHeaderMiddleWare sets the header to application/json for a given handler

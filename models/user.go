@@ -17,3 +17,6 @@ const (
 	// Superuser has privileges to modify database, revoke tokens and such
 	Superuser = "superuser"
 )
+
+// TestUser is just some test user in memory
+var TestUser = User{Role: "carrier", Password: "testpw"}

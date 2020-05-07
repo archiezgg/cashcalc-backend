@@ -28,6 +28,7 @@ func logErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode i
 	log.Println(err)
 	errorMsg := fmt.Sprintf("{\"error\": \"%v\"}", http.StatusText(httpStatusCode))
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatusCode)
 	w.Write([]byte(errorMsg))
 }
 

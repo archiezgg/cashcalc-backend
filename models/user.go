@@ -2,10 +2,8 @@ package models
 
 // User is the main struct for users such as carrier, admin and superuser
 type User struct {
-	ID       int    `bson:"id" json:"id"`
-	Username string `bson:"username" json:"username"`
-	Password string `bson:"password" json:"password"`
 	Role     Role   `bson:"role" json:"role"`
+	Password string `bson:"password" json:"password"`
 }
 
 // Role is an enum that can either be carrier, admin or superuser

@@ -6,6 +6,11 @@ type User struct {
 	Password string `bson:"password" json:"password"`
 }
 
+// Users holds all users in Users field
+type Users struct {
+	Users []User `bson:"users" json:"users"`
+}
+
 // Role is an enum that can either be carrier, admin or superuser
 type Role string
 
@@ -17,6 +22,3 @@ const (
 	// Superuser has privileges to modify database, revoke tokens and such
 	Superuser = "superuser"
 )
-
-// TestUser is just some test user in memory
-var TestUser = User{Role: "carrier", Password: "testpw"}

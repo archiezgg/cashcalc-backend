@@ -84,12 +84,7 @@ func isTokenValidForRole(role models.Role, w http.ResponseWriter, r *http.Reques
 	token, err := jwt.ParseWithClaims(tokenStrings[0], &claims, func(token *jwt.Token) (interface{}, error) {
 		return signingKey, nil
 	})
-	if err != nil {
-		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return false
-	}
-
-	if !token.Valid {
+	if err != nil || !token.Valid {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return false
 	}

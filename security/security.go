@@ -1,6 +1,8 @@
 package security
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -15,6 +17,16 @@ var signingKey = []byte("rekettye")
 type Claims struct {
 	Role models.Role `json:"role"`
 	jwt.StandardClaims
+}
+
+// LogErrorAndSendHTTPError takes and error and a http status code, and formats them to
+// create proper logging and formatted http respond at the same time
+func LogErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
+	log.Println(err)
+	errorMsg := fmt.Sprintf("{\"error\": \"%v\"}", http.StatusText(httpStatusCode))
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatusCode)
+	w.Write([]byte(errorMsg))
 }
 
 // CreateToken takes a Role as param and creates a signed token
@@ -64,7 +76,7 @@ func AuthSuperuserLevel(next http.Handler) http.Handler {
 func isTokenValidForRole(role models.Role, w http.ResponseWriter, r *http.Request) bool {
 	tokenStrings, ok := r.Header["Token"]
 	if !ok {
-		http.Error(w, http.StatusText(http.StatusUnauthorized), 401)
+		LogErrorAndSendHTTPError(w, fmt.Errorf("no token in header"), http.StatusUnauthorized)
 		return false
 	}
 
@@ -73,22 +85,22 @@ func isTokenValidForRole(role models.Role, w http.ResponseWriter, r *http.Reques
 		return signingKey, nil
 	})
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), 500)
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return false
 	}
 
 	if !token.Valid {
-		http.Error(w, http.StatusText(http.StatusUnauthorized), 401)
+		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return false
 	}
 
 	if role == models.Admin && claims.Role == models.Carrier {
-		http.Error(w, http.StatusText(http.StatusForbidden), 403)
+		LogErrorAndSendHTTPError(w, fmt.Errorf("%v is trying to reach content restricted for %v", claims.Role, role), http.StatusForbidden)
 		return false
 	}
 
 	if role == models.Superuser && claims.Role != models.Superuser {
-		http.Error(w, http.StatusText(http.StatusForbidden), 403)
+		LogErrorAndSendHTTPError(w, fmt.Errorf("%v is trying to reach content restricted for %v", claims.Role, role), http.StatusForbidden)
 		return false
 	}
 

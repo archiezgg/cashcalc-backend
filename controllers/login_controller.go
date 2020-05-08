@@ -23,27 +23,28 @@ func registerLoginRoutes(router *mux.Router) {
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	var userToAuth models.User
 	if err := json.NewDecoder(r.Body).Decode(&userToAuth); err != nil {
-		logErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
 		return
 	}
 
 	u, err := repositories.GetUserByRole(userToAuth.Role)
 	if err != nil {
-		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
 	if err != nil {
 		err := fmt.Errorf("the given password is invalid: %v", u.Password)
-		logErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
 
 	st, err := security.CreateToken(u.Role)
 	if err != nil {
-		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Token", st)
+	w.Write([]byte("{\"message\": \"logged in succesfully\"}"))
 }

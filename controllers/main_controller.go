@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,6 +12,7 @@ import (
 func StartupRouter() (router *mux.Router) {
 	router = mux.NewRouter()
 	router.HandleFunc("/", welcomeHandler).Methods("GET")
+	registerLoginRoutes(router)
 	registerCountriesRoutes(router)
 	registerPricingsRoutes(router)
 	registerPricingVarsRoutes(router)
@@ -24,7 +26,10 @@ func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 
 func logErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
 	log.Println(err)
-	http.Error(w, http.StatusText(httpStatusCode), httpStatusCode)
+	errorMsg := fmt.Sprintf("{\"error\": \"%v\"}", http.StatusText(httpStatusCode))
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(httpStatusCode)
+	w.Write([]byte(errorMsg))
 }
 
 // setJSONHeaderMiddleWare sets the header to application/json for a given handler

@@ -12,6 +12,7 @@ const (
 	pricingsCollectionProp    = "collection.pricings"
 	countriesCollectionProp   = "collection.countries"
 	pricingVarsCollectionProp = "collection.pricingvars"
+	loginEndpointProp         = "endpoint.login"
 	pricingsEndpointProp      = "endpoint.pricings"
 	countriesEndpointProp     = "endpoint.countries"
 	pricingVarsEndpointProp   = "endpoint.pricingvars"
@@ -36,6 +37,8 @@ var (
 	CountriesCollection string
 	// PricingVarsCollection is the name of the DB collection of pricing variables
 	PricingVarsCollection string
+	// LoginEndpoint is the endpoint for handling login requests
+	LoginEndpoint string
 	// PricingsEndpoint is the endpoint for pricings
 	PricingsEndpoint string
 	// CountriesEndpoint is the endpoint for countries
@@ -74,6 +77,7 @@ func init() {
 	PricingsCollection = p.MustGetString(pricingsCollectionProp)
 	CountriesCollection = p.MustGetString(countriesCollectionProp)
 	PricingVarsCollection = p.MustGetString(pricingVarsCollectionProp)
+	LoginEndpoint = p.MustGetString(loginEndpointProp)
 	PricingsEndpoint = p.MustGetString(pricingsEndpointProp)
 	CountriesEndpoint = p.MustGetString(countriesEndpointProp)
 	PricingVarsEndpoint = p.MustGetString(pricingVarsEndpointProp)

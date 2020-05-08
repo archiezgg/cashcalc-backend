@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/IstvanN/cashcalc-backend/models"
@@ -47,4 +48,5 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Token", st)
 	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
+	log.Printf("a user with the role '%v' has successfully logged in", userToAuth.Role)
 }

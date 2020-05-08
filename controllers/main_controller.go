@@ -24,7 +24,9 @@ func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(`{"message": "Welcome to CashCalc 2020"}`))
 }
 
-func logErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
+// LogErrorAndSendHTTPError takes and error and a http status code, and formats them to
+// create proper logging and formatted http respond at the same time
+func LogErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
 	log.Println(err)
 	errorMsg := fmt.Sprintf("{\"error\": \"%v\"}", http.StatusText(httpStatusCode))
 	w.Header().Set("Content-Type", "application/json")

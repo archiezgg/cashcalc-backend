@@ -20,7 +20,7 @@ func registerCountriesRoutes(router *mux.Router) {
 func allCountriesHandler(w http.ResponseWriter, r *http.Request) {
 	c, err := repositories.GetCountries()
 	if err != nil {
-		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 	json.NewEncoder(w).Encode(c)
@@ -29,7 +29,7 @@ func allCountriesHandler(w http.ResponseWriter, r *http.Request) {
 func airCountriesHandler(w http.ResponseWriter, r *http.Request) {
 	ac, err := repositories.GetAirCountries()
 	if err != nil {
-		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 	json.NewEncoder(w).Encode(ac)
@@ -38,7 +38,7 @@ func airCountriesHandler(w http.ResponseWriter, r *http.Request) {
 func roadCountriesHandler(w http.ResponseWriter, r *http.Request) {
 	rc, err := repositories.GetRoadCountries()
 	if err != nil {
-		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 	json.NewEncoder(w).Encode(rc)

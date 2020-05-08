@@ -19,7 +19,7 @@ func registerPricingVarsRoutes(router *mux.Router) {
 func allPricingVarsHandler(w http.ResponseWriter, r *http.Request) {
 	pv, err := repositories.GetPricingVariables()
 	if err != nil {
-		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 	json.NewEncoder(w).Encode(pv)

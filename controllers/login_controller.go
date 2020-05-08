@@ -34,7 +34,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
 	if err != nil {
-		err := fmt.Errorf("the given password is invalid: %v", u.Password)
+		err := fmt.Errorf("the given password is invalid: %v", userToAuth.Password)
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
@@ -46,5 +46,5 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Token", st)
-	w.Write([]byte("{\"message\": \"logged in succesfully\"}"))
+	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
 }

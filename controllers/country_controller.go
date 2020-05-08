@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/IstvanN/cashcalc-backend/security"
+
 	"github.com/IstvanN/cashcalc-backend/properties"
 	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/gorilla/mux"
@@ -15,6 +17,7 @@ func registerCountriesRoutes(router *mux.Router) {
 	s.HandleFunc("", allCountriesHandler).Methods(http.MethodGet)
 	s.HandleFunc("/air", airCountriesHandler).Methods(http.MethodGet)
 	s.HandleFunc("/road", roadCountriesHandler).Methods(http.MethodGet)
+	s.Use(security.AuthCarrierLevel)
 }
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request) {

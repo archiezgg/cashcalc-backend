@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/IstvanN/cashcalc-backend/security"
+
 	"github.com/IstvanN/cashcalc-backend/properties"
 	"github.com/IstvanN/cashcalc-backend/repositories"
 
@@ -14,6 +16,7 @@ func registerPricingVarsRoutes(router *mux.Router) {
 	ep := properties.PricingVarsEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", allPricingVarsHandler).Methods(http.MethodGet)
+	s.Use(security.AuthAdminLevel)
 }
 
 func allPricingVarsHandler(w http.ResponseWriter, r *http.Request) {

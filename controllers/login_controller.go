@@ -35,7 +35,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
 	if err != nil {
-		err := fmt.Errorf("the given password is invalid: %v", userToAuth.Password)
+		err := fmt.Errorf("the given role-password combination is invalid: %v - %v", userToAuth.Role, userToAuth.Password)
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}

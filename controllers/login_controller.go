@@ -46,4 +46,5 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Token", st)
+	w.Write([]byte("{\"message\": \"logged in succesfully\"}"))
 }

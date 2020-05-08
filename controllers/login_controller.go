@@ -7,6 +7,8 @@ import (
 
 	"github.com/IstvanN/cashcalc-backend/models"
 	"github.com/IstvanN/cashcalc-backend/properties"
+	"github.com/IstvanN/cashcalc-backend/repositories"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/IstvanN/cashcalc-backend/security"
 
@@ -19,19 +21,25 @@ func registerLoginRoutes(router *mux.Router) {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	var u models.User
-	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+	var userToAuth models.User
+	if err := json.NewDecoder(r.Body).Decode(&userToAuth); err != nil {
 		logErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
 		return
 	}
 
-	if u.Password != models.TestUser.Password {
+	u, err := repositories.GetUserByRole(userToAuth.Role)
+	if err != nil {
+		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
+	if err != nil {
 		err := fmt.Errorf("the given password is invalid: %v", u.Password)
 		logErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
 
-	st, err := security.CreateToken("carrier")
+	st, err := security.CreateToken(u.Role)
 	if err != nil {
 		logErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return

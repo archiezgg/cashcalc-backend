@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/IstvanN/cashcalc-backend/security"
+
 	"github.com/IstvanN/cashcalc-backend/properties"
 	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/gorilla/mux"
@@ -22,6 +24,7 @@ func registerPricingsRoutes(router *mux.Router) {
 		Methods(http.MethodGet)
 	s.HandleFunc("/air/docfares/{zn:[5-9]}", airDocFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
+	s.Use(security.AuthAdminLevel)
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {

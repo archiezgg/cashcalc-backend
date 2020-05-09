@@ -9,10 +9,14 @@ workflows:
     jobs:
       - build:
           context: SonarCloud
+          filters:
+            branches:
+              only: dev
 
   deploy:
     jobs:
       - build:
+          context: SonarCloud
           filters:
             branches:
               only: master

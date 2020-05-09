@@ -3,13 +3,15 @@ package repositories
 import (
 	"fmt"
 
+	"github.com/IstvanN/cashcalc-backend/properties"
+
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/models"
 )
 
 //GetUsers retrieves all users from the database
 func GetUsers() (models.Users, error) {
-	coll := database.GetCollectionByName("users")
+	coll := database.GetCollectionByName(properties.UsersCollection)
 
 	var u models.Users
 	err := coll.Find(nil).One(&u)

@@ -1,3 +1,9 @@
+/*
+	Cashcalc 2020
+	Copyright (C) 2019-2020 Istvan Nemeth
+	mailto: nemethistvanius@gmail.com
+*/
+
 package models
 
 // Country stores the countries with name and a zone number

@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/IstvanN/cashcalc-backend/models"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-var signingKey = []byte("rekettye")
+var signingKey = []byte(os.Getenv("ACCESS_KEY"))
 
 // Claims is the struct for the Token Claims including role
 // and standard JWT claims

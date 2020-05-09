@@ -29,7 +29,7 @@ func registerLoginRoutes(router *mux.Router) {
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	var userToAuth models.User
-	if err := json.NewDecoder(r.Body).Decode(&userToAuth); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&userToAuth); err != nil || userToAuth.Password == "" {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
 		return
 	}

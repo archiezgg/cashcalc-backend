@@ -38,6 +38,10 @@ func LogErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode i
 
 // CreateToken takes a Role as param and creates a signed token
 func CreateToken(role models.Role) (string, error) {
+	if string(signingKey) == "" {
+		return "", fmt.Errorf("ACCESS_KEY is unset")
+	}
+
 	claims := Claims{
 		role,
 		jwt.StandardClaims{

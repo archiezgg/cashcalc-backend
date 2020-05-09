@@ -50,7 +50,7 @@ jobs:
           command: go build -x
       - sonarcloud/scan
   
-  pushdocker:
+  dockerpush:
     machine: true
     steps:
       - checkout

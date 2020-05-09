@@ -23,7 +23,7 @@ func registerCountriesRoutes(router *mux.Router) {
 	s.HandleFunc("", allCountriesHandler).Methods(http.MethodGet)
 	s.HandleFunc("/air", airCountriesHandler).Methods(http.MethodGet)
 	s.HandleFunc("/road", roadCountriesHandler).Methods(http.MethodGet)
-	s.Use(security.AuthCarrierLevel)
+	s.Use(security.AccessLevelCarrier)
 }
 
 func allCountriesHandler(w http.ResponseWriter, r *http.Request) {

@@ -53,8 +53,8 @@ func CreateToken(role models.Role) (string, error) {
 	return signedToken, nil
 }
 
-// AuthCarrierLevel serves as middleware for carrier access level
-func AuthCarrierLevel(next http.Handler) http.Handler {
+// AccessLevelCarrier serves as middleware for carrier access level
+func AccessLevelCarrier(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if isTokenValidForAccessLevel(models.Carrier, w, r) {
 			next.ServeHTTP(w, r)
@@ -62,8 +62,8 @@ func AuthCarrierLevel(next http.Handler) http.Handler {
 	})
 }
 
-// AuthAdminLevel serves as middleware for admin access level
-func AuthAdminLevel(next http.Handler) http.Handler {
+// AccessLevelAdmin serves as middleware for admin access level
+func AccessLevelAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if isTokenValidForAccessLevel(models.Admin, w, r) {
 			next.ServeHTTP(w, r)
@@ -71,8 +71,8 @@ func AuthAdminLevel(next http.Handler) http.Handler {
 	})
 }
 
-// AuthSuperuserLevel serves as middleware for superuser access level
-func AuthSuperuserLevel(next http.Handler) http.Handler {
+// AccessLevelSuperuser serves as middleware for superuser access level
+func AccessLevelSuperuser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if isTokenValidForAccessLevel(models.Superuser, w, r) {
 			next.ServeHTTP(w, r)

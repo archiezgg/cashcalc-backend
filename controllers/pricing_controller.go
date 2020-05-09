@@ -1,3 +1,9 @@
+/*
+	Cashcalc 2020
+	Copyright (C) 2019-2020 Istvan Nemeth
+	mailto: nemethistvanius@gmail.com
+*/
+
 package controllers
 
 import (
@@ -24,7 +30,7 @@ func registerPricingsRoutes(router *mux.Router) {
 		Methods(http.MethodGet)
 	s.HandleFunc("/air/docfares/{zn:[5-9]}", airDocFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
-	s.Use(security.AuthAdminLevel)
+	s.Use(security.AccessLevelAdmin)
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {

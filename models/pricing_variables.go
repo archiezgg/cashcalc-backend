@@ -1,3 +1,9 @@
+/*
+	Cashcalc 2020
+	Copyright (C) 2019-2020 Istvan Nemeth
+	mailto: nemethistvanius@gmail.com
+*/
+
 package models
 
 //PricingVariables is the struct to store the variables that can be set by the admin of the application

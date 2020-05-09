@@ -87,8 +87,9 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 		return false
 	}
 
-	if !isProperAccesLevel(role, accessLevel) {
-		LogErrorAndSendHTTPError(w, fmt.Errorf("%v is trying to reach content restricted for %v", role, accessLevel), http.StatusForbidden)
+	err = checkAccessLevel(role, accessLevel)
+	if err != nil {
+		LogErrorAndSendHTTPError(w, err, http.StatusForbidden)
 		return false
 	}
 
@@ -107,12 +108,13 @@ func getRoleFromToken(tokenStrings []string) (models.Role, error) {
 	return claims.Role, nil
 }
 
-func isProperAccesLevel(role, accessLevel models.Role) bool {
+func checkAccessLevel(role, accessLevel models.Role) error {
+	err := fmt.Errorf("%v is trying to reach content restricted for %v", role, accessLevel)
 	if accessLevel == models.Admin && role == models.Carrier {
-		return false
+		return err
 	}
 	if accessLevel == models.Superuser && role != models.Superuser {
-		return false
+		return err
 	}
-	return true
+	return nil
 }

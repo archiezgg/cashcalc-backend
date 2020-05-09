@@ -7,9 +7,9 @@ Provides interface for login, returns with a JWT token (as "Token") in the heade
 * HTTP response: 
 	* _200 if successful_ 
 	* _422 if data payload is malformed_
-	* _500 if the user database cannot be accessed_
 	* _401 if the password is incorrect_
-* Payload required: _the role in the payload can either be carrier | admin | superuser_
+	* _500 if the user database cannot be accessed_
+* Payload required: _the role in the payload can either be: carrier | admin | superuser_
 * Sample required payload:
 ```
 {

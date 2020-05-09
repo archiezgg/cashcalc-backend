@@ -6,9 +6,7 @@
 
 package properties
 
-import (
-	"github.com/magiconair/properties"
-)
+import "github.com/magiconair/properties"
 
 var (
 	propertiesFile = "app.properties"
@@ -80,8 +78,9 @@ var (
 	RoadFaresWeightMax float64
 )
 
-// This function gets executed automatically when the app initializes
-func init() {
+// InitProperties initialize all properties based on the properties file,
+// should be called in main function
+func InitProperties() {
 	p := properties.MustLoadFile(propertiesFile, properties.UTF8)
 	PricingsCollection = p.MustGetString(pricingsCollectionProp)
 	CountriesCollection = p.MustGetString(countriesCollectionProp)

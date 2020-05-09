@@ -12,7 +12,10 @@ workflows:
 
   deploy:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only: master
       - dockerpush:
           context: Docker
           requires: 
@@ -21,9 +24,6 @@ workflows:
           context: Heroku
           requires:
             - build
-          filters:
-            branches:
-              only: master
   
 
 jobs:

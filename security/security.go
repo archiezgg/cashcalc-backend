@@ -50,7 +50,7 @@ func CreateToken(role models.Role) (string, error) {
 // AuthCarrierLevel serves as middleware for carrier access level
 func AuthCarrierLevel(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForRole(models.Carrier, w, r) {
+		if isTokenValidForAccessLevel(models.Carrier, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
@@ -59,7 +59,7 @@ func AuthCarrierLevel(next http.Handler) http.Handler {
 // AuthAdminLevel serves as middleware for admin access level
 func AuthAdminLevel(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForRole(models.Admin, w, r) {
+		if isTokenValidForAccessLevel(models.Admin, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
@@ -68,37 +68,51 @@ func AuthAdminLevel(next http.Handler) http.Handler {
 // AuthSuperuserLevel serves as middleware for superuser access level
 func AuthSuperuserLevel(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForRole(models.Superuser, w, r) {
+		if isTokenValidForAccessLevel(models.Superuser, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
 }
 
-func isTokenValidForRole(role models.Role, w http.ResponseWriter, r *http.Request) bool {
+func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, r *http.Request) bool {
 	tokenStrings, ok := r.Header["Token"]
 	if !ok {
 		LogErrorAndSendHTTPError(w, fmt.Errorf("no token in header"), http.StatusUnauthorized)
 		return false
 	}
 
+	role, err := getRoleFromToken(tokenStrings)
+	if err != nil {
+		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return false
+	}
+
+	if !isProperAccesLevel(role, accessLevel) {
+		LogErrorAndSendHTTPError(w, fmt.Errorf("%v is trying to reach content restricted for %v", role, accessLevel), http.StatusForbidden)
+		return false
+	}
+
+	return true
+}
+
+func getRoleFromToken(tokenStrings []string) (models.Role, error) {
 	var claims Claims
 	token, err := jwt.ParseWithClaims(tokenStrings[0], &claims, func(token *jwt.Token) (interface{}, error) {
 		return signingKey, nil
 	})
 	if err != nil || !token.Valid {
-		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
-		return false
+		return "", err
 	}
 
-	if role == models.Admin && claims.Role == models.Carrier {
-		LogErrorAndSendHTTPError(w, fmt.Errorf("%v is trying to reach content restricted for %v", claims.Role, role), http.StatusForbidden)
+	return claims.Role, nil
+}
+
+func isProperAccesLevel(role, accessLevel models.Role) bool {
+	if accessLevel == models.Admin && role == models.Carrier {
 		return false
 	}
-
-	if role == models.Superuser && claims.Role != models.Superuser {
-		LogErrorAndSendHTTPError(w, fmt.Errorf("%v is trying to reach content restricted for %v", claims.Role, role), http.StatusForbidden)
+	if accessLevel == models.Superuser && role != models.Superuser {
 		return false
 	}
-
 	return true
 }

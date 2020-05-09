@@ -9,6 +9,7 @@ workflows:
     jobs:
       - build:
           context: SonarCloud
+          context: Docker
   deploy:
     jobs:
       - build
@@ -44,4 +45,10 @@ jobs:
           name: Build binary
           command: go build -x
       - sonarcloud/scan
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
+          docker-compose build
+          docker-compose push
 

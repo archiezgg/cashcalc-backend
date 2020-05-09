@@ -87,8 +87,7 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 		return false
 	}
 
-	err = checkAccessLevel(role, accessLevel)
-	if err != nil {
+	if err := checkAccessLevel(role, accessLevel); err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusForbidden)
 		return false
 	}

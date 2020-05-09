@@ -8,7 +8,6 @@ Provides interface for login, returns with a JWT token (as "Token") in the heade
 	* _200 if successful_ 
 	* _422 if data payload is malformed_
 	* _401 if the password is incorrect_
-	* _500 if the user database cannot be accessed_
 * Payload required: _the role in the payload can either be: carrier | admin | superuser_
 * Sample required payload:
 ```
@@ -34,8 +33,9 @@ Provides interface for login, returns with a JWT token (as "Token") in the heade
 Retrieves both air and road countries.
 * HTTP method: _GET_
 * HTTP response: 
-	* _200 if successful_ 
-	* _500 if the server cannot process the data properly_
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
 {
@@ -55,7 +55,8 @@ Retrieves only air countries.
 * HTTP method: _GET_
 * HTTP response: 
 	* _200 if successful_ 
-	* _500 if the server cannot process the data properly_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
 [{
@@ -72,7 +73,8 @@ Retrieves only road countries.
 * HTTP method: _GET_
 * HTTP response: 
 	* _200 if successful_ 
-	* _500 if the server cannot process the data properly_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
 [{
@@ -88,8 +90,9 @@ Retrieves only road countries.
 Retrieves both air and road pricings with their zone numbers, weight and baseFare pairings.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
-  * _500 if the server cannot process the data properly_
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
 {
@@ -120,8 +123,9 @@ Retrieves both air and road pricings with their zone numbers, weight and baseFar
 Retrieves only the road pricings.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
-  * _500 if the server cannot process the data properly_
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
 [{
@@ -145,8 +149,9 @@ Retrieves only the road pricings.
 Retrieves only the air pricings.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
-  * _500 if the server cannot process the data properly_
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
 [{
@@ -171,7 +176,8 @@ Retrieves the road fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
   * _200 if successful_
-  * _500 if the server cannot process the data properly_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 1-5
 * Queries:
   * weight(optional): _retrieves only the fare of for the weight provided_
@@ -197,7 +203,8 @@ Retrieves the air fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
   * _200 if successful_
-  * _500 if the server cannot process the data properly_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 0-9
 * Queries:
   * weight(optional): _retrieves only the fare of for the weight provided_
@@ -223,7 +230,8 @@ Retrieves the air document fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
   * _200 if successful_
-  * _500 if the server cannot process the data properly_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 5-9
 * Queries:
   * weight(optional): _retrieves only the fare of for the weight provided_
@@ -243,8 +251,8 @@ Retrieves the pricing variables.
 * HTTP method: _GET_
 * HTTP response: 
   * _200 if successful_
-  * _500 if the server cannot process the data properly_
-
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
 {"vatPercent":27,"airFuelFarePercent":17.5,"roadFuelFarePercent":10,"express9h":8990,"express9hHun":3300,"express12h":2990,"express12hHun":1575,"insuranceLimit":330000,"minInsurance":3300,"ext":1320,"ras":6600,"tk":990}

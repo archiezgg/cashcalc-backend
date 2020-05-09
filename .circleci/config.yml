@@ -9,16 +9,21 @@ workflows:
     jobs:
       - build:
           context: SonarCloud
+
   deploy:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only: master
+      - dockerpush:
+          context: Docker
+          requires: 
+            - build
       - heroku/deploy-via-git:
           context: Heroku
           requires:
             - build
-          filters:
-            branches:
-              only: master
   
 
 jobs:
@@ -44,4 +49,13 @@ jobs:
           name: Build binary
           command: go build -x
       - sonarcloud/scan
+  
+  dockerpush:
+    machine: true
+    steps:
+      - checkout
+      - run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
+          docker-compose build
+          docker-compose push
 

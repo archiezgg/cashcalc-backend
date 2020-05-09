@@ -1,6 +1,35 @@
 ## API documentation
 This section serves as an API documentation for the frontend side to be able to query data succesfully.
 
+### /login
+Provides interface for login, returns with a JWT token (as "Token") in the header if the login was succesful.
+* HTTP method: _POST_
+* HTTP response: 
+	* _200 if successful_ 
+	* _422 if data payload is malformed_
+	* _500 if the user database cannot be accessed_
+	* _401 if the password is incorrect_
+* Payload required: _the role in the payload can either be carrier | admin | superuser_
+* Sample required payload:
+```
+{
+	"role": "carrier",
+	"password": "some-pw"
+}
+```
+* Sample errror JSON response:
+```
+{
+  "error": "Unauthorized"
+}
+```
+* Sample JSON response after succesful login:
+```
+{
+  "message": "Logged in succesfully"
+}
+```
+
 ### /countries
 Retrieves both air and road countries.
 * HTTP method: _GET_

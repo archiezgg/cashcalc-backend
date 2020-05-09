@@ -7,16 +7,27 @@
 package controllers
 
 import (
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-func TestLoginWithNoBody(t *testing.T) {
-	r := httptest.NewRequest(http.MethodPost, "/login", nil)
+var (
+	method   = http.MethodPost
+	endpoint = "/login"
+)
+
+func executeRequest(body io.Reader) *httptest.ResponseRecorder {
+	r := httptest.NewRequest(method, endpoint, body)
 	w := httptest.NewRecorder()
 	loginHandler(w, r)
+	return w
+}
+
+func TestLoginWithNoBody(t *testing.T) {
+	w := executeRequest(nil)
 
 	expected := http.StatusUnprocessableEntity
 	actual := w.Code
@@ -27,9 +38,7 @@ func TestLoginWithNoBody(t *testing.T) {
 
 func TestLoginWithBadJSON(t *testing.T) {
 	body := strings.NewReader("{\"bad\": \"request\"}")
-	r := httptest.NewRequest(http.MethodPost, "/login", body)
-	w := httptest.NewRecorder()
-	loginHandler(w, r)
+	w := executeRequest(body)
 
 	expected := http.StatusUnprocessableEntity
 	actual := w.Code

@@ -19,30 +19,31 @@ var (
 	endpoint = "/login"
 )
 
-func executeRequest(body io.Reader) *httptest.ResponseRecorder {
+func executeLoginRequest(body io.Reader) *httptest.ResponseRecorder {
 	r := httptest.NewRequest(method, endpoint, body)
+	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 	loginHandler(w, r)
 	return w
 }
 
 func TestLoginWithNoBody(t *testing.T) {
-	w := executeRequest(nil)
+	w := executeLoginRequest(nil)
 
 	expected := http.StatusUnprocessableEntity
 	actual := w.Code
 	if actual != expected {
-		t.Errorf("%v endpoint failed: expected status code %v, got %v", "/login", expected, actual)
+		t.Errorf("%v endpoint failed: expected status code %v got %v", "/login", expected, actual)
 	}
 }
 
 func TestLoginWithBadJSON(t *testing.T) {
 	body := strings.NewReader("{\"bad\": \"request\"}")
-	w := executeRequest(body)
+	w := executeLoginRequest(body)
 
 	expected := http.StatusUnprocessableEntity
 	actual := w.Code
 	if actual != expected {
-		t.Errorf("%v endpoint failed: expected status code %v, got %v", "/login", expected, actual)
+		t.Errorf("%v endpoint failed: expected status code %v got %v", "/login", expected, actual)
 	}
 }

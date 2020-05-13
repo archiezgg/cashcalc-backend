@@ -7,15 +7,27 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 // StartupRouter creates instance of registers all the routes of the subroutes, supposed to be called in main func
 func StartupRouter() (router *mux.Router) {
+	app, err := newrelic.NewApplication(
+		newrelic.ConfigAppName("cashcalc-backend"),
+		newrelic.ConfigLicense(os.Getenv("NEW_RELIC_LICENSE_KEY")),
+	)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	router = mux.NewRouter()
-	router.HandleFunc("/", welcomeHandler).Methods("GET")
+
+	router.HandleFunc(newrelic.WrapHandleFunc(app, "/", welcomeHandler)).Methods("GET")
 	registerLoginRoutes(router)
 	registerCountriesRoutes(router)
 	registerPricingsRoutes(router)

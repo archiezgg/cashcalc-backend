@@ -67,6 +67,7 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	refreshTokens = append(refreshTokens, refreshToken)
 	return refreshToken, nil
 }
 

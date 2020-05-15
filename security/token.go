@@ -16,8 +16,9 @@ import (
 )
 
 var (
-	accessKey  = []byte(os.Getenv("ACCESS_KEY"))
-	refreshKey = []byte(os.Getenv("REFRESH_KEY"))
+	accessKey     = []byte(os.Getenv("ACCESS_KEY"))
+	refreshKey    = []byte(os.Getenv("REFRESH_KEY"))
+	refreshTokens []string // TODO implement it with Redis
 )
 
 // CustomClaims is the struct for the Token Claims including role
@@ -67,4 +68,14 @@ func CreateRefreshToken(role models.Role) (string, error) {
 		return "", err
 	}
 	return refreshToken, nil
+}
+
+// IsRefreshTokenValid takes a token as a string and decides if it is in memory DB
+func IsRefreshTokenValid(refreshToken string) bool {
+	for _, t := range refreshTokens {
+		if refreshToken == t {
+			return true
+		}
+	}
+	return false
 }

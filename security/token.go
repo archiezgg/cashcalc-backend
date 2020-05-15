@@ -15,7 +15,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-var signingKey = []byte(os.Getenv("ACCESS_KEY"))
+var accessKey = []byte(os.Getenv("ACCESS_KEY"))
 
 // CustomClaims is the struct for the Token Claims including role
 // and standard JWT claims
@@ -24,9 +24,9 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
-// CreateToken takes a Role as param and creates a signed token
-func CreateToken(role models.Role) (string, error) {
-	if string(signingKey) == "" {
+// CreateAccessToken takes a Role as param and creates a signed token
+func CreateAccessToken(role models.Role) (string, error) {
+	if string(accessKey) == "" {
 		return "", fmt.Errorf("ACCESS_KEY is unset")
 	}
 
@@ -38,7 +38,7 @@ func CreateToken(role models.Role) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := token.SignedString(signingKey)
+	signedToken, err := token.SignedString(accessKey)
 	if err != nil {
 		return "", err
 	}

@@ -46,7 +46,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	st, err := security.CreateToken(u.Role)
+	st, err := security.CreateAccessToken(u.Role)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return

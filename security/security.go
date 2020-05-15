@@ -76,7 +76,7 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 func getRoleFromToken(tokenStrings []string) (models.Role, error) {
 	var claims CustomClaims
 	token, err := jwt.ParseWithClaims(tokenStrings[0], &claims, func(token *jwt.Token) (interface{}, error) {
-		return signingKey, nil
+		return accessKey, nil
 	})
 	if err != nil || !token.Valid {
 		return "", err

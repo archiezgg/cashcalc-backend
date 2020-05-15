@@ -59,7 +59,7 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 		return false
 	}
 
-	role, err := getRoleFromToken(tokenStrings)
+	role, err := getRoleFromToken(tokenStrings[0], accessKey)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return false
@@ -73,10 +73,10 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	return true
 }
 
-func getRoleFromToken(tokenStrings []string) (models.Role, error) {
+func getRoleFromToken(tokenString string, key []byte) (models.Role, error) {
 	var claims CustomClaims
-	token, err := jwt.ParseWithClaims(tokenStrings[0], &claims, func(token *jwt.Token) (interface{}, error) {
-		return accessKey, nil
+	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
+		return key, nil
 	})
 	if err != nil || !token.Valid {
 		return "", err

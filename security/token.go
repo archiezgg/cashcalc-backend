@@ -15,7 +15,10 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-var accessKey = []byte(os.Getenv("ACCESS_KEY"))
+var (
+	accessKey  = []byte(os.Getenv("ACCESS_KEY"))
+	refreshKey = []byte(os.Getenv("REFRESH_KEY"))
+)
 
 // CustomClaims is the struct for the Token Claims including role
 // and standard JWT claims
@@ -24,7 +27,7 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
-// CreateAccessToken takes a Role as param and creates a signed token
+// CreateAccessToken takes a Role as param and creates a signed access token
 func CreateAccessToken(role models.Role) (string, error) {
 	if string(accessKey) == "" {
 		return "", fmt.Errorf("ACCESS_KEY is unset")
@@ -38,9 +41,30 @@ func CreateAccessToken(role models.Role) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := token.SignedString(accessKey)
+	accessToken, err := token.SignedString(accessKey)
 	if err != nil {
 		return "", err
 	}
-	return signedToken, nil
+	return accessToken, nil
+}
+
+// CreateRefreshToken takes a Role as param and creates a signed refresh token
+func CreateRefreshToken(role models.Role) (string, error) {
+	if string(refreshKey) == "" {
+		return "", fmt.Errorf("REFRESH_KEY is unset")
+	}
+
+	claims := CustomClaims{
+		role,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 7).Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	refreshToken, err := token.SignedString(refreshKey)
+	if err != nil {
+		return "", err
+	}
+	return refreshToken, nil
 }

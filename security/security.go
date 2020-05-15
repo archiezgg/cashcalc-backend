@@ -10,21 +10,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"time"
 
 	"github.com/IstvanN/cashcalc-backend/models"
 	jwt "github.com/dgrijalva/jwt-go"
 )
-
-var signingKey = []byte(os.Getenv("ACCESS_KEY"))
-
-// Claims is the struct for the Token Claims including role
-// and standard JWT claims
-type Claims struct {
-	Role models.Role `json:"role"`
-	jwt.StandardClaims
-}
 
 // LogErrorAndSendHTTPError takes and error and a http status code, and formats them to
 // create proper logging and formatted http respond at the same time
@@ -34,27 +23,6 @@ func LogErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode i
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatusCode)
 	w.Write([]byte(errorMsg))
-}
-
-// CreateToken takes a Role as param and creates a signed token
-func CreateToken(role models.Role) (string, error) {
-	if string(signingKey) == "" {
-		return "", fmt.Errorf("ACCESS_KEY is unset")
-	}
-
-	claims := Claims{
-		role,
-		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 10).Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := token.SignedString(signingKey)
-	if err != nil {
-		return "", err
-	}
-	return signedToken, nil
 }
 
 // AccessLevelCarrier serves as middleware for carrier access level
@@ -106,7 +74,7 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 }
 
 func getRoleFromToken(tokenStrings []string) (models.Role, error) {
-	var claims Claims
+	var claims CustomClaims
 	token, err := jwt.ParseWithClaims(tokenStrings[0], &claims, func(token *jwt.Token) (interface{}, error) {
 		return signingKey, nil
 	})

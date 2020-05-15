@@ -46,13 +46,20 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	st, err := security.CreateAccessToken(u.Role)
+	at, err := security.CreateAccessToken(u.Role)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Token", st)
+	rt, err := security.CreateRefreshToken(u.Role)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Access-Token", at)
+	w.Header().Set("Refresh-Token", rt)
 	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
 	log.Printf("a user with the role '%v' has successfully logged in", userToAuth.Role)
 }

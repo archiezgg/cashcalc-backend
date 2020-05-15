@@ -10,7 +10,8 @@ services:
         environment:
             MONGODB_URI: "mongodb://mongo:27017/cashcalc"
             PORT: "8080"
-            ACCESS_KEY: "test_key"
+            ACCESS_KEY: "test_access_key"
+            REFRESH_KEY: "test_refresh_key"
         depends_on:
             - mongo
     mongo:

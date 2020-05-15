@@ -53,7 +53,7 @@ func AccessLevelSuperuser(next http.Handler) http.Handler {
 }
 
 func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, r *http.Request) bool {
-	tokenStrings, ok := r.Header["Token"]
+	tokenStrings, ok := r.Header["Access-Token"]
 	if !ok {
 		LogErrorAndSendHTTPError(w, fmt.Errorf("no token in header"), http.StatusUnauthorized)
 		return false

@@ -175,7 +175,7 @@ Retrieves only the air pricings.
 Retrieves the road fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
+	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 1-5
@@ -202,7 +202,7 @@ Retrieves the road fares of the zone provided.
 Retrieves the air fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
+	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 0-9
@@ -229,7 +229,7 @@ Retrieves the air fares of the zone provided.
 Retrieves the air document fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
+	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 5-9
@@ -250,7 +250,7 @@ Retrieves the air document fares of the zone provided.
 Retrieves the pricing variables.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
+	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:

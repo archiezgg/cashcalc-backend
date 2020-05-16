@@ -20,6 +20,7 @@ func StartupRouter() (router *mux.Router) {
 	registerCountriesRoutes(router)
 	registerPricingsRoutes(router)
 	registerPricingVarsRoutes(router)
+	registerSuperuserRoutes(router)
 	registerDebugRoutes(router)
 	router.Use(setJSONHeaderMiddleWare)
 	return

@@ -12,6 +12,7 @@ var (
 	client   *redis.Client
 )
 
+//StartupRedis initiates conenction to Redis and returns with the client
 func StartupRedis() *redis.Client {
 	opt, err := redis.ParseURL(redisURL)
 	if err != nil {
@@ -25,5 +26,10 @@ func StartupRedis() *redis.Client {
 	}
 
 	log.Println("successfully connected to Redis!")
+	return client
+}
+
+// RedisClient exposes the current connection to Redis
+func RedisClient() *redis.Client {
 	return client
 }

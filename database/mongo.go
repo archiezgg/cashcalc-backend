@@ -28,7 +28,7 @@ func StartupMongo() *mgo.Session {
 		log.Fatal("couldn't connect to database: ", err)
 	}
 
-	log.Println(("successfully connected to the database!"))
+	log.Println(("successfully connected to mongoDB!"))
 	return dbSession
 }
 

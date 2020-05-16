@@ -21,7 +21,9 @@ var port = ":" + os.Getenv("PORT")
 func main() {
 	properties.InitProperties()
 	db := database.Startup()
+	redis := database.StartupRedis()
 	defer db.Close()
+	defer redis.Close()
 
 	router := controllers.StartupRouter()
 

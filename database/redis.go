@@ -1,0 +1,29 @@
+package database
+
+import (
+	"log"
+	"os"
+
+	"github.com/go-redis/redis"
+)
+
+var (
+	redisURL = os.Getenv("REDIS_URL")
+	client   *redis.Client
+)
+
+func StartupRedis() *redis.Client {
+	opt, err := redis.ParseURL(redisURL)
+	if err != nil {
+		log.Fatalln("error parsing URL of Redis: ", err)
+	}
+
+	client = redis.NewClient(opt)
+	_, err = client.Ping().Result()
+	if err != nil {
+		log.Fatalln("error connecting to Redis: ", err)
+	}
+
+	log.Println("successfully connected to Redis!")
+	return client
+}

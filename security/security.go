@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/IstvanN/cashcalc-backend/models"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -53,13 +54,13 @@ func AccessLevelSuperuser(next http.Handler) http.Handler {
 }
 
 func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, r *http.Request) bool {
-	tokenStrings, ok := r.Header["Access-Token"]
-	if !ok {
-		LogErrorAndSendHTTPError(w, fmt.Errorf("no token in header"), http.StatusUnauthorized)
+	token, err := extractTokenFromHeader(r)
+	if err != nil {
+		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return false
 	}
 
-	role, err := getRoleFromToken(tokenStrings[0], accessKey)
+	role, err := getRoleFromToken(token, accessKey)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return false
@@ -71,6 +72,20 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	}
 
 	return true
+}
+
+func extractTokenFromHeader(r *http.Request) (string, error) {
+	tokenStrings, ok := r.Header["Authorization"]
+	if !ok {
+		return "", fmt.Errorf("no token provided in header")
+	}
+
+	bearerToken := tokenStrings[0]
+	sliced := strings.Split(bearerToken, " ")
+	if len(sliced) != 2 {
+		return "", fmt.Errorf("token format is not \"Bearer <Token>\"")
+	}
+	return sliced[1], nil
 }
 
 func getRoleFromToken(tokenString string, key []byte) (models.Role, error) {

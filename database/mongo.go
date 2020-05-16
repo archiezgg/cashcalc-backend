@@ -20,8 +20,8 @@ var (
 	dbSession *mgo.Session
 )
 
-// Startup is the init call of the mongo DB, supposed to be called in the main function
-func Startup() *mgo.Session {
+// StartupMongo is the init call of the mongo DB, supposed to be called in the main function
+func StartupMongo() *mgo.Session {
 	var err error
 	dbSession, err = mgo.Dial(mongoURI)
 	if err != nil {

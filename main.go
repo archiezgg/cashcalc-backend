@@ -20,9 +20,9 @@ var port = ":" + os.Getenv("PORT")
 
 func main() {
 	properties.InitProperties()
-	db := database.Startup()
+	mongo := database.StartupMongo()
 	redis := database.StartupRedis()
-	defer db.Close()
+	defer mongo.Close()
 	defer redis.Close()
 
 	router := controllers.StartupRouter()

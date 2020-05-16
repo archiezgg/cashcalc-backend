@@ -70,6 +70,9 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	repositories.SaveRefreshToken(refreshToken, role)
+
+	if err := repositories.SaveRefreshToken(refreshToken, role); err != nil {
+		return "", err
+	}
 	return refreshToken, nil
 }

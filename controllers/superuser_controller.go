@@ -21,8 +21,8 @@ func registerSuperuserRoutes(router *mux.Router) {
 	ep := properties.SuperuserEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("/tokens", tokensHandler).Methods(http.MethodGet)
-	s.HandleFunc("/tokens/delete", deleteTokenHandler).Methods(http.MethodDelete)
-	s.HandleFunc("/tokens/deleteBulk", deleteBulkTokenHandler).Methods(http.MethodDelete)
+	s.HandleFunc("/tokens/revoke", revokeTokenHandler).Methods(http.MethodDelete)
+	s.HandleFunc("/tokens/revokeBulk", revokeBulkTokenHandler).Methods(http.MethodDelete)
 	s.Use(security.AccessLevelSuperuser)
 }
 
@@ -35,7 +35,7 @@ func tokensHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tokens)
 }
 
-func deleteTokenHandler(w http.ResponseWriter, r *http.Request) {
+func revokeTokenHandler(w http.ResponseWriter, r *http.Request) {
 	type requestedBody struct {
 		RefreshToken string `json:"refreshToken"`
 	}
@@ -53,7 +53,7 @@ func deleteTokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("{\"message\": \"Token deleted successfully\"}"))
 }
 
-func deleteBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
+func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
 	type requestedBody struct {
 		RefreshTokens []string `json:"refreshTokens"`
 	}

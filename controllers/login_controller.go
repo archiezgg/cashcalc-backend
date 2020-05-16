@@ -25,6 +25,7 @@ import (
 func registerLoginRoutes(router *mux.Router) {
 	ep := properties.LoginEndpoint
 	router.HandleFunc(ep, loginHandler).Methods(http.MethodPost)
+	router.HandleFunc("/refresh", refreshHandler).Methods(http.MethodPost)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +51,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("a user with the role '%v' has successfully logged in", userToAuth.Role)
 }
 
-func refresh(w http.ResponseWriter, r *http.Request) {
+func refreshHandler(w http.ResponseWriter, r *http.Request) {
 	type requestedBody struct {
 		RefreshToken string `json:"refreshToken"`
 	}
@@ -58,15 +59,17 @@ func refresh(w http.ResponseWriter, r *http.Request) {
 	var rb requestedBody
 	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
 	}
 
 	role, err := security.GetRoleFromRefreshToken(rb.RefreshToken)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return
 	}
 
 	generateTokenPairsAndSetThemAsHeaders(w, role)
-	security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
+	// security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
 	w.Write([]byte("{\"message\": \"Token refreshed successfully\"}"))
 }
 

@@ -2,7 +2,7 @@
 This section serves as an API documentation for the frontend side to be able to query data succesfully.
 
 ### /login
-Provides interface for login, returns with a JWT token (as "Token") in the header if the login was succesful.
+Provides interface for login, returns with a JWT access token (as "Access-Token") and a refresh token (as "Refresh-Token") in the header if the login was succesful.
 * HTTP method: _POST_
 * HTTP response: 
 	* _200 if successful_ 
@@ -26,6 +26,32 @@ Provides interface for login, returns with a JWT token (as "Token") in the heade
 ```
 {
   "message": "Logged in succesfully"
+}
+```
+
+### /login
+Provides interface for refresh the access token.
+* HTTP method: _POST_
+* HTTP response: 
+	* _200 if successful_ 
+	* _422 if data payload is malformed_
+	* _401 if the refresh token is not valid_
+* Sample required payload:
+```
+{
+	"refreshToken": "some-refresh-token"
+}
+```
+* Sample errror JSON response:
+```
+{
+  "error": "Unauthorized"
+}
+```
+* Sample JSON response after succesful token refreshing:
+```
+{
+  "message": "Token refreshed succesfully"
 }
 ```
 

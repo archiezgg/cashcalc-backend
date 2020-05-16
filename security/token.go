@@ -43,7 +43,7 @@ func CreateAccessToken(role models.Role) (string, error) {
 	claims := CustomClaims{
 		role,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * time.Duration(properties.AccessTokenExp)).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * properties.AccessTokenExp).Unix(),
 		},
 	}
 
@@ -64,7 +64,7 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	claims := CustomClaims{
 		role,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * time.Duration(properties.RefreshTokenExp)).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix(),
 		},
 	}
 

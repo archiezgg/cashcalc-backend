@@ -18,6 +18,7 @@ const (
 	pricingVarsCollectionProp = "collection.pricingvars"
 	usersCollectionProp       = "collection.users"
 	loginEndpointProp         = "endpoint.login"
+	refreshEndpointProp       = "endpoint.refresh"
 	pricingsEndpointProp      = "endpoint.pricings"
 	countriesEndpointProp     = "endpoint.countries"
 	pricingVarsEndpointProp   = "endpoint.pricingvars"
@@ -46,6 +47,8 @@ var (
 	UsersCollection string
 	// LoginEndpoint is the endpoint for handling login requests
 	LoginEndpoint string
+	// RefreshEndpoint is the endpoint for refreshing tokens
+	RefreshEndpoint string
 	// PricingsEndpoint is the endpoint for pricings
 	PricingsEndpoint string
 	// CountriesEndpoint is the endpoint for countries
@@ -87,6 +90,7 @@ func InitProperties() {
 	PricingVarsCollection = p.MustGetString(pricingVarsCollectionProp)
 	UsersCollection = p.MustGetString(usersCollectionProp)
 	LoginEndpoint = p.MustGetString(loginEndpointProp)
+	RefreshEndpoint = p.MustGetString(refreshEndpointProp)
 	PricingsEndpoint = p.MustGetString(pricingsEndpointProp)
 	CountriesEndpoint = p.MustGetString(countriesEndpointProp)
 	PricingVarsEndpoint = p.MustGetString(pricingVarsEndpointProp)

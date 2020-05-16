@@ -23,9 +23,8 @@ import (
 )
 
 func registerLoginRoutes(router *mux.Router) {
-	ep := properties.LoginEndpoint
-	router.HandleFunc(ep, loginHandler).Methods(http.MethodPost)
-	router.HandleFunc("/refresh", refreshHandler).Methods(http.MethodPost)
+	router.HandleFunc(properties.LoginEndpoint, loginHandler).Methods(http.MethodPost)
+	router.HandleFunc(properties.RefreshEndpoint, refreshHandler).Methods(http.MethodPost)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,8 +67,8 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
 	generateTokenPairsAndSetThemAsHeaders(w, role)
-	// security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
 	w.Write([]byte("{\"message\": \"Token refreshed successfully\"}"))
 }
 

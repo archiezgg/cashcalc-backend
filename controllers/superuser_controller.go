@@ -50,7 +50,7 @@ func revokeTokenHandler(w http.ResponseWriter, r *http.Request) {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
-	w.Write([]byte("{\"message\": \"Token deleted successfully\"}"))
+	w.Write([]byte("{\"message\": \"Token revoked successfully\"}"))
 }
 
 func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,5 +68,5 @@ func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
-	w.Write([]byte("{\"message\": \"Multiple tokens deleted successfully\"}"))
+	w.Write([]byte("{\"message\": \"Multiple tokens revoked successfully\"}"))
 }

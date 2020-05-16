@@ -2,7 +2,7 @@
 This section serves as an API documentation for the frontend side to be able to query data succesfully.
 
 ### /login
-Provides interface for login, returns with a JWT token (as "Token") in the header if the login was succesful.
+Provides interface for login, returns with a JWT access token (as "Access-Token") and a refresh token (as "Refresh-Token") in the header if the login was succesful.
 * HTTP method: _POST_
 * HTTP response: 
 	* _200 if successful_ 
@@ -26,6 +26,32 @@ Provides interface for login, returns with a JWT token (as "Token") in the heade
 ```
 {
   "message": "Logged in succesfully"
+}
+```
+
+### /refresh
+Provides interface to refresh the access token.
+* HTTP method: _POST_
+* HTTP response: 
+	* _200 if successful_ 
+	* _422 if data payload is malformed_
+	* _401 if the refresh token is not valid_
+* Sample required payload:
+```
+{
+	"refreshToken": "some-refresh-token"
+}
+```
+* Sample errror JSON response:
+```
+{
+  "error": "Unauthorized"
+}
+```
+* Sample JSON response after succesful token refreshing:
+```
+{
+  "message": "Token refreshed succesfully"
 }
 ```
 
@@ -175,7 +201,7 @@ Retrieves only the air pricings.
 Retrieves the road fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
+	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 1-5
@@ -202,7 +228,7 @@ Retrieves the road fares of the zone provided.
 Retrieves the air fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
+	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 0-9
@@ -229,7 +255,7 @@ Retrieves the air fares of the zone provided.
 Retrieves the air document fares of the zone provided.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
+	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 5-9
@@ -250,7 +276,7 @@ Retrieves the air document fares of the zone provided.
 Retrieves the pricing variables.
 * HTTP method: _GET_
 * HTTP response: 
-  * _200 if successful_
+	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:

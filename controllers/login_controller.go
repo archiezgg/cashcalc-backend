@@ -23,8 +23,8 @@ import (
 )
 
 func registerLoginRoutes(router *mux.Router) {
-	ep := properties.LoginEndpoint
-	router.HandleFunc(ep, loginHandler).Methods(http.MethodPost)
+	router.HandleFunc(properties.LoginEndpoint, loginHandler).Methods(http.MethodPost)
+	router.HandleFunc(properties.RefreshEndpoint, refreshHandler).Methods(http.MethodPost)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,14 +45,46 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
+	generateTokenPairsAndSetThemAsHeaders(w, u.Role)
+	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
+	log.Printf("a user with the role '%v' has successfully logged in", userToAuth.Role)
+}
 
-	st, err := security.CreateToken(u.Role)
+func refreshHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		RefreshToken string `json:"refreshToken"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	role, err := security.GetRoleFromRefreshToken(rb.RefreshToken)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return
+	}
+
+	security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
+	generateTokenPairsAndSetThemAsHeaders(w, role)
+	w.Write([]byte("{\"message\": \"Token refreshed successfully\"}"))
+}
+
+func generateTokenPairsAndSetThemAsHeaders(w http.ResponseWriter, role models.Role) {
+	at, err := security.CreateAccessToken(role)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Token", st)
-	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
-	log.Printf("a user with the role '%v' has successfully logged in", userToAuth.Role)
+	rt, err := security.CreateRefreshToken(role)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Access-Token", at)
+	w.Header().Set("Refresh-Token", rt)
 }

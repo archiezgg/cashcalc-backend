@@ -11,6 +11,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/IstvanN/cashcalc-backend/properties"
+
 	"github.com/IstvanN/cashcalc-backend/models"
 	jwt "github.com/dgrijalva/jwt-go"
 )
@@ -41,7 +43,7 @@ func CreateAccessToken(role models.Role) (string, error) {
 	claims := CustomClaims{
 		role,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * time.Duration(properties.AccessTokenExp)).Unix(),
 		},
 	}
 
@@ -62,7 +64,7 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	claims := CustomClaims{
 		role,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24 * 7).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * time.Duration(properties.RefreshTokenExp)).Unix(),
 		},
 	}
 

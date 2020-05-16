@@ -71,12 +71,24 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	return refreshToken, nil
 }
 
-// ValidateRefreshToken takes a token as a string and decides if it is in memory DB
-func ValidateRefreshToken(refreshToken string) error {
+func isRefreshTokenValid(rt string) bool {
 	for _, t := range refreshTokens {
-		if refreshToken == t {
-			return nil
+		if rt == t {
+			return true
 		}
 	}
-	return fmt.Errorf("the refresh token %v is invalid", refreshToken)
+	return false
+}
+
+// GetRoleFromRefreshToken takes a token as a string and returns with the role if token is valid
+func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
+	if !isRefreshTokenValid(refreshToken) {
+		return "", fmt.Errorf("the refresh token %v is invalid", refreshToken)
+	}
+
+	role, err := getRoleFromToken(refreshToken, refreshKey)
+	if err != nil {
+		return "", err
+	}
+	return role, nil
 }

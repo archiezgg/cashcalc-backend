@@ -45,14 +45,39 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
+	generateTokenPairsAndSetThemAsHeaders(w, u.Role)
+	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
+	log.Printf("a user with the role '%v' has successfully logged in", userToAuth.Role)
+}
 
-	at, err := security.CreateAccessToken(u.Role)
+func refresh(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		RefreshToken string `json:"refreshToken"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+	}
+
+	role, err := security.GetRoleFromRefreshToken(rb.RefreshToken)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+	}
+
+	generateTokenPairsAndSetThemAsHeaders(w, role)
+	security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
+	w.Write([]byte("{\"message\": \"Token refreshed successfully\"}"))
+}
+
+func generateTokenPairsAndSetThemAsHeaders(w http.ResponseWriter, role models.Role) {
+	at, err := security.CreateAccessToken(role)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	rt, err := security.CreateRefreshToken(u.Role)
+	rt, err := security.CreateRefreshToken(role)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -60,6 +85,4 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Token", at)
 	w.Header().Set("Refresh-Token", rt)
-	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
-	log.Printf("a user with the role '%v' has successfully logged in", userToAuth.Role)
 }

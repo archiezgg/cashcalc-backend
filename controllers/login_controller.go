@@ -37,6 +37,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	u, err := repositories.GetUserByRole(userToAuth.Role)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))

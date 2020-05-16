@@ -283,3 +283,61 @@ Retrieves the pricing variables.
 ```
 {"vatPercent":27,"airFuelFarePercent":17.5,"roadFuelFarePercent":10,"express9h":8990,"express9hHun":3300,"express12h":2990,"express12hHun":1575,"insuranceLimit":330000,"minInsurance":3300,"ext":1320,"ras":6600,"tk":990}
 ```
+
+### /superuser/tokens
+Retrieves the refresh tokens stored in database.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample JSON response:
+```
+{
+	"some-token": carrier,
+	"another-token": admin
+}
+```
+
+### /superuser/tokens/revoke
+Revokes a single refresh token.
+* HTTP method: _DELETE_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample required payload:
+```
+{
+	"refreshToken": "some-token"
+}
+```
+* Sample JSON response:
+```
+{
+  "message": "Token revoked successfully"
+}
+```
+
+### /superuser/tokens/revokeBulk
+Revokes multiple refresh tokens.
+* HTTP method: _DELETE_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample required payload:
+```
+{
+	"refreshTokens": [
+		"some-token",
+		"another-token"
+	]
+}
+```
+* Sample JSON response:
+```
+{
+  "message": "Multiple tokens revoked successfully"
+}
+```

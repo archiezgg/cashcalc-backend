@@ -41,3 +41,32 @@ func DeleteRefreshToken(refreshToken string) error {
 	}
 	return nil
 }
+
+// DeleteBulkRefreshToken deletes multiple refresh tokens from DB
+func DeleteBulkRefreshToken(refreshTokens []string) error {
+	for _, rt := range refreshTokens {
+		err := DeleteRefreshToken(rt)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetAllTokens returns with a map of string:string containing all token data
+func GetAllTokens() (map[string]models.Role, error) {
+	tokens, err := database.RedisClient().Keys("*").Result()
+	if err != nil {
+		return nil, err
+	}
+
+	tokensMap := make(map[string]models.Role)
+	for _, t := range tokens {
+		role, err := GetRoleFromRefreshToken(t)
+		if err != nil {
+			return nil, err
+		}
+		tokensMap[t] = role
+	}
+	return tokensMap, nil
+}

@@ -76,3 +76,12 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	}
 	return refreshToken, nil
 }
+
+// GetRoleFromRefreshToken takes a token and gets the role with the refresh key
+func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
+	role, err := getRoleFromToken(refreshToken, refreshKey)
+	if err != nil {
+		return "", err
+	}
+	return role, nil
+}

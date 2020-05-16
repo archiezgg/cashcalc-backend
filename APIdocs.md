@@ -29,8 +29,8 @@ Provides interface for login, returns with a JWT access token (as "Access-Token"
 }
 ```
 
-### /login
-Provides interface for refresh the access token.
+### /refresh
+Provides interface to refresh the access token.
 * HTTP method: _POST_
 * HTTP response: 
 	* _200 if successful_ 

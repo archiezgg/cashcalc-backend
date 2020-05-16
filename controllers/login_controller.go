@@ -70,10 +70,10 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
 	if err := generateTokenPairsAndSetThemAsHeaders(w, role); err != nil {
 		return
 	}
+	security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
 	w.Write([]byte("{\"message\": \"Token refreshed successfully\"}"))
 }
 

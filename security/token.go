@@ -18,8 +18,12 @@ import (
 var (
 	accessKey     = []byte(os.Getenv("ACCESS_KEY"))
 	refreshKey    = []byte(os.Getenv("REFRESH_KEY"))
-	refreshTokens []string // TODO implement it with Redis
+	refreshTokens map[string]models.Role // TODO implement it with Redis
 )
+
+func init() {
+	refreshTokens = make(map[string]models.Role)
+}
 
 // CustomClaims is the struct for the Token Claims including role
 // and standard JWT claims
@@ -67,39 +71,20 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	refreshTokens = append(refreshTokens, refreshToken)
+	refreshTokens[refreshToken] = role
 	return refreshToken, nil
 }
 
 // GetRoleFromRefreshToken takes a token as a string and returns with the role if token is valid
 func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
-	if !isRefreshTokenValid(refreshToken) {
-		return "", fmt.Errorf("the refresh token %v is invalid", refreshToken)
-	}
-
-	role, err := getRoleFromToken(refreshToken, refreshKey)
-	if err != nil {
-		return "", err
+	role, ok := refreshTokens[refreshToken]
+	if !ok {
+		return "", fmt.Errorf("the refresh token %v is not in database", refreshToken)
 	}
 	return role, nil
 }
 
 // DeleteRefreshTokenFromMemory deletes the refresh token from the in-memory DB
 func DeleteRefreshTokenFromMemory(rt string) {
-	for i, t := range refreshTokens {
-		if rt == t {
-			refreshTokens[len(refreshTokens)-1], refreshTokens[i] = refreshTokens[i], refreshTokens[len(refreshTokens)-1]
-			refreshTokens = refreshTokens[:len(refreshTokens)-1]
-
-		}
-	}
-}
-
-func isRefreshTokenValid(rt string) bool {
-	for _, t := range refreshTokens {
-		if rt == t {
-			return true
-		}
-	}
-	return false
+	delete(refreshTokens, rt)
 }

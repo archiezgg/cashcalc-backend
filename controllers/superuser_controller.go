@@ -22,6 +22,7 @@ func registerSuperuserRoutes(router *mux.Router) {
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("/tokens", tokensHandler).Methods(http.MethodGet)
 	s.HandleFunc("/tokens/delete", deleteTokenHandler).Methods(http.MethodDelete)
+	s.HandleFunc("/tokens/deleteBulk", deleteBulkTokenHandler).Methods(http.MethodDelete)
 	s.Use(security.AccessLevelSuperuser)
 }
 
@@ -50,4 +51,22 @@ func deleteTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("{\"message\": \"Token deleted successfully\"}"))
+}
+
+func deleteBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		RefreshTokens []string `json:"refreshTokens"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repositories.DeleteBulkRefreshToken(rb.RefreshTokens); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	w.Write([]byte("{\"message\": \"Multiple tokens deleted successfully\"}"))
 }

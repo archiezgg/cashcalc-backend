@@ -37,6 +37,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	u, err := repositories.GetUserByRole(userToAuth.Role)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
@@ -63,14 +64,18 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	role, err := security.GetRoleFromRefreshToken(rb.RefreshToken)
+	role, err := repositories.GetRoleFromRefreshToken(rb.RefreshToken)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
 
-	security.DeleteRefreshTokenFromMemory(rb.RefreshToken)
 	if err := generateTokenPairsAndSetThemAsHeaders(w, role); err != nil {
+		return
+	}
+
+	if err := repositories.DeleteRefreshToken(rb.RefreshToken); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write([]byte("{\"message\": \"Token refreshed successfully\"}"))

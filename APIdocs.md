@@ -341,3 +341,17 @@ Revokes multiple refresh tokens.
   "message": "Multiple tokens revoked successfully"
 }
 ```
+
+### /superuser/tokens/revokeAll
+Revokes all refresh tokens.
+* HTTP method: _DELETE_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample JSON response:
+```
+{
+  "message": "All tokens revoked successfully"
+}
+```

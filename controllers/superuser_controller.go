@@ -23,6 +23,7 @@ func registerSuperuserRoutes(router *mux.Router) {
 	s.HandleFunc("/tokens", tokensHandler).Methods(http.MethodGet)
 	s.HandleFunc("/tokens/revoke", revokeTokenHandler).Methods(http.MethodDelete)
 	s.HandleFunc("/tokens/revokeBulk", revokeBulkTokenHandler).Methods(http.MethodDelete)
+	s.HandleFunc("/tokens/revokeAll", revokeAllTokensHandler).Methods(http.MethodDelete)
 	s.Use(security.AccessLevelSuperuser)
 }
 
@@ -69,4 +70,12 @@ func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("{\"message\": \"Multiple tokens revoked successfully\"}"))
+}
+
+func revokeAllTokensHandler(w http.ResponseWriter, r *http.Request) {
+	if err := repositories.DeleteAllTokens(); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	w.Write([]byte("{\"message\": \"All tokens revoked successfully\"}"))
 }

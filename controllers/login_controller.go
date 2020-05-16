@@ -64,7 +64,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	role, err := security.GetRoleFromRefreshToken(rb.RefreshToken)
+	role, err := repositories.GetRoleFromRefreshToken(rb.RefreshToken)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return

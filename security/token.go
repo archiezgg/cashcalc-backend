@@ -41,7 +41,7 @@ func CreateAccessToken(role models.Role) (string, error) {
 	claims := CustomClaims{
 		role,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 10).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(),
 		},
 	}
 

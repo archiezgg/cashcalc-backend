@@ -70,3 +70,11 @@ func GetAllTokens() (map[string]models.Role, error) {
 	}
 	return tokensMap, nil
 }
+
+// DeleteAllTokens removes all tokens from DB
+func DeleteAllTokens() error {
+	if err := database.RedisClient().FlushDB().Err(); err != nil {
+		return fmt.Errorf("error flushing all tokens from DB")
+	}
+	return nil
+}

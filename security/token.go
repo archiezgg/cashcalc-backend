@@ -11,6 +11,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/IstvanN/cashcalc-backend/repositories"
+
 	"github.com/IstvanN/cashcalc-backend/properties"
 
 	"github.com/IstvanN/cashcalc-backend/models"
@@ -18,14 +20,9 @@ import (
 )
 
 var (
-	accessKey     = []byte(os.Getenv("ACCESS_KEY"))
-	refreshKey    = []byte(os.Getenv("REFRESH_KEY"))
-	refreshTokens map[string]models.Role // TODO implement it with Redis
+	accessKey  = []byte(os.Getenv("ACCESS_KEY"))
+	refreshKey = []byte(os.Getenv("REFRESH_KEY"))
 )
-
-func init() {
-	refreshTokens = make(map[string]models.Role)
-}
 
 // CustomClaims is the struct for the Token Claims including role
 // and standard JWT claims
@@ -73,20 +70,6 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	refreshTokens[refreshToken] = role
+	repositories.SaveRefreshToken(refreshToken, role)
 	return refreshToken, nil
-}
-
-// GetRoleFromRefreshToken takes a token as a string and returns with the role if token is valid
-func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
-	role, ok := refreshTokens[refreshToken]
-	if !ok {
-		return "", fmt.Errorf("the refresh token %v is not in database", refreshToken)
-	}
-	return role, nil
-}
-
-// DeleteRefreshTokenFromMemory deletes the refresh token from the in-memory DB
-func DeleteRefreshTokenFromMemory(rt string) {
-	delete(refreshTokens, rt)
 }

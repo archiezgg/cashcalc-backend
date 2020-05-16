@@ -13,8 +13,8 @@ import (
 )
 
 // GetRoleFromRefreshToken retrieves the role to the corresponding refresh token
-func GetRoleFromRefreshToken(rt string) (models.Role, error) {
-	role, err := database.RedisClient().Get(rt).Result()
+func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
+	role, err := database.RedisClient().Get(refreshToken).Result()
 	if err != nil {
 		return "", err
 	}
@@ -22,7 +22,13 @@ func GetRoleFromRefreshToken(rt string) (models.Role, error) {
 }
 
 // SaveRefreshToken saves the token with the role to the DB
-func SaveRefreshToken(rt string, role models.Role) error {
-	err := database.RedisClient().Set(rt, role, properties.RefreshTokenExp).Err()
+func SaveRefreshToken(refreshToken string, role models.Role) error {
+	err := database.RedisClient().Set(refreshToken, role, properties.RefreshTokenExp).Err()
+	return err
+}
+
+// DeleteRefreshToken deletes the given refresh token from DB
+func DeleteRefreshToken(refreshToken string) error {
+	err := database.RedisClient().Del(refreshToken).Err()
 	return err
 }

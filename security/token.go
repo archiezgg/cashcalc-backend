@@ -71,15 +71,6 @@ func CreateRefreshToken(role models.Role) (string, error) {
 	return refreshToken, nil
 }
 
-func isRefreshTokenValid(rt string) bool {
-	for _, t := range refreshTokens {
-		if rt == t {
-			return true
-		}
-	}
-	return false
-}
-
 // GetRoleFromRefreshToken takes a token as a string and returns with the role if token is valid
 func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
 	if !isRefreshTokenValid(refreshToken) {
@@ -91,4 +82,24 @@ func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
 		return "", err
 	}
 	return role, nil
+}
+
+// DeleteRefreshTokenFromMemory deletes the refresh token from the in-memory DB
+func DeleteRefreshTokenFromMemory(rt string) {
+	for i, t := range refreshTokens {
+		if rt == t {
+			refreshTokens[len(refreshTokens)-1], refreshTokens[i] = refreshTokens[i], refreshTokens[len(refreshTokens)-1]
+			refreshTokens = refreshTokens[:len(refreshTokens)-1]
+
+		}
+	}
+}
+
+func isRefreshTokenValid(rt string) bool {
+	for _, t := range refreshTokens {
+		if rt == t {
+			return true
+		}
+	}
+	return false
 }

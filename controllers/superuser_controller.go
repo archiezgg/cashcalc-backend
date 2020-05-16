@@ -21,6 +21,7 @@ func registerSuperuserRoutes(router *mux.Router) {
 	ep := properties.SuperuserEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("/tokens", tokensHandler).Methods(http.MethodGet)
+	s.HandleFunc("/tokens/delete", deleteTokenHandler).Methods(http.MethodDelete)
 	s.Use(security.AccessLevelSuperuser)
 }
 
@@ -31,4 +32,22 @@ func tokensHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(tokens)
+}
+
+func deleteTokenHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		RefreshToken string `json:"refreshToken"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repositories.DeleteRefreshToken(rb.RefreshToken); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	w.Write([]byte("{\"message\": \"Token deleted successfully\"}"))
 }

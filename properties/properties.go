@@ -6,7 +6,11 @@
 
 package properties
 
-import "github.com/magiconair/properties"
+import (
+	"time"
+
+	"github.com/magiconair/properties"
+)
 
 var (
 	propertiesFile = "app.properties"
@@ -82,9 +86,9 @@ var (
 	// RoadFaresWeightMax is the maxmimum weight for road fares
 	RoadFaresWeightMax float64
 	// AccessTokenExp is the expiration time of access tokens in minutes
-	AccessTokenExp int
+	AccessTokenExp time.Duration
 	// RefreshTokenExp is the expiration time of refresh tokens in minutes
-	RefreshTokenExp int
+	RefreshTokenExp time.Duration
 )
 
 // InitProperties initialize all properties based on the properties file,
@@ -112,6 +116,6 @@ func InitProperties() {
 	AirDocFaresWeightMax = p.MustGetFloat64(airDocFaresWeightMaxProp)
 	RoadFaresWeightMin = p.MustGetFloat64(roadFaresWeightMinProp)
 	RoadFaresWeightMax = p.MustGetFloat64(roadFaresWeightMaxProp)
-	AccessTokenExp = p.MustGetInt(accessTokenExpProp)
-	RefreshTokenExp = p.MustGetInt(refreshTokenExpProp)
+	AccessTokenExp = p.MustGetDuration(accessTokenExpProp)
+	RefreshTokenExp = p.MustGetDuration(refreshTokenExpProp)
 }

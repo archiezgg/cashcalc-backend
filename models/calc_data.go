@@ -19,6 +19,18 @@ type CalcInputData struct {
 	IsTk            bool    `json:"isTk"`
 }
 
+// CalcOutputData is the structure that contains the end result and its elements
+type CalcOutputData struct {
+	BaseFare      float64 `json:"baseFare"`
+	ExpressFare   float64 `json:"expressFare"`
+	InsuranceFare float64 `json:"insuranceFare"`
+	ExtFare       float64 `json:"extFare"`
+	RasFare       float64 `json:"rasFare"`
+	TkFare        float64 `json:"tkFare"`
+	FuelFare      float64 `json:"fuelFare"`
+	Result        float64 `json:"result"`
+}
+
 // Express represents the 3 express types: worldwide, 9h, 12h
 type Express string
 

@@ -12,9 +12,9 @@ import (
 
 func TestIncreaseWithVat(t *testing.T) {
 	testCases := []struct {
-		input    float64
-		vat      float64
-		expected float64
+		input      float64
+		vatPercent float64
+		expected   float64
 	}{
 		{0, 27, 0},
 		{1, 0, 1},
@@ -23,9 +23,9 @@ func TestIncreaseWithVat(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		output := IncreaseWithVat(tc.input, tc.vat)
+		output := IncreaseWithVat(tc.input, tc.vatPercent)
 		if output != tc.expected {
-			t.Errorf("IncreaseWithVat(%v, %v) failed: expected: %v, got: %v", tc.input, tc.vat, tc.expected, output)
+			t.Errorf("IncreaseWithVat(%v, %v) failed: expected: %v, got: %v", tc.input, tc.vatPercent, tc.expected, output)
 		}
 	}
 }

@@ -8,8 +8,8 @@ package services
 
 // IncreaseWithVat takes a float64 and a percentage as parameter
 // and returns with the vat-increased result
-func IncreaseWithVat(num float64, vat float64) float64 {
-	return num * (1 + (vat / 100))
+func IncreaseWithVat(num float64, vatPercent float64) float64 {
+	return num * (1 + (vatPercent / 100))
 }
 
 // IsZoneNumberInvalid tests if a given zone number is between given min and max

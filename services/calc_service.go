@@ -7,6 +7,8 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/IstvanN/cashcalc-backend/models"
 )
 
@@ -33,6 +35,20 @@ func calcBaseFareWithVatAndDiscountAir(zn int, vatPercent float64, discountPerce
 	}
 
 	return applyDiscountToBaseFare(baseFareIncreasedWithVat, discountPercent)
+}
+
+// TODO: WRITE TEST
+func validateInputData(input models.CalcInputData) error {
+	var err error
+	if isZoneEU(input.ZoneNumber) && input.IsDocument {
+		err = fmt.Errorf("zone number %v, document status %v: no document delivery to EU", input.ZoneNumber, input.IsDocument)
+		return err
+	}
+
+	if input.IsDocument && input.Weight > 2 {
+		err = fmt.Errorf("weight %v, document status %v: document cannot have more weight than 2", input.Weight, input.IsDocument)
+	}
+	return nil
 }
 
 func applyDiscountToBaseFare(baseFare float64, discountPercent float64) float64 {

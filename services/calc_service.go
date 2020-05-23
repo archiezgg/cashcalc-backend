@@ -19,13 +19,14 @@ func isZoneEU(zn int) bool {
 	return zn <= 4 && zn >= 0
 }
 
-func calcBaseFareWithDiscountAir(zn int, vat float64, pricingFare models.Fare) float64 {
+func calcBaseFareWithDiscountAir(zn int, vat float64, discountPercent float64, pricingFare models.Fare) float64 {
 	var result float64
 	if isZoneEU(zn) {
-		result = addDiscountToBaseFare(float64(pricingFare.BaseFare) * vat)
+		result = applyDiscountToBaseFare(float64(pricingFare.BaseFare)*vat, discountPercent)
 	}
+	return result
 }
 
-func addDiscountToBaseFare(discountPercent int, baseFare float64) float64 {
-	return float64(1-discountPercent/100) * baseFare
+func applyDiscountToBaseFare(baseFare float64, discountPercent float64) float64 {
+	return (1 - discountPercent/100) * baseFare
 }

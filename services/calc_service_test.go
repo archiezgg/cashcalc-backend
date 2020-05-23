@@ -28,6 +28,19 @@ func TestIsZoneEu(t *testing.T) {
 	}
 }
 
-func TestAddDiscountToBaseFare(t *testing.T) {
+func TestApplyDiscountToBaseFare(t *testing.T) {
+	testCases := []struct {
+		inputBaseFare float64
+		inputDiscount float64
+		expected      float64
+	}{
+		{100, 10, 90},
+	}
 
+	for _, tc := range testCases {
+		actual := applyDiscountToBaseFare(tc.inputBaseFare, tc.inputDiscount)
+		if tc.expected != actual {
+			t.Errorf("applyDiscountToBaseFare(%v, %v) failed: expected %v, got %v", tc.inputBaseFare, tc.inputDiscount, tc.expected, actual)
+		}
+	}
 }

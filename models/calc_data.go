@@ -11,7 +11,7 @@ type CalcInputData struct {
 	ZoneNumber      int     `json:"zoneNumber"`
 	Weight          float64 `json:"weight"`
 	Insurance       int     `json:"insurance"`
-	DiscountPercent int     `json:"discountPercent"`
+	DiscountPercent float64 `json:"discountPercent"`
 	ExpressType     Express `json:"expressType"`
 	IsDocument      bool    `json:"isDocument"`
 	IsExt           bool    `json:"isExt"`

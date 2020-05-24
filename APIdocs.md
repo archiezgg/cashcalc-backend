@@ -304,7 +304,7 @@ Retrieves the refresh tokens stored in database.
 ```
 
 ### /tokens/revoke
-Revokes a single refresh token.
+Revokes a single user's refresh token.
 * HTTP method: _DELETE_
 * HTTP response: 
 	* _200 if successful_
@@ -313,7 +313,7 @@ Revokes a single refresh token.
 * Sample required payload:
 ```
 {
-	"refreshToken": "some-token"
+	"username": "some-user"
 }
 ```
 * Sample JSON response:
@@ -324,7 +324,7 @@ Revokes a single refresh token.
 ```
 
 ### /tokens/revokeBulk
-Revokes multiple refresh tokens.
+Revokes multiple users' refresh tokens.
 * HTTP method: _DELETE_
 * HTTP response: 
 	* _200 if successful_
@@ -333,9 +333,9 @@ Revokes multiple refresh tokens.
 * Sample required payload:
 ```
 {
-	"refreshTokens": [
-		"some-token",
-		"another-token"
+	"usernames": [
+		"some-username",
+		"another-username"
 	]
 }
 ```

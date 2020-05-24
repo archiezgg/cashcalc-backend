@@ -38,7 +38,7 @@ func tokensHandler(w http.ResponseWriter, r *http.Request) {
 
 func revokeTokenHandler(w http.ResponseWriter, r *http.Request) {
 	type requestedBody struct {
-		RefreshToken string `json:"refreshToken"`
+		Username string `json:"username"`
 	}
 
 	var rb requestedBody
@@ -47,7 +47,7 @@ func revokeTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := repositories.DeleteRefreshToken(rb.RefreshToken); err != nil {
+	if err := repositories.DeleteRefreshToken(rb.Username); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
@@ -56,7 +56,7 @@ func revokeTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
 	type requestedBody struct {
-		RefreshTokens []string `json:"refreshTokens"`
+		Usernames []string `json:"usernames"`
 	}
 
 	var rb requestedBody
@@ -65,7 +65,7 @@ func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := repositories.DeleteBulkRefreshToken(rb.RefreshTokens); err != nil {
+	if err := repositories.DeleteBulkRefreshToken(rb.Usernames); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}

@@ -98,7 +98,7 @@ func GetUserFromRefreshToken(refreshTokenString string) (models.User, error) {
 }
 
 func checkIfRefreshTokenIsInDB(username string, refreshToken string) error {
-	tokenInDB, err := repositories.GetUsernameFromRefreshToken(refreshToken)
+	tokenInDB, err := repositories.GetRefreshTokenByUsername(username)
 	if err != nil {
 		return err
 	}

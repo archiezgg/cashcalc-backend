@@ -10,17 +10,19 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/IstvanN/cashcalc-backend/models"
+
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/properties"
 )
 
-// GetUsernameFromRefreshToken retrieves the username to the corresponding refresh token
-func GetUsernameFromRefreshToken(refreshToken string) (string, error) {
-	username, err := database.RedisClient().Get(refreshToken).Result()
+// GetRefreshTokenByUsername retrieves the token by the user's name
+func GetRefreshTokenByUsername(username string) (string, error) {
+	tokenString, err := database.RedisClient().Get(username).Result()
 	if err != nil {
-		return "", fmt.Errorf("error retreiving refresh token %v: %v", refreshToken, err)
+		return "", fmt.Errorf("error retreiving refresh token for %v: %v", username, err)
 	}
-	return username, nil
+	return tokenString, nil
 }
 
 // SaveRefreshToken saves the token with the role to the DB
@@ -32,19 +34,19 @@ func SaveRefreshToken(username string, refreshTokenString string) error {
 	return nil
 }
 
-// DeleteRefreshToken deletes the given refresh token from DB
-func DeleteRefreshToken(refreshToken string) error {
-	err := database.RedisClient().Del(refreshToken).Err()
+// DeleteRefreshToken deletes the given user's refresh token from DB
+func DeleteRefreshToken(username string) error {
+	err := database.RedisClient().Del(username).Err()
 	if err != nil {
-		return fmt.Errorf("error deleting refresh token: %v", err)
+		return fmt.Errorf("error deleting refresh token for user %v: %v", username, err)
 	}
 	return nil
 }
 
 // DeleteBulkRefreshToken deletes multiple refresh tokens from DB
-func DeleteBulkRefreshToken(refreshTokens []string) error {
-	for _, rt := range refreshTokens {
-		err := DeleteRefreshToken(rt)
+func DeleteBulkRefreshToken(usernames []string) error {
+	for _, user := range usernames {
+		err := DeleteRefreshToken(user)
 		if err != nil {
 			return err
 		}
@@ -52,22 +54,31 @@ func DeleteBulkRefreshToken(refreshTokens []string) error {
 	return nil
 }
 
-// GetAllTokens returns with a map of string:string containing all token data
-func GetAllTokens() (map[string]string, error) {
-	tokens, err := database.RedisClient().Keys("*").Result()
+// GetAllTokens returns with an array containing all refresh tokens
+func GetAllTokens() ([]models.RefreshToken, error) {
+	var tokens []models.RefreshToken
+	usernames, err := database.RedisClient().Keys("*").Result()
 	if err != nil {
 		return nil, err
 	}
 
-	tokensMap := make(map[string]string)
-	for _, t := range tokens {
-		username, err := GetUsernameFromRefreshToken(t)
+	for _, username := range usernames {
+		tokenString, err := GetRefreshTokenByUsername(username)
 		if err != nil {
 			return nil, err
 		}
-		tokensMap[t] = username
+		expDate, err := getExpirationDateForToken(username)
+		if err != nil {
+			return nil, err
+		}
+		token := models.RefreshToken{
+			Username:    username,
+			TokenString: tokenString,
+			ExpiresAt:   expDate,
+		}
+		tokens = append(tokens, token)
 	}
-	return tokensMap, nil
+	return tokens, nil
 }
 
 // DeleteAllTokens removes all tokens from DB
@@ -76,4 +87,13 @@ func DeleteAllTokens() error {
 		return fmt.Errorf("error flushing all tokens from DB")
 	}
 	return nil
+}
+
+func getExpirationDateForToken(username string) (int64, error) {
+	expTime, err := database.RedisClient().PTTL(username).Result()
+	if err != nil {
+		return 0, err
+	}
+	expDate := time.Now().Add(expTime).Unix()
+	return expDate, nil
 }

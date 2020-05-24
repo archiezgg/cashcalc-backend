@@ -11,17 +11,16 @@ import (
 	"time"
 
 	"github.com/IstvanN/cashcalc-backend/database"
-	"github.com/IstvanN/cashcalc-backend/models"
 	"github.com/IstvanN/cashcalc-backend/properties"
 )
 
-// GetRoleFromRefreshToken retrieves the role to the corresponding refresh token
-func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
-	role, err := database.RedisClient().Get(refreshToken).Result()
+// GetUsernameFromRefreshToken retrieves the username to the corresponding refresh token
+func GetUsernameFromRefreshToken(refreshToken string) (string, error) {
+	username, err := database.RedisClient().Get(refreshToken).Result()
 	if err != nil {
 		return "", fmt.Errorf("error retreiving refresh token %v: %v", refreshToken, err)
 	}
-	return models.Role(role), nil
+	return username, nil
 }
 
 // SaveRefreshToken saves the token with the role to the DB
@@ -54,19 +53,19 @@ func DeleteBulkRefreshToken(refreshTokens []string) error {
 }
 
 // GetAllTokens returns with a map of string:string containing all token data
-func GetAllTokens() (map[string]models.Role, error) {
+func GetAllTokens() (map[string]string, error) {
 	tokens, err := database.RedisClient().Keys("*").Result()
 	if err != nil {
 		return nil, err
 	}
 
-	tokensMap := make(map[string]models.Role)
+	tokensMap := make(map[string]string)
 	for _, t := range tokens {
-		role, err := GetRoleFromRefreshToken(t)
+		username, err := GetUsernameFromRefreshToken(t)
 		if err != nil {
 			return nil, err
 		}
-		tokensMap[t] = role
+		tokensMap[t] = username
 	}
 	return tokensMap, nil
 }

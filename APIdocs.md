@@ -8,11 +8,11 @@ Provides interface for login, returns with a JWT access token (as "Access-Token"
 	* _200 if successful_ 
 	* _422 if data payload is malformed_
 	* _401 if the password is incorrect_
-* Payload required: _the role in the payload can either be: carrier | admin | superuser_
+* Payload required: _username and password_
 * Sample required payload:
 ```
 {
-	"role": "carrier",
+	"username": "some-user",
 	"password": "some-pw"
 }
 ```

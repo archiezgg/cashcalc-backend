@@ -29,7 +29,7 @@ func LogErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode i
 // AccessLevelCarrier serves as middleware for carrier access level
 func AccessLevelCarrier(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForAccessLevel(models.Carrier, w, r) {
+		if isTokenValidForAccessLevel(models.RoleCarrier, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
@@ -38,7 +38,7 @@ func AccessLevelCarrier(next http.Handler) http.Handler {
 // AccessLevelAdmin serves as middleware for admin access level
 func AccessLevelAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForAccessLevel(models.Admin, w, r) {
+		if isTokenValidForAccessLevel(models.RoleAdmin, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
@@ -47,7 +47,7 @@ func AccessLevelAdmin(next http.Handler) http.Handler {
 // AccessLevelSuperuser serves as middleware for superuser access level
 func AccessLevelSuperuser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForAccessLevel(models.Superuser, w, r) {
+		if isTokenValidForAccessLevel(models.RoleSuperuser, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
@@ -102,10 +102,10 @@ func getRoleFromToken(tokenString string, key []byte) (models.Role, error) {
 
 func checkAccessLevel(role, accessLevel models.Role) error {
 	err := fmt.Errorf("%v is trying to reach content restricted for %v", role, accessLevel)
-	if accessLevel == models.Admin && role == models.Carrier {
+	if accessLevel == models.RoleAdmin && role == models.RoleCarrier {
 		return err
 	}
-	if accessLevel == models.Superuser && role != models.Superuser {
+	if accessLevel == models.RoleSuperuser && role != models.RoleSuperuser {
 		return err
 	}
 	return nil

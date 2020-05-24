@@ -34,7 +34,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := repositories.GetUserByRole(userToAuth.Role)
+	u, err := repositories.GetUserByUsername(userToAuth.Username)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -42,7 +42,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
 	if err != nil {
-		err := fmt.Errorf("the given role-password combination is invalid: %v - %v", userToAuth.Role, userToAuth.Password)
+		err := fmt.Errorf("the given role-password combination is invalid: %v - %v", userToAuth.Username, userToAuth.Password)
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}

@@ -33,49 +33,56 @@ type CustomClaims struct {
 }
 
 // CreateAccessToken takes a Role as param and creates a signed access token
-func CreateAccessToken(username string, role models.Role) (string, error) {
+func CreateAccessToken(user models.User) (string, error) {
 	if string(accessKey) == "" {
 		return "", fmt.Errorf("ACCESS_KEY is unset")
 	}
 
 	claims := CustomClaims{
-		username,
-		role,
+		user.Username,
+		user.Role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * properties.AccessTokenExp).Unix(),
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessToken, err := token.SignedString(accessKey)
+	accessTokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(accessKey)
 	if err != nil {
 		return "", err
 	}
-	return accessToken, nil
+	return accessTokenString, nil
 }
 
 // CreateRefreshToken takes a Role as param and creates a signed refresh token
-func CreateRefreshToken(username string, role models.Role) (string, error) {
+func CreateRefreshToken(user models.User) (models.RefreshToken, error) {
 	if string(refreshKey) == "" {
-		return "", fmt.Errorf("REFRESH_KEY is unset")
+		return models.RefreshToken{}, fmt.Errorf("REFRESH_KEY is unset")
 	}
 
+	tokenExpiration := time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix()
+
 	claims := CustomClaims{
-		username,
-		role,
+		user.Username,
+		user.Role,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix(),
+			ExpiresAt: tokenExpiration,
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	refreshToken, err := token.SignedString(refreshKey)
+	refreshTokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(refreshKey)
 	if err != nil {
-		return "", err
+		return models.RefreshToken{}, err
 	}
 
-	if err := repositories.SaveRefreshToken(refreshToken, role); err != nil {
-		return "", err
+	rt := models.RefreshToken{
+		Username:    user.Username,
+		Role:        user.Role,
+		TokenString: refreshTokenString,
+		ExpiresAt:   tokenExpiration,
 	}
-	return refreshToken, nil
+
+	if err := repositories.SaveRefreshToken(rt); err != nil {
+		return models.RefreshToken{}, err
+	}
+	return rt, nil
 }

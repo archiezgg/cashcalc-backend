@@ -73,24 +73,20 @@ func GetAllTokens() ([]models.RefreshToken, error) {
 }
 
 func createRefreshTokenDataFromUsername(username string) (models.RefreshToken, error) {
-	tokenString, err := GetRefreshTokenByUsername(username)
-	if err != nil {
-		return models.RefreshToken{}, err
-	}
-	expDate, err := getExpirationDateForToken(username)
-	if err != nil {
-		return models.RefreshToken{}, err
-	}
 	user, err := GetUserByUsername(username)
 	if err != nil {
 		return models.RefreshToken{}, err
 	}
 
+	expDate, err := getExpirationDateForToken(username)
+	if err != nil {
+		return models.RefreshToken{}, err
+	}
+
 	token := models.RefreshToken{
-		Username:    username,
-		Role:        user.Role,
-		TokenString: tokenString,
-		ExpiresAt:   expDate,
+		Username:  user.Username,
+		Role:      user.Role,
+		ExpiresAt: expDate,
 	}
 	return token, nil
 }

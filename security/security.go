@@ -89,15 +89,24 @@ func extractTokenFromHeader(r *http.Request) (string, error) {
 }
 
 func getRoleFromAccessToken(tokenString string) (models.Role, error) {
-	var claims CustomClaims
-	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
-		return accessKey, nil
-	})
-	if err != nil || !token.Valid {
+	claims, err := getClaimsFromToken(tokenString, accessKey)
+	if err != nil {
 		return "", err
 	}
 
 	return claims.Role, nil
+}
+
+func getClaimsFromToken(tokenString string, key []byte) (CustomClaims, error) {
+	var claims CustomClaims
+	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
+		return key, nil
+	})
+	if err != nil || !token.Valid {
+		return CustomClaims{}, err
+	}
+
+	return claims, nil
 }
 
 func checkAccessLevel(role, accessLevel models.Role) error {

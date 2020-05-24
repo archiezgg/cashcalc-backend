@@ -77,3 +77,13 @@ func CreateRefreshToken(user models.User) (string, error) {
 	}
 	return refreshTokenString, nil
 }
+
+// GetUsernameFromRefreshToken decodes the username from JWT refresh token
+func GetUsernameFromRefreshToken(refreshTokenString string) (string, error) {
+	claims, err := getClaimsFromToken(refreshTokenString, refreshKey)
+	if err != nil {
+		return "", err
+	}
+
+	return claims.Username, nil
+}

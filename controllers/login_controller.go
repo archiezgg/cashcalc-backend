@@ -68,6 +68,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := security.GetUserFromRefreshToken(rb.RefreshToken)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return
 	}
 
 	if err := generateTokenPairsAndSetThemAsHeaders(w, user); err != nil {

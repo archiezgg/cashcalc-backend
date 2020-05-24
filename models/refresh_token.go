@@ -6,14 +6,10 @@
 
 package models
 
-import (
-	"time"
-)
-
 // RefreshToken represents a refresh token structure
 type RefreshToken struct {
-	Username    string        `json:"username"`
-	Role        Role          `json:"role"`
-	TokenString string        `json:"tokenString"`
-	ExpiresAt   time.Duration `json:"expiresAt"`
+	Username    string `json:"username"`
+	Role        Role   `json:"role"`
+	TokenString string `json:"tokenString"`
+	ExpiresAt   int64  `json:"expiresAt"`
 }

@@ -78,12 +78,16 @@ func CreateRefreshToken(user models.User) (string, error) {
 	return refreshTokenString, nil
 }
 
-// GetUsernameFromRefreshToken decodes the username from JWT refresh token
-func GetUsernameFromRefreshToken(refreshTokenString string) (string, error) {
+// GetUserFromRefreshToken decodes the username from JWT refresh token
+func GetUserFromRefreshToken(refreshTokenString string) (models.User, error) {
 	claims, err := getClaimsFromToken(refreshTokenString, refreshKey)
 	if err != nil {
-		return "", err
+		return models.User{}, err
 	}
 
-	return claims.Username, nil
+	user, err := repositories.GetUserByUsername(claims.Username)
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
 }

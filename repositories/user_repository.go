@@ -30,22 +30,6 @@ func GetUsers() (models.Users, error) {
 	return u, nil
 }
 
-// GetUserByRole retrieves the user by its role
-func GetUserByRole(role models.Role) (models.User, error) {
-	users, err := GetUsers()
-	if err != nil {
-		return models.User{}, err
-	}
-
-	for _, u := range users.Users {
-		if u.Role == role {
-			return u, nil
-		}
-	}
-	err = fmt.Errorf("user cannot be found in db by role: %v", role)
-	return models.User{}, err
-}
-
 // GetUserByUsername retrieves the user by its username
 func GetUserByUsername(username string) (models.User, error) {
 	users, err := GetUsers()

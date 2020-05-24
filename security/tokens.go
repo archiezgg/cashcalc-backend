@@ -89,5 +89,22 @@ func GetUserFromRefreshToken(refreshTokenString string) (models.User, error) {
 	if err != nil {
 		return models.User{}, err
 	}
+
+	if err := checkIfRefreshTokenIsInDB(user.Username, refreshTokenString); err != nil {
+		return models.User{}, err
+	}
+
 	return user, nil
+}
+
+func checkIfRefreshTokenIsInDB(username string, refreshToken string) error {
+	tokenInDB, err := repositories.GetUsernameFromRefreshToken(refreshToken)
+	if err != nil {
+		return err
+	}
+
+	if tokenInDB != refreshToken {
+		return fmt.Errorf("refresh token %v for user %v is not in db", refreshToken, username)
+	}
+	return nil
 }

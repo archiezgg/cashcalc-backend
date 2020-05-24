@@ -18,12 +18,12 @@ import (
 )
 
 func registerSuperuserRoutes(router *mux.Router) {
-	ep := properties.SuperuserEndpoint
+	ep := properties.TokensEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("/tokens", tokensHandler).Methods(http.MethodGet)
-	s.HandleFunc("/tokens/revoke", revokeTokenHandler).Methods(http.MethodDelete)
-	s.HandleFunc("/tokens/revokeBulk", revokeBulkTokenHandler).Methods(http.MethodDelete)
-	s.HandleFunc("/tokens/revokeAll", revokeAllTokensHandler).Methods(http.MethodDelete)
+	s.HandleFunc("", tokensHandler).Methods(http.MethodGet)
+	s.HandleFunc("/revoke", revokeTokenHandler).Methods(http.MethodDelete)
+	s.HandleFunc("/revokeBulk", revokeBulkTokenHandler).Methods(http.MethodDelete)
+	s.HandleFunc("/revokeAll", revokeAllTokensHandler).Methods(http.MethodDelete)
 	s.Use(security.AccessLevelSuperuser)
 }
 

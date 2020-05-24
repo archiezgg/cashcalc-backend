@@ -6,8 +6,8 @@
 
 package models
 
-// Token represents a refresh token structure
-type Token struct {
+// RefreshToken represents a refresh token structure
+type RefreshToken struct {
 	Username    string `json:"username"`
 	Role        Role   `json:"role"`
 	TokenString string `json:"tokenString"`

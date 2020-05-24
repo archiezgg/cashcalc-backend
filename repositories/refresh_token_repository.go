@@ -63,22 +63,36 @@ func GetAllTokens() ([]models.RefreshToken, error) {
 	}
 
 	for _, username := range usernames {
-		tokenString, err := GetRefreshTokenByUsername(username)
+		token, err := createRefreshTokenDataFromUsername(username)
 		if err != nil {
 			return nil, err
-		}
-		expDate, err := getExpirationDateForToken(username)
-		if err != nil {
-			return nil, err
-		}
-		token := models.RefreshToken{
-			Username:    username,
-			TokenString: tokenString,
-			ExpiresAt:   expDate,
 		}
 		tokens = append(tokens, token)
 	}
 	return tokens, nil
+}
+
+func createRefreshTokenDataFromUsername(username string) (models.RefreshToken, error) {
+	tokenString, err := GetRefreshTokenByUsername(username)
+	if err != nil {
+		return models.RefreshToken{}, err
+	}
+	expDate, err := getExpirationDateForToken(username)
+	if err != nil {
+		return models.RefreshToken{}, err
+	}
+	user, err := GetUserByUsername(username)
+	if err != nil {
+		return models.RefreshToken{}, err
+	}
+
+	token := models.RefreshToken{
+		Username:    username,
+		Role:        user.Role,
+		TokenString: tokenString,
+		ExpiresAt:   expDate,
+	}
+	return token, nil
 }
 
 // DeleteAllTokens removes all tokens from DB

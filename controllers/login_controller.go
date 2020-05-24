@@ -47,11 +47,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
-	if err := generateTokenPairsAndSetThemAsHeaders(w, u.Role); err != nil {
+	if err := generateTokenPairsAndSetThemAsHeaders(w, u); err != nil {
 		return
 	}
 	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
-	log.Printf("a user with the role '%v' has successfully logged in", u.Role)
+	log.Printf("user '%v' has successfully logged in", u.Username)
 }
 
 func refreshHandler(w http.ResponseWriter, r *http.Request) {
@@ -65,13 +65,13 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	role, err := repositories.GetRoleFromRefreshToken(rb.RefreshToken)
+	user, err := security.GetUserFromRefreshToken(rb.RefreshToken)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
 
-	if err := generateTokenPairsAndSetThemAsHeaders(w, role); err != nil {
+	if err := generateTokenPairsAndSetThemAsHeaders(w, user); err != nil {
 		return
 	}
 
@@ -82,14 +82,14 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("{\"message\": \"Token refreshed successfully\"}"))
 }
 
-func generateTokenPairsAndSetThemAsHeaders(w http.ResponseWriter, role models.Role) error {
-	at, err := security.CreateAccessToken(role)
+func generateTokenPairsAndSetThemAsHeaders(w http.ResponseWriter, user models.User) error {
+	at, err := security.CreateAccessToken(user)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return err
 	}
 
-	rt, err := security.CreateRefreshToken(role)
+	rt, err := security.CreateRefreshToken(user)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return err

@@ -284,7 +284,7 @@ Retrieves the pricing variables.
 {"vatPercent":27,"airFuelFarePercent":17.5,"roadFuelFarePercent":10,"express9h":8990,"express9hHun":3300,"express12h":2990,"express12hHun":1575,"insuranceLimit":330000,"minInsurance":3300,"ext":1320,"ras":6600,"tk":990}
 ```
 
-### /superuser/tokens
+### /tokens
 Retrieves the refresh tokens stored in database.
 * HTTP method: _GET_
 * HTTP response: 
@@ -293,14 +293,17 @@ Retrieves the refresh tokens stored in database.
 	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
-{
-	"some-token": carrier,
-	"another-token": admin
-}
+[
+  {
+    "username": "some-user",
+    "role": "carrier",
+    "expiresAt": 1590935428
+  }
+]
 ```
 
-### /superuser/tokens/revoke
-Revokes a single refresh token.
+### /tokens/revoke
+Revokes a single user's refresh token.
 * HTTP method: _DELETE_
 * HTTP response: 
 	* _200 if successful_
@@ -309,7 +312,7 @@ Revokes a single refresh token.
 * Sample required payload:
 ```
 {
-	"refreshToken": "some-token"
+	"username": "some-user"
 }
 ```
 * Sample JSON response:
@@ -319,8 +322,8 @@ Revokes a single refresh token.
 }
 ```
 
-### /superuser/tokens/revokeBulk
-Revokes multiple refresh tokens.
+### /tokens/revokeBulk
+Revokes multiple users' refresh tokens.
 * HTTP method: _DELETE_
 * HTTP response: 
 	* _200 if successful_
@@ -329,9 +332,9 @@ Revokes multiple refresh tokens.
 * Sample required payload:
 ```
 {
-	"refreshTokens": [
-		"some-token",
-		"another-token"
+	"usernames": [
+		"some-username",
+		"another-username"
 	]
 }
 ```
@@ -342,7 +345,7 @@ Revokes multiple refresh tokens.
 }
 ```
 
-### /superuser/tokens/revokeAll
+### /tokens/revokeAll
 Revokes all refresh tokens.
 * HTTP method: _DELETE_
 * HTTP response: 

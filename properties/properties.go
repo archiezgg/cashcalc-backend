@@ -26,7 +26,7 @@ const (
 	pricingsEndpointProp      = "endpoint.pricings"
 	countriesEndpointProp     = "endpoint.countries"
 	pricingVarsEndpointProp   = "endpoint.pricingvars"
-	superuserEndpointProp     = "endpoint.superuser"
+	tokensEndpointProp        = "endpoint.tokens"
 	airFaresZnMinProp         = "air.fares.zn.min"
 	airFaresZnMaxProp         = "air.fares.zn.max"
 	airDocFaresZnMinProp      = "air.docfares.zn.min"
@@ -62,8 +62,8 @@ var (
 	CountriesEndpoint string
 	// PricingVarsEndpoint is the endpoint for pricing variables
 	PricingVarsEndpoint string
-	// SuperuserEndpoint is the endpoint for superuser access only activities
-	SuperuserEndpoint string
+	// TokensEndpoint is the endpoint for getting/revoking refresh tokens
+	TokensEndpoint string
 	// AirFaresZnMin is the minimum zone number for air fares
 	AirFaresZnMin int
 	// AirFaresZnMax is the maximum zone number for air fares
@@ -107,7 +107,7 @@ func InitProperties() {
 	PricingsEndpoint = p.MustGetString(pricingsEndpointProp)
 	CountriesEndpoint = p.MustGetString(countriesEndpointProp)
 	PricingVarsEndpoint = p.MustGetString(pricingVarsEndpointProp)
-	SuperuserEndpoint = p.MustGetString(superuserEndpointProp)
+	TokensEndpoint = p.MustGetString(tokensEndpointProp)
 	AirFaresZnMin = p.MustGetInt(airFaresZnMinProp)
 	AirFaresZnMax = p.MustGetInt(airFaresZnMaxProp)
 	AirDocFaresZnMin = p.MustGetInt(airDocFaresZnMinProp)

@@ -22,8 +22,9 @@ func GetUsers() (models.Users, error) {
 	var u models.Users
 	err := coll.Find(nil).One(&u)
 	if err != nil {
-		return models.Users{}, fmt.Errorf("error while retrieving collection %v from database: %v",
-			"users", err)
+		errMsg := fmt.Errorf("error while retrieving collection %v from database: %v",
+			properties.UsersCollection, err)
+		return models.Users{}, errMsg
 	}
 
 	return u, nil

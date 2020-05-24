@@ -25,8 +25,8 @@ func GetRoleFromRefreshToken(refreshToken string) (models.Role, error) {
 }
 
 // SaveRefreshToken saves the token with the role to the DB
-func SaveRefreshToken(refreshToken models.RefreshToken) error {
-	err := database.RedisClient().Set(refreshToken.TokenString, refreshToken, time.Minute*properties.RefreshTokenExp).Err()
+func SaveRefreshToken(username string, refreshTokenString string) error {
+	err := database.RedisClient().Set(username, refreshTokenString, time.Minute*properties.RefreshTokenExp).Err()
 	if err != nil {
 		return fmt.Errorf("error saving refresh token: %v", err)
 	}

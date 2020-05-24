@@ -27,7 +27,7 @@ var (
 // CustomClaims is the struct for the Token Claims including role
 // and standard JWT claims
 type CustomClaims struct {
-	Username string
+	Username string      `json:"username"`
 	Role     models.Role `json:"role"`
 	jwt.StandardClaims
 }
@@ -54,35 +54,26 @@ func CreateAccessToken(user models.User) (string, error) {
 }
 
 // CreateRefreshToken takes a Role as param and creates a signed refresh token
-func CreateRefreshToken(user models.User) (models.RefreshToken, error) {
+func CreateRefreshToken(user models.User) (string, error) {
 	if string(refreshKey) == "" {
-		return models.RefreshToken{}, fmt.Errorf("REFRESH_KEY is unset")
+		return "", fmt.Errorf("REFRESH_KEY is unset")
 	}
-
-	tokenExpiration := time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix()
 
 	claims := CustomClaims{
 		user.Username,
 		user.Role,
 		jwt.StandardClaims{
-			ExpiresAt: tokenExpiration,
+			ExpiresAt: time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix(),
 		},
 	}
 
 	refreshTokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(refreshKey)
 	if err != nil {
-		return models.RefreshToken{}, err
+		return "", err
 	}
 
-	rt := models.RefreshToken{
-		Username:    user.Username,
-		Role:        user.Role,
-		TokenString: refreshTokenString,
-		ExpiresAt:   tokenExpiration,
+	if err := repositories.SaveRefreshToken(user.Username, refreshTokenString); err != nil {
+		return "", err
 	}
-
-	if err := repositories.SaveRefreshToken(rt); err != nil {
-		return models.RefreshToken{}, err
-	}
-	return rt, nil
+	return refreshTokenString, nil
 }

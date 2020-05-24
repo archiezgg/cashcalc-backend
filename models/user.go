@@ -8,6 +8,7 @@ package models
 
 // User is the main struct for users such as carrier, admin and superuser
 type User struct {
+	Username string `bson:"username" json:"username"`
 	Role     Role   `bson:"role" json:"role"`
 	Password string `bson:"password" json:"password"`
 }

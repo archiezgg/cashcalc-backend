@@ -27,17 +27,19 @@ var (
 // CustomClaims is the struct for the Token Claims including role
 // and standard JWT claims
 type CustomClaims struct {
-	Role models.Role `json:"role"`
+	Username string
+	Role     models.Role `json:"role"`
 	jwt.StandardClaims
 }
 
 // CreateAccessToken takes a Role as param and creates a signed access token
-func CreateAccessToken(role models.Role) (string, error) {
+func CreateAccessToken(username string, role models.Role) (string, error) {
 	if string(accessKey) == "" {
 		return "", fmt.Errorf("ACCESS_KEY is unset")
 	}
 
 	claims := CustomClaims{
+		username,
 		role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * properties.AccessTokenExp).Unix(),
@@ -53,12 +55,13 @@ func CreateAccessToken(role models.Role) (string, error) {
 }
 
 // CreateRefreshToken takes a Role as param and creates a signed refresh token
-func CreateRefreshToken(role models.Role) (string, error) {
+func CreateRefreshToken(username string, role models.Role) (string, error) {
 	if string(refreshKey) == "" {
 		return "", fmt.Errorf("REFRESH_KEY is unset")
 	}
 
 	claims := CustomClaims{
+		username,
 		role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix(),

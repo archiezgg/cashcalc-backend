@@ -9,6 +9,7 @@ package models
 // RefreshToken stores the structure of a refresh token
 type RefreshToken struct {
 	Username    string `json:"username"`
+	Role        Role   `json:"role"`
 	TokenString string `json:"tokenString"`
 	ExpiresAt   int64  `json:"expiresAt"`
 }

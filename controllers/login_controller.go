@@ -29,14 +29,15 @@ func registerLoginRoutes(router *mux.Router) {
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	var userToAuth models.User
-	if err := json.NewDecoder(r.Body).Decode(&userToAuth); err != nil || userToAuth.Password == "" {
+	if err := json.NewDecoder(r.Body).Decode(&userToAuth); err != nil ||
+		userToAuth.Password == "" || userToAuth.Username == "" {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
 		return
 	}
 
 	u, err := repositories.GetUserByUsername(userToAuth.Username)
 	if err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -50,7 +51,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
-	log.Printf("a user with the role '%v' has successfully logged in", userToAuth.Role)
+	log.Printf("a user with the role '%v' has successfully logged in", u.Role)
 }
 
 func refreshHandler(w http.ResponseWriter, r *http.Request) {

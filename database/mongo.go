@@ -11,7 +11,7 @@ import (
 	"os"
 
 	"github.com/IstvanN/cashcalc-backend/services"
-	"gopkg.in/mgo.v2"
+	"github.com/globalsign/mgo"
 )
 
 var (

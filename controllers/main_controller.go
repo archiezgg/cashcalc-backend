@@ -21,6 +21,7 @@ func StartupRouter() (router *mux.Router) {
 	registerPricingsRoutes(router)
 	registerPricingVarsRoutes(router)
 	registerTokenRoutes(router)
+	registerUserRoutes(router)
 	router.Use(setJSONHeaderMiddleWare)
 	return
 }

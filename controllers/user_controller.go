@@ -10,6 +10,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/IstvanN/cashcalc-backend/models"
+
 	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/IstvanN/cashcalc-backend/security"
 
@@ -18,9 +20,10 @@ import (
 
 func registerUserRoutes(router *mux.Router) {
 	s := router.PathPrefix("/users").Subrouter()
-	s.HandleFunc("", usernamesHandler)
+	s.HandleFunc("", usernamesHandler).Methods(http.MethodGet)
+	s.HandleFunc("/create/carrier", createCarrierHandler).Methods(http.MethodPut)
+	// s.HandleFunc("/delete/carrier", deleteCarrierHandler)
 	s.Use(security.AccessLevelAdmin)
-	// s.HandleFunc("/create/carrier", createCarrierHandler)
 }
 
 func usernamesHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,12 +35,20 @@ func usernamesHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(usernames)
 }
 
-// func createCarrierHandler(w http.ResponseWriter, r *http.Request) {
-// 	type requestedBody struct {
-// 		Username string `json:"username"`
-// 		Password string `json:"password"`
-// 	}
+func createCarrierHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
 
-// 	var rb requestedBody
-// 	if err := decodeIntoRequestedBody(w, r, requestedBody)
-// }
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil ||
+		rb.Username == "" || rb.Password == "" {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repositories.CreateUser(rb.Username, rb.Password, models.RoleCarrier); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+	}
+}

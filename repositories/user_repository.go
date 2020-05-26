@@ -86,6 +86,15 @@ func CreateUser(username, password string, role models.Role) error {
 	return nil
 }
 
+// DeleteUser deletes given user from the DB
+func DeleteUser(user models.User) error {
+	coll := database.GetCollectionByName(properties.UsersCollection)
+	if err := coll.Remove(user); err != nil {
+		return err
+	}
+	return nil
+}
+
 func checkIfUserNameIsTaken(username string) error {
 	usernames, err := GetUsernames()
 	if err != nil {

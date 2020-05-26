@@ -50,8 +50,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if err := generateTokenPairsAndSetThemAsHeaders(w, u); err != nil {
 		return
 	}
-	w.Write([]byte("{\"message\": \"Logged in succesfully\"}"))
 	log.Printf("user '%v' has successfully logged in", u.Username)
+	writeMessage(w, "Logged in succesfully")
 }
 
 func refreshHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +79,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
-	w.Write([]byte("{\"message\": \"Token refreshed successfully\"}"))
+	writeMessage(w, "Token refreshed successfully")
 }
 
 func generateTokenPairsAndSetThemAsHeaders(w http.ResponseWriter, user models.User) error {

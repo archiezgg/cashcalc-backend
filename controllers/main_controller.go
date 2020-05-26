@@ -28,7 +28,7 @@ func StartupRouter() (router *mux.Router) {
 }
 
 func welcomeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(`{"message": "Welcome to CashCalc 2020"}`))
+	writeMessage(w, "Welcome to CashCalc 2020!")
 }
 
 // setJSONHeaderMiddleWare sets the header to application/json for a given handler

@@ -17,7 +17,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func registerSuperuserRoutes(router *mux.Router) {
+func registerTokenRoutes(router *mux.Router) {
 	ep := properties.TokensEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", tokensHandler).Methods(http.MethodGet)

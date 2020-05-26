@@ -60,7 +60,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var rb requestedBody
-	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.RefreshToken == "" {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
 		return
 	}

@@ -20,6 +20,7 @@ func registerUserRoutes(router *mux.Router) {
 	s := router.PathPrefix("/users").Subrouter()
 	s.HandleFunc("", usernamesHandler)
 	s.Use(security.AccessLevelAdmin)
+	// s.HandleFunc("/create/carrier", createCarrierHandler)
 }
 
 func usernamesHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,3 +31,13 @@ func usernamesHandler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(usernames)
 }
+
+// func createCarrierHandler(w http.ResponseWriter, r *http.Request) {
+// 	type requestedBody struct {
+// 		Username string `json:"username"`
+// 		Password string `json:"password"`
+// 	}
+
+// 	var rb requestedBody
+// 	if err := decodeIntoRequestedBody(w, r, requestedBody)
+// }

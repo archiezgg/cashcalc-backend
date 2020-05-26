@@ -42,7 +42,7 @@ func revokeTokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var rb requestedBody
-	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Username == "" {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
 		return
 	}
@@ -60,7 +60,7 @@ func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var rb requestedBody
-	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Usernames == nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
 		return
 	}

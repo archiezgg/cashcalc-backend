@@ -17,7 +17,7 @@ import (
 	"github.com/IstvanN/cashcalc-backend/models"
 )
 
-//GetUsers retrieves all users from the database
+// GetUsers retrieves all users from the database
 func GetUsers() ([]models.User, error) {
 	coll := database.GetCollectionByName(properties.UsersCollection)
 
@@ -30,6 +30,20 @@ func GetUsers() ([]models.User, error) {
 	}
 
 	return users, nil
+}
+
+// GetUsernames returns all usernames from DB
+func GetUsernames() ([]string, error) {
+	users, err := GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	var usernames []string
+	for _, u := range users {
+		usernames = append(usernames, u.Username)
+	}
+	return usernames, nil
 }
 
 // GetUserByUsername retrieves the user by its username

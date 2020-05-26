@@ -9,6 +9,8 @@ package repositories
 import (
 	"fmt"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/IstvanN/cashcalc-backend/properties"
 
 	"github.com/IstvanN/cashcalc-backend/database"
@@ -44,4 +46,24 @@ func GetUserByUsername(username string) (models.User, error) {
 	}
 	err = fmt.Errorf("user cannot be found in db by username: %v", username)
 	return models.User{}, err
+}
+
+// CreateUser creates a user by given username, password and role and saves it to DB
+func CreateUser(username, password string, role models.Role) error {
+	hashedPw, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return err
+	}
+
+	user := models.User{
+		Username: username,
+		Password: string(hashedPw),
+		Role:     role,
+	}
+
+	coll := database.GetCollectionByName(properties.UsersCollection)
+	if err := coll.Insert(user); err != nil {
+		return err
+	}
+	return nil
 }

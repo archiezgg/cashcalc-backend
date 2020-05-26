@@ -16,18 +16,18 @@ import (
 )
 
 //GetUsers retrieves all users from the database
-func GetUsers() (models.Users, error) {
+func GetUsers() ([]models.User, error) {
 	coll := database.GetCollectionByName(properties.UsersCollection)
 
-	var u models.Users
-	err := coll.Find(nil).One(&u)
+	var users []models.User
+	err := coll.Find(nil).All(&users)
 	if err != nil {
 		errMsg := fmt.Errorf("error while retrieving collection %v from database: %v",
 			properties.UsersCollection, err)
-		return models.Users{}, errMsg
+		return nil, errMsg
 	}
 
-	return u, nil
+	return users, nil
 }
 
 // GetUserByUsername retrieves the user by its username
@@ -37,7 +37,7 @@ func GetUserByUsername(username string) (models.User, error) {
 		return models.User{}, err
 	}
 
-	for _, u := range users.Users {
+	for _, u := range users {
 		if u.Username == username {
 			return u, nil
 		}

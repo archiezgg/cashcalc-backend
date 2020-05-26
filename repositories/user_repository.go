@@ -81,15 +81,21 @@ func CreateUser(username, password string, role models.Role) error {
 
 	coll := database.GetCollectionByName(properties.UsersCollection)
 	if err := coll.Insert(user); err != nil {
+		err = fmt.Errorf("user %v cannot be created: %v", username, err)
 		return err
 	}
 	return nil
 }
 
-// DeleteUser deletes given user from the DB
-func DeleteUser(user models.User) error {
+// DeleteUserByUsernameAndRole deletes given carrier from the DB, returns error if user is not a carrier
+func DeleteUserByUsernameAndRole(username string, role models.Role) error {
+	userToDel, err := GetUserByUsername(username)
+	if err != nil || userToDel.Role != role {
+		return fmt.Errorf("user %v cannot be deleted", username)
+	}
 	coll := database.GetCollectionByName(properties.UsersCollection)
-	if err := coll.Remove(user); err != nil {
+	if err := coll.Remove(userToDel); err != nil {
+		err = fmt.Errorf("user %v cannot be deleted: %v", username, err)
 		return err
 	}
 	return nil

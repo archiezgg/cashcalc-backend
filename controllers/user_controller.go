@@ -22,7 +22,7 @@ func registerUserRoutes(router *mux.Router) {
 	s := router.PathPrefix("/users").Subrouter()
 	s.HandleFunc("", usernamesHandler).Methods(http.MethodGet)
 	s.HandleFunc("/create/carrier", createCarrierHandler).Methods(http.MethodPut)
-	// s.HandleFunc("/delete/carrier", deleteCarrierHandler)
+	s.HandleFunc("/delete/carrier", deleteCarrierHandler).Methods(http.MethodDelete)
 	s.Use(security.AccessLevelAdmin)
 }
 
@@ -50,5 +50,25 @@ func createCarrierHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err := repositories.CreateUser(rb.Username, rb.Password, models.RoleCarrier); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
 	}
+	writeMessage(w, "Carrier created successfully")
+}
+
+func deleteCarrierHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		Username string `json:"username"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Username == "" {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repositories.DeleteUserByUsernameAndRole(rb.Username, models.RoleCarrier); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	writeMessage(w, "Carrier deleted successfully")
 }

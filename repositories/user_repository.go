@@ -64,6 +64,10 @@ func GetUserByUsername(username string) (models.User, error) {
 
 // CreateUser creates a user by given username, password and role and saves it to DB
 func CreateUser(username, password string, role models.Role) error {
+	if err := checkIfUserNameIsTaken(username); err != nil {
+		return err
+	}
+
 	hashedPw, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		return err
@@ -78,6 +82,20 @@ func CreateUser(username, password string, role models.Role) error {
 	coll := database.GetCollectionByName(properties.UsersCollection)
 	if err := coll.Insert(user); err != nil {
 		return err
+	}
+	return nil
+}
+
+func checkIfUserNameIsTaken(username string) error {
+	usernames, err := GetUsernames()
+	if err != nil {
+		return err
+	}
+
+	for _, u := range usernames {
+		if username == u {
+			return fmt.Errorf("username already taken: %v", username)
+		}
 	}
 	return nil
 }

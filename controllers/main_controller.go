@@ -7,6 +7,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -36,4 +37,9 @@ func setJSONHeaderMiddleWare(next http.Handler) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		next.ServeHTTP(w, r)
 	})
+}
+
+func writeMessage(w http.ResponseWriter, msg string) {
+	finalMessage := fmt.Sprintf("{\"message\": \"%s\"}", msg)
+	w.Write([]byte(finalMessage))
 }

@@ -21,9 +21,11 @@ import (
 func registerUserRoutes(router *mux.Router) {
 	s := router.PathPrefix("/users").Subrouter()
 	s.HandleFunc("", usernamesHandler).Methods(http.MethodGet)
-	s.HandleFunc("/create/carrier", createCarrierHandler).Methods(http.MethodPut)
-	s.HandleFunc("/delete/carrier", deleteCarrierHandler).Methods(http.MethodDelete)
 	s.Use(security.AccessLevelAdmin)
+	carriers := s.PathPrefix("/carrier").Subrouter()
+	carriers.HandleFunc("/create", createCarrierHandler).Methods(http.MethodPut)
+	carriers.HandleFunc("/delete", deleteCarrierHandler).Methods(http.MethodDelete)
+	carriers.Use(security.AccessLevelAdmin)
 }
 
 func usernamesHandler(w http.ResponseWriter, r *http.Request) {

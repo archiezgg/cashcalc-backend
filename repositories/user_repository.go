@@ -98,6 +98,9 @@ func DeleteUserByUsernameAndRole(username string, role models.Role) error {
 		err = fmt.Errorf("user %v cannot be deleted: %v", username, err)
 		return err
 	}
+	if err := DeleteRefreshToken(username); err != nil {
+		return err
+	}
 	return nil
 }
 

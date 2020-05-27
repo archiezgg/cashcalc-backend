@@ -21,18 +21,16 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 		return models.CalcOutputData{}, err
 	}
 
-	var pricingFare models.Fare
-	if inputData.IsDocument {
-		pricingFare, err = GetAirDocFaresByZoneNumberAndWeight(inputData.ZoneNumber, inputData.Weight)
-		if err != nil {
-			return models.CalcOutputData{}, err
-		}
-	} else {
-		pricing
+	pricingFare, err := getPricingFareBasedOnInputData(inputData)
+	if err != nil {
+		return models.CalcOutputData{}, err
 	}
 
 	baseFare := services.CalcBaseFareWithVatAndDiscountAir(inputData.ZoneNumber, pricingVars.VATPercent, inputData.DiscountPercent, inputData.IsDocument, pricingFare)
-	return models.CalcOutputData{}, nil
+
+	return models.CalcOutputData{
+		BaseFare: baseFare,
+	}, nil
 }
 
 func getPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {

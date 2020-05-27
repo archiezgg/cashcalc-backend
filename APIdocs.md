@@ -396,7 +396,7 @@ Creates a user with the role carrier.
 ```
 
 ### /users/carrier/delete
-Creates a user with the role carrier.
+Deletes a user with the role carrier.
 * HTTP method: _DELETE_
 * HTTP response: 
 	* _200 if successful_
@@ -412,5 +412,46 @@ Creates a user with the role carrier.
 ```
 {
   "message": "Carrier deleted successfully"
+}
+```
+
+### /users/admin/create
+Creates a user with the role admin.
+* HTTP method: _PUT_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample required payload:
+```
+{
+	"username": "some-user",
+	"password": "some-password"
+}
+```
+* Sample JSON response:
+```
+{
+  "message": "Admin created successfully"
+}
+```
+
+### /users/admin/delete
+Deletes a user with the role admin.
+* HTTP method: _DELETE_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample required payload:
+```
+{
+	"username": "some-user"
+}
+```
+* Sample JSON response:
+```
+{
+  "message": "Admin deleted successfully"
 }
 ```

@@ -8,37 +8,35 @@ package services
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/IstvanN/cashcalc-backend/models"
 )
 
-// CalcResultAir takes input data and calculates the fares for air AND hungarian delivery
-func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error) {
-	if err := validateInputData(inputData); err != nil {
-		return models.CalcOutputData{}, err
-	}
-	return models.CalcOutputData{}, nil
-}
-
+// IsZoneEU returns if zone is EU or not
 func isZoneEU(zn int) bool {
 	return zn <= 4 && zn >= 0
 }
 
-func calcBaseFareWithVatAndDiscountAir(zn int, vatPercent float64, discountPercent float64, isDocument bool, pricingFare models.Fare) float64 {
-	baseFareIncreasedWithVat := IncreaseWithVat(float64(pricingFare.BaseFare), vatPercent)
+// CalcBaseFareWithVatAndDiscountAir calculates the basefare increased by VAT and applied discount
+func CalcBaseFareWithVatAndDiscountAir(zn int, vatPercent float64, discountPercent float64, isDocument bool, pricingFare models.Fare) float64 {
 	if isZoneEU(zn) {
-		return applyDiscountToBaseFare(baseFareIncreasedWithVat, discountPercent)
+		baseFareIncreasedWithVat := IncreaseWithVat(float64(pricingFare.BaseFare), vatPercent)
+		return math.Round(applyDiscountToBaseFare(baseFareIncreasedWithVat, discountPercent))
 	}
 
 	if isDocument && pricingFare.Weight <= 2 {
-		return applyDiscountToBaseFare(baseFareIncreasedWithVat, discountPercent)
+		return math.Round(applyDiscountToBaseFare(float64(pricingFare.BaseFare), discountPercent))
 	}
 
-	return applyDiscountToBaseFare(baseFareIncreasedWithVat, discountPercent)
+	baseFare := math.Round(applyDiscountToBaseFare(float64(pricingFare.BaseFare), discountPercent))
+	return baseFare
 }
 
 // TODO: WRITE TEST
-func validateInputData(input models.CalcInputData) error {
+
+// ValidateInputData takes an input data model and returns with an error if there is a logical error
+func ValidateInputData(input models.CalcInputData) error {
 	var err error
 	if isZoneEU(input.ZoneNumber) && input.IsDocument {
 		err = fmt.Errorf("zone number %v, document status %v: no document delivery to EU", input.ZoneNumber, input.IsDocument)

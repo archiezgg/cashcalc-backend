@@ -358,3 +358,59 @@ Revokes all refresh tokens.
   "message": "All tokens revoked successfully"
 }
 ```
+
+### /users
+Retrieves all registered usernames.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample JSON response:
+```
+[
+  "some-user",
+  "another-user"
+]
+```
+
+### /users/carrier/create
+Creates a user with the role carrier.
+* HTTP method: _PUT_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample required payload:
+```
+{
+	"username": "some-user",
+	"password": "some-password"
+}
+```
+* Sample JSON response:
+```
+{
+  "message": "Carrier created successfully"
+}
+```
+
+### /users/carrier/delete
+Creates a user with the role carrier.
+* HTTP method: _DELETE_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample required payload:
+```
+{
+	"username": "some-user"
+}
+```
+* Sample JSON response:
+```
+{
+  "message": "Carrier deleted successfully"
+}
+```

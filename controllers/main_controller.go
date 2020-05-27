@@ -7,6 +7,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -20,13 +21,14 @@ func StartupRouter() (router *mux.Router) {
 	registerCountriesRoutes(router)
 	registerPricingsRoutes(router)
 	registerPricingVarsRoutes(router)
-	registerSuperuserRoutes(router)
+	registerTokenRoutes(router)
+	registerUserRoutes(router)
 	router.Use(setJSONHeaderMiddleWare)
 	return
 }
 
 func welcomeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(`{"message": "Welcome to CashCalc 2020"}`))
+	writeMessage(w, "Welcome to CashCalc 2020!")
 }
 
 // setJSONHeaderMiddleWare sets the header to application/json for a given handler
@@ -35,4 +37,9 @@ func setJSONHeaderMiddleWare(next http.Handler) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		next.ServeHTTP(w, r)
 	})
+}
+
+func writeMessage(w http.ResponseWriter, msg string) {
+	finalMessage := fmt.Sprintf("{\"message\": \"%s\"}", msg)
+	w.Write([]byte(finalMessage))
 }

@@ -15,6 +15,7 @@ services:
             REFRESH_KEY: "test_refresh_key"
         depends_on:
             - mongo
+            - redis
     mongo:
         build:
             context: local_dev/mongo-cashcalc

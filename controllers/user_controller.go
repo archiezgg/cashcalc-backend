@@ -11,6 +11,7 @@ import (
 	"net/http"
 
 	"github.com/IstvanN/cashcalc-backend/models"
+	"github.com/IstvanN/cashcalc-backend/properties"
 
 	"github.com/IstvanN/cashcalc-backend/repositories"
 	"github.com/IstvanN/cashcalc-backend/security"
@@ -19,7 +20,8 @@ import (
 )
 
 func registerUserRoutes(router *mux.Router) {
-	s := router.PathPrefix("/users").Subrouter()
+	ep := properties.UsersEndpoint
+	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", usernamesHandler).Methods(http.MethodGet)
 	s.Use(security.AccessLevelAdmin)
 	carriers := s.PathPrefix("/carrier").Subrouter()

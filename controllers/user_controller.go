@@ -28,6 +28,10 @@ func registerUserRoutes(router *mux.Router) {
 	carriers.HandleFunc("/create", createCarrierHandler).Methods(http.MethodPut)
 	carriers.HandleFunc("/delete", deleteCarrierHandler).Methods(http.MethodDelete)
 	carriers.Use(security.AccessLevelAdmin)
+	admins := s.PathPrefix("/admin").Subrouter()
+	admins.HandleFunc("/create", createAdminHandler)
+	admins.HandleFunc("/delete", deleteAdminHandler)
+	admins.Use(security.AccessLevelSuperuser)
 }
 
 func usernamesHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,4 +79,42 @@ func deleteCarrierHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeMessage(w, "Carrier deleted successfully")
+}
+
+func createAdminHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil ||
+		rb.Username == "" || rb.Password == "" {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repositories.CreateUser(rb.Username, rb.Password, models.RoleAdmin); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	writeMessage(w, "Admin created successfully")
+}
+
+func deleteAdminHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		Username string `json:"username"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Username == "" {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repositories.DeleteUserByUsernameAndRole(rb.Username, models.RoleAdmin); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	writeMessage(w, "Admin deleted successfully")
 }

@@ -72,7 +72,7 @@ func CreateRefreshToken(user models.User) (string, error) {
 		return "", err
 	}
 
-	if err := repositories.SaveRefreshToken(user.Username, refreshTokenString); err != nil {
+	if err := repositories.SaveRefreshToken(user, refreshTokenString); err != nil {
 		return "", err
 	}
 	return refreshTokenString, nil
@@ -103,7 +103,7 @@ func checkIfRefreshTokenIsInDB(username string, refreshToken string) error {
 		return err
 	}
 
-	if tokenInDB != refreshToken {
+	if tokenInDB.TokenString != refreshToken {
 		return fmt.Errorf("refresh token %v for user %v is not in db", refreshToken, username)
 	}
 	return nil

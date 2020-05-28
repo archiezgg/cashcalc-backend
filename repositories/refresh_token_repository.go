@@ -7,6 +7,7 @@
 package repositories
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -17,17 +18,35 @@ import (
 )
 
 // GetRefreshTokenByUsername retrieves the token by the user's name
-func GetRefreshTokenByUsername(username string) (string, error) {
-	tokenString, err := database.RedisClient().Get(username).Result()
+func GetRefreshTokenByUsername(username string) (models.RefreshToken, error) {
+	tokenJSON, err := database.RedisClient().Get(username).Result()
 	if err != nil {
-		return "", fmt.Errorf("error retreiving refresh token for %v: %v", username, err)
+		return models.RefreshToken{}, fmt.Errorf("error retreiving refresh token for %v: %v", username, err)
 	}
-	return tokenString, nil
+
+	var token models.RefreshToken
+	if err := json.Unmarshal([]byte(tokenJSON), &token); err != nil {
+		return models.RefreshToken{}, fmt.Errorf("error unmarshaling token: %v", tokenJSON)
+	}
+	return token, nil
 }
 
-// SaveRefreshToken saves the token with the role to the DB
-func SaveRefreshToken(username string, refreshTokenString string) error {
-	err := database.RedisClient().Set(username, refreshTokenString, time.Minute*properties.RefreshTokenExp).Err()
+// SaveRefreshToken saves the username as key and the TokenData as value
+func SaveRefreshToken(user models.User, refreshTokenString string) error {
+	exp := time.Minute * properties.RefreshTokenExp
+	token := models.RefreshToken{
+		Username:    user.Username,
+		Role:        user.Role,
+		TokenString: refreshTokenString,
+		ExpiresAt:   time.Now().Add(exp).Unix(),
+	}
+
+	tokenJSON, err := json.Marshal(token)
+	if err != nil {
+		return err
+	}
+
+	err = database.RedisClient().Set(user.Username, tokenJSON, exp).Err()
 	if err != nil {
 		return fmt.Errorf("error saving refresh token: %v", err)
 	}
@@ -56,39 +75,20 @@ func DeleteBulkRefreshToken(usernames []string) error {
 
 // GetAllTokens returns with an array containing all refresh tokens
 func GetAllTokens() ([]models.RefreshToken, error) {
-	var tokens []models.RefreshToken
 	usernames, err := database.RedisClient().Keys("*").Result()
 	if err != nil {
 		return nil, err
 	}
 
+	var tokens []models.RefreshToken
 	for _, username := range usernames {
-		token, err := createRefreshTokenDataFromUsername(username)
+		token, err := GetRefreshTokenByUsername(username)
 		if err != nil {
 			return nil, err
 		}
 		tokens = append(tokens, token)
 	}
 	return tokens, nil
-}
-
-func createRefreshTokenDataFromUsername(username string) (models.RefreshToken, error) {
-	user, err := GetUserByUsername(username)
-	if err != nil {
-		return models.RefreshToken{}, err
-	}
-
-	expDate, err := getExpirationDateForToken(username)
-	if err != nil {
-		return models.RefreshToken{}, err
-	}
-
-	token := models.RefreshToken{
-		Username:  user.Username,
-		Role:      user.Role,
-		ExpiresAt: expDate,
-	}
-	return token, nil
 }
 
 // DeleteAllTokens removes all tokens from DB

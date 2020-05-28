@@ -51,7 +51,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Printf("user '%v' has successfully logged in", u.Username)
-	writeMessage(w, "Logged in succesfully")
+	msg := fmt.Sprintf("{\"message\": \"%s\",\"role\": \"%v\"}", "Logged in successfully", u.Role)
+	w.Write([]byte(msg))
 }
 
 func refreshHandler(w http.ResponseWriter, r *http.Request) {

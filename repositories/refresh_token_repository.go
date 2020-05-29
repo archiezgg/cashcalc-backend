@@ -31,7 +31,7 @@ func GetRefreshTokenByUsername(username string) (models.RefreshToken, error) {
 	return token, nil
 }
 
-// SaveRefreshToken saves the username as key and the TokenData as value
+// SaveRefreshToken saves the username as key and the token data as JSON as value
 func SaveRefreshToken(user models.User, refreshTokenString string) error {
 	exp := time.Minute * properties.RefreshTokenExp
 	token := models.RefreshToken{

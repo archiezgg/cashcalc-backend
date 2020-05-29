@@ -66,7 +66,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := security.GetUserFromRefreshToken(rb.RefreshToken)
+	user, err := security.DecodeUserFromRefreshToken(rb.RefreshToken)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
@@ -84,13 +84,13 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func generateTokenPairsAndSetThemAsHeaders(w http.ResponseWriter, user models.User) error {
-	at, err := security.CreateAccessToken(user)
+	at, err := security.GenerateAccessToken(user)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return err
 	}
 
-	rt, err := security.CreateRefreshToken(user)
+	rt, err := security.GenerateRefreshToken(user)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return err

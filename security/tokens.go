@@ -32,8 +32,8 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
-// CreateAccessToken takes a Role as param and creates a signed access token
-func CreateAccessToken(user models.User) (string, error) {
+// GenerateAccessToken takes a user as param and generates a signed access token
+func GenerateAccessToken(user models.User) (string, error) {
 	if string(accessKey) == "" {
 		return "", fmt.Errorf("ACCESS_KEY is unset")
 	}
@@ -53,8 +53,8 @@ func CreateAccessToken(user models.User) (string, error) {
 	return accessTokenString, nil
 }
 
-// CreateRefreshToken takes a Role as param and creates a signed refresh token
-func CreateRefreshToken(user models.User) (string, error) {
+// GenerateRefreshToken takes a user as param and generates a signed refresh token
+func GenerateRefreshToken(user models.User) (string, error) {
 	if string(refreshKey) == "" {
 		return "", fmt.Errorf("REFRESH_KEY is unset")
 	}
@@ -78,9 +78,9 @@ func CreateRefreshToken(user models.User) (string, error) {
 	return refreshTokenString, nil
 }
 
-// GetUserFromRefreshToken decodes the username from JWT refresh token
-func GetUserFromRefreshToken(refreshTokenString string) (models.User, error) {
-	claims, err := getClaimsFromToken(refreshTokenString, refreshKey)
+// DecodeUserFromRefreshToken decodes the username from JWT refresh token
+func DecodeUserFromRefreshToken(refreshTokenString string) (models.User, error) {
+	claims, err := decodeClaimsFromToken(refreshTokenString, refreshKey)
 	if err != nil {
 		return models.User{}, err
 	}

@@ -299,6 +299,7 @@ Retrieves the refresh tokens stored in database.
     "username": "some-user",
     "role": "carrier",
     "tokenString": "some-refresh-token",
+	"issuedAt": 1590740566,
     "expiresAt": 1590935428
   }
 ]

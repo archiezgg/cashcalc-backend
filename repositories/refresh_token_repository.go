@@ -38,6 +38,7 @@ func SaveRefreshToken(user models.User, refreshTokenString string) error {
 		Username:    user.Username,
 		Role:        user.Role,
 		TokenString: refreshTokenString,
+		IssuedAt:    time.Now().Unix(),
 		ExpiresAt:   time.Now().Add(exp).Unix(),
 	}
 

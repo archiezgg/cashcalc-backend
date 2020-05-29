@@ -27,9 +27,8 @@ var (
 // CustomClaims is the struct for the Token Claims including role
 // and standard JWT claims
 type CustomClaims struct {
-	Username string      `json:"username"`
-	Role     models.Role `json:"role"`
 	jwt.StandardClaims
+	Role models.Role `json:"role"`
 }
 
 // GenerateAccessToken takes a user as param and generates a signed access token
@@ -39,11 +38,12 @@ func GenerateAccessToken(user models.User) (string, error) {
 	}
 
 	claims := CustomClaims{
-		user.Username,
-		user.Role,
 		jwt.StandardClaims{
+			Issuer:    user.Username,
+			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Minute * properties.AccessTokenExp).Unix(),
 		},
+		user.Role,
 	}
 
 	accessTokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(accessKey)
@@ -60,11 +60,12 @@ func GenerateRefreshToken(user models.User) (string, error) {
 	}
 
 	claims := CustomClaims{
-		user.Username,
-		user.Role,
 		jwt.StandardClaims{
+			Issuer:    user.Username,
+			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix(),
 		},
+		user.Role,
 	}
 
 	refreshTokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(refreshKey)
@@ -85,7 +86,7 @@ func DecodeUserFromRefreshToken(refreshTokenString string) (models.User, error) 
 		return models.User{}, err
 	}
 
-	user, err := repositories.GetUserByUsername(claims.Username)
+	user, err := repositories.GetUserByUsername(claims.Issuer)
 	if err != nil {
 		return models.User{}, err
 	}

@@ -11,5 +11,6 @@ type RefreshToken struct {
 	Username    string `json:"username"`
 	Role        Role   `json:"role"`
 	TokenString string `json:"tokenString"`
+	IssuedAt    int64  `json:"issuedAt"`
 	ExpiresAt   int64  `json:"expiresAt"`
 }

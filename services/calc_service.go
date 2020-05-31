@@ -85,3 +85,8 @@ func CalcExtRasTk(shouldCalc bool, zn, fare int, vatPercent float64) float64 {
 	}
 	return float64(fare)
 }
+
+// CalcFuelFare calculates fuel fare based on base fare, express, ras and the fuelPercent given
+func CalcFuelFare(baseFare, expressFare, rasFare, fuelPercent float64) float64 {
+	return math.Round((fuelPercent / 100) * (baseFare + expressFare + rasFare))
+}

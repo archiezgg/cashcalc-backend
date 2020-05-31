@@ -66,7 +66,7 @@ Calculates the resulting fares based on the input.
 * Payload required:
 	* _transferType: string ("air" | "road"), mandatory_
 	* _zoneNumber: integer between 0-9, mandatory_
-	* _weight: float between 0.5-200_
+	* _weight: float between 0.5-200, mandatory_
 	* _insurance: integer, optional, defaults to 0_
 	* _discountPercent: float, optional, defaults to 0_
 	* _expressType: string ("worldwide" | "9h" | "12h"), mandatory_

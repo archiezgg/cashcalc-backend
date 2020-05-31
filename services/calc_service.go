@@ -46,3 +46,11 @@ func ValidateInputData(input models.CalcInputData) error {
 func applyDiscountToBaseFare(baseFare float64, discountPercent float64) float64 {
 	return math.Round((1 - discountPercent/100) * baseFare)
 }
+
+// CalcExpressFare increases express fare with VAT if zone is EU
+func CalcExpressFare(zn int, vatPercent float64, expressFare float64) float64 {
+	if isZoneEU(zn) {
+		return math.Round(IncreaseWithVat(expressFare, vatPercent))
+	}
+	return expressFare
+}

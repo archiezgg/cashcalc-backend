@@ -155,3 +155,21 @@ func TestCalcExtRasTk(t *testing.T) {
 		}
 	}
 }
+
+func TestCalcFuelFare(t *testing.T) {
+	testCases := []struct {
+		baseFare, expressFare, rasFare, fuelPercent, expected float64
+	}{
+		{100, 0, 0, 10, 10},
+		{50, 10, 15, 0, 0},
+		{50, 10, 15, 10, 8},
+	}
+
+	for _, tc := range testCases {
+		actual := CalcFuelFare(tc.baseFare, tc.expressFare, tc.rasFare, tc.fuelPercent)
+		if actual != tc.expected {
+			t.Errorf("CalcFuelFare(%v, %v, %v, %v) failed: expected %v, got %v", tc.baseFare, tc.expressFare, tc.rasFare, tc.fuelPercent,
+				tc.expected, actual)
+		}
+	}
+}

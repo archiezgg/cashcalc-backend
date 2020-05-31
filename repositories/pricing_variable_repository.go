@@ -28,3 +28,17 @@ func GetPricingVariables() (models.PricingVariables, error) {
 
 	return pv, nil
 }
+
+// UpdatePricingVariables updates the pricing variables in database
+func UpdatePricingVariables(updatedPricingVars models.PricingVariables) error {
+	currentPV, err := GetPricingVariables()
+	if err != nil {
+		return err
+	}
+
+	coll := database.GetCollectionByName(properties.PricingVarsCollection)
+	if err := coll.Update(currentPV, updatedPricingVars); err != nil {
+		return fmt.Errorf("error updating pricing variables: %v", err)
+	}
+	return nil
+}

@@ -10,6 +10,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/IstvanN/cashcalc-backend/models"
+
 	"github.com/IstvanN/cashcalc-backend/security"
 
 	"github.com/IstvanN/cashcalc-backend/properties"
@@ -22,6 +24,7 @@ func registerPricingVarsRoutes(router *mux.Router) {
 	ep := properties.PricingVarsEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", allPricingVarsHandler).Methods(http.MethodGet)
+	s.HandleFunc("/update", updatePricingVarsHandler).Methods(http.MethodPatch)
 	s.Use(security.AccessLevelAdmin)
 }
 
@@ -32,4 +35,19 @@ func allPricingVarsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(pv)
+}
+
+func updatePricingVarsHandler(w http.ResponseWriter, r *http.Request) {
+	var updatedPricingVars models.PricingVariables
+	if err := json.NewDecoder(r.Body).Decode(&updatedPricingVars); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repositories.UpdatePricingVariables(updatedPricingVars); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	writeMessage(w, "Pricing variables updated successfully")
 }

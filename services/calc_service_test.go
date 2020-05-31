@@ -96,9 +96,8 @@ func TestValidateInputData(t *testing.T) {
 
 func TestCalcExpressFare(t *testing.T) {
 	testCases := []struct {
-		zoneNumber              int
-		vatPercent, expressFare float64
-		expected                float64
+		zoneNumber                        int
+		vatPercent, expressFare, expected float64
 	}{
 		{0, 27, 0, 0},
 		{7, 27, 0, 0},
@@ -110,6 +109,27 @@ func TestCalcExpressFare(t *testing.T) {
 		actual := CalcExpressFare(tc.zoneNumber, tc.vatPercent, tc.expressFare)
 		if actual != tc.expected {
 			t.Errorf("CalcExpressFare(%v, %v, %v) failed: expected %v, got %v", tc.zoneNumber, tc.vatPercent, tc.expressFare, tc.expected, actual)
+		}
+	}
+}
+
+func TestCalcInsuranceFare(t *testing.T) {
+	testCases := []struct {
+		zoneNumber, insurance, limit, min int
+		vatPercent, expected              float64
+	}{
+		{0, 0, 150, 20, 27, 0},
+		{2, 100, 150, 20, 27, 25},
+		{5, 100, 150, 20, 27, 20},
+		{3, 200, 150, 20, 27, 3},
+		{6, 200, 150, 20, 27, 2},
+	}
+
+	for _, tc := range testCases {
+		actual := CalcInsuranceFare(tc.zoneNumber, tc.insurance, tc.limit, tc.min, tc.vatPercent)
+		if actual != tc.expected {
+			t.Errorf("CalcInsuranceFare(%v, %v, %v, %v, %v) failed: expected %v, got %v", tc.zoneNumber, tc.insurance, tc.limit, tc.min, tc.vatPercent,
+				tc.expected, actual)
 		}
 	}
 }

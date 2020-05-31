@@ -20,7 +20,7 @@ import (
 // create proper logging and formatted http respond at the same time
 func LogErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
 	log.Println(err)
-	errorMsg := fmt.Sprintf("{\"error\": \"%v\"}", http.StatusText(httpStatusCode))
+	errorMsg := fmt.Sprintf("{\"error\": \"%v\"}", err.Error())
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatusCode)
 	w.Write([]byte(errorMsg))

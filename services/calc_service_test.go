@@ -93,3 +93,23 @@ func TestValidateInputData(t *testing.T) {
 		}
 	}
 }
+
+func TestCalcExpressFare(t *testing.T) {
+	testCases := []struct {
+		zoneNumber              int
+		vatPercent, expressFare float64
+		expected                float64
+	}{
+		{0, 27, 0, 0},
+		{7, 27, 0, 0},
+		{3, 27, 1000, 1270},
+		{5, 27, 1000, 1000},
+	}
+
+	for _, tc := range testCases {
+		actual := CalcExpressFare(tc.zoneNumber, tc.vatPercent, tc.expressFare)
+		if actual != tc.expected {
+			t.Errorf("CalcExpressFare(%v, %v, %v) failed: expected %v, got %v", tc.zoneNumber, tc.vatPercent, tc.expressFare, tc.expected, actual)
+		}
+	}
+}

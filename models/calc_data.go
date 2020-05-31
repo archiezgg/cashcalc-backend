@@ -6,6 +6,9 @@
 
 package models
 
+// IsEmergency variable shows if COVID-based rules are impacting Hungary still
+var IsEmergency = true
+
 // CalcInputData is the structure to which the inpu json will be parsed to
 type CalcInputData struct {
 	ZoneNumber      int     `json:"zoneNumber"`
@@ -28,6 +31,7 @@ type CalcOutputData struct {
 	RasFare       float64 `json:"rasFare"`
 	TkFare        float64 `json:"tkFare"`
 	FuelFare      float64 `json:"fuelFare"`
+	EmergencyFare float64 `json:"emergencyFare"`
 	Result        float64 `json:"result"`
 }
 

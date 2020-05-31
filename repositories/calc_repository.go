@@ -41,6 +41,7 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 	tkFare := services.CalcExtRasTk(inputData.IsTk, inputData.ZoneNumber, pricingVars.TK, pricingVars.VATPercent)
 	fuelFare := services.CalcFuelFare(baseFare, expressFare, rasFare, pricingVars.AirFuelFarePercent)
 	emergencyFare := services.CalcEmergencyFare(models.IsEmergency, inputData.Weight, models.EmergencyFee)
+	result := services.SumFares(baseFare, expressFare, insuranceFare, extFare, rasFare, tkFare, fuelFare, emergencyFare)
 
 	return models.CalcOutputData{
 		BaseFare:      baseFare,
@@ -51,6 +52,7 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 		TkFare:        tkFare,
 		FuelFare:      fuelFare,
 		EmergencyFare: emergencyFare,
+		Result:        result,
 	}, nil
 }
 

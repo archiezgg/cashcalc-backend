@@ -345,8 +345,8 @@ Updates the pricing variables with the given variables.
 	* _vatPercent: float, mandatory_
 	* _airFuelFarePercent: float, mandatory_
 	* _roadFuelFarePercent:float, mandatory_
-	*_express9h: integer, mandatory_
-	*_express9hHun: integer, mandatory_
+	* _express9h: integer, mandatory_
+	* _express9hHun: integer, mandatory_
 	* _express12h: integer, mandatory_
 	* _express12hHun: integer, mandatory_
 	* _insuranceLimit: integer, mandatory_

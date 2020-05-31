@@ -18,19 +18,14 @@ func isZoneEU(zn int) bool {
 	return zn <= 4 && zn >= 0
 }
 
-// CalcBaseFareWithVatAndDiscountAir calculates the basefare increased by VAT and applied discount
-func CalcBaseFareWithVatAndDiscountAir(zn int, discountPercent float64, vatPercent float64, baseFare int) float64 {
-	if isZoneEU(zn) {
-		baseFareIncreasedWithVat := IncreaseWithVat(float64(baseFare), vatPercent)
-		return math.Round(applyDiscountToBaseFare(baseFareIncreasedWithVat, discountPercent))
-	}
-
-	return math.Round(applyDiscountToBaseFare(float64(baseFare), discountPercent))
-}
-
 // ValidateInputData takes an input data model and returns with an error if there is a logical error
 func ValidateInputData(input models.CalcInputData) error {
 	var err error
+	if input.TransferType != models.TransferAir && input.TransferType != models.TransferRoad {
+		err = fmt.Errorf("transfer type could either be %v or %v, but got %v", models.TransferAir, models.TransferRoad, input.TransferType)
+		return err
+	}
+
 	if isZoneEU(input.ZoneNumber) && input.IsDocument {
 		err = fmt.Errorf("zone number %v, document status %v: no document delivery to EU", input.ZoneNumber, input.IsDocument)
 		return err
@@ -41,6 +36,16 @@ func ValidateInputData(input models.CalcInputData) error {
 		return err
 	}
 	return nil
+}
+
+// CalcBaseFareWithVatAndDiscountAir calculates the basefare increased by VAT and applied discount
+func CalcBaseFareWithVatAndDiscountAir(zn int, discountPercent float64, vatPercent float64, baseFare int) float64 {
+	if isZoneEU(zn) {
+		baseFareIncreasedWithVat := IncreaseWithVat(float64(baseFare), vatPercent)
+		return math.Round(applyDiscountToBaseFare(baseFareIncreasedWithVat, discountPercent))
+	}
+
+	return math.Round(applyDiscountToBaseFare(float64(baseFare), discountPercent))
 }
 
 func applyDiscountToBaseFare(baseFare float64, discountPercent float64) float64 {

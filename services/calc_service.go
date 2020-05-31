@@ -54,3 +54,22 @@ func CalcExpressFare(zn int, vatPercent float64, expressFare float64) float64 {
 	}
 	return expressFare
 }
+
+// CalcInsuranceFare calculates the insurance fare based on the limit, minimum fee and vat
+func CalcInsuranceFare(zn, insurance, limit, min int, vatPercent float64) float64 {
+	if insurance == 0 {
+		return 0
+	}
+
+	if insurance < limit {
+		if isZoneEU(zn) {
+			return math.Round(IncreaseWithVat(float64(min), vatPercent))
+		}
+		return float64(min)
+	}
+
+	if isZoneEU(zn) {
+		return math.Round(0.01 * IncreaseWithVat(float64(insurance), vatPercent))
+	}
+	return math.Round(0.01 * float64(insurance))
+}

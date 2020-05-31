@@ -28,6 +28,7 @@ const (
 	pricingVarsEndpointProp   = "endpoint.pricingvars"
 	tokensEndpointProp        = "endpoint.tokens"
 	usersEndpointProp         = "endpoint.users"
+	calcEndpointProp          = "endpoint.calc"
 	airFaresZnMinProp         = "air.fares.zn.min"
 	airFaresZnMaxProp         = "air.fares.zn.max"
 	airDocFaresZnMinProp      = "air.docfares.zn.min"
@@ -67,6 +68,8 @@ var (
 	TokensEndpoint string
 	// UsersEndpoint is the endpoint for user manipulations (create/delete/update)
 	UsersEndpoint string
+	// CalcEndpoint is the endpoint for calculating the result
+	CalcEndpoint string
 	// AirFaresZnMin is the minimum zone number for air fares
 	AirFaresZnMin int
 	// AirFaresZnMax is the maximum zone number for air fares
@@ -112,6 +115,7 @@ func InitProperties() {
 	PricingVarsEndpoint = p.MustGetString(pricingVarsEndpointProp)
 	TokensEndpoint = p.MustGetString(tokensEndpointProp)
 	UsersEndpoint = p.MustGetString(usersEndpointProp)
+	CalcEndpoint = p.MustGetString(calcEndpointProp)
 	AirFaresZnMin = p.MustGetInt(airFaresZnMinProp)
 	AirFaresZnMax = p.MustGetInt(airFaresZnMaxProp)
 	AirDocFaresZnMin = p.MustGetInt(airDocFaresZnMinProp)

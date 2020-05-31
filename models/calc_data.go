@@ -14,15 +14,16 @@ var (
 
 // CalcInputData is the structure to which the inpu json will be parsed to
 type CalcInputData struct {
-	ZoneNumber      int     `json:"zoneNumber"`
-	Weight          float64 `json:"weight"`
-	Insurance       int     `json:"insurance"`
-	DiscountPercent float64 `json:"discountPercent"`
-	ExpressType     Express `json:"expressType"`
-	IsDocument      bool    `json:"isDocument"`
-	IsExt           bool    `json:"isExt"`
-	IsRas           bool    `json:"isRas"`
-	IsTk            bool    `json:"isTk"`
+	TransferType    Transfer `json:"transferType"`
+	ZoneNumber      int      `json:"zoneNumber"`
+	Weight          float64  `json:"weight"`
+	Insurance       int      `json:"insurance"`
+	DiscountPercent float64  `json:"discountPercent"`
+	ExpressType     Express  `json:"expressType"`
+	IsDocument      bool     `json:"isDocument"`
+	IsExt           bool     `json:"isExt"`
+	IsRas           bool     `json:"isRas"`
+	IsTk            bool     `json:"isTk"`
 }
 
 // CalcOutputData is the structure that contains the end result and its elements
@@ -48,4 +49,14 @@ const (
 	Express9h = "9h"
 	// Express12h represents express type 12h
 	Express12h = "12h"
+)
+
+// Transfer represents the 2 transfer types: air (+ Hungarian) and road
+type Transfer string
+
+const (
+	// TransferAir represents the air and the hungarian transfer type
+	TransferAir = "air"
+	// TransferRoad represents the road transfer type
+	TransferRoad = "road"
 )

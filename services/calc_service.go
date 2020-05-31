@@ -26,8 +26,13 @@ func ValidateInputData(input models.CalcInputData) error {
 		return err
 	}
 
-	if input.TransferType == models.TransferRoad && (input.IsDocument || input.IsExt) {
-		err = fmt.Errorf("road transfer type cannot be document delivery or EXT")
+	if input.ExpressType != models.ExpressWorldwide && input.ExpressType != models.Express9h && input.ExpressType != models.Express12h {
+		err = fmt.Errorf("express type could either be %v, %v or %v, but got %v", models.ExpressWorldwide, models.Express9h, models.Express12h, input.ExpressType)
+		return err
+	}
+
+	if input.TransferType == models.TransferRoad && (input.IsDocument || input.IsExt || input.ExpressType != models.ExpressWorldwide) {
+		err = fmt.Errorf("road transfer type cannot be document delivery, EXT, express9h or express12h")
 		return err
 	}
 

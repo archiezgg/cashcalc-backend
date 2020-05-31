@@ -36,11 +36,17 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 	expressFare := services.CalcExpressFare(inputData.ZoneNumber, pricingVars.VATPercent, express)
 	insuranceFare := services.CalcInsuranceFare(inputData.ZoneNumber, inputData.Insurance, pricingVars.InsuranceLimit,
 		pricingVars.MinInsurance, pricingVars.VATPercent)
+	extFare := services.CalcExtRasTk(inputData.IsExt, inputData.ZoneNumber, pricingVars.EXT, pricingVars.VATPercent)
+	rasFare := services.CalcExtRasTk(inputData.IsRas, inputData.ZoneNumber, pricingVars.RAS, pricingVars.VATPercent)
+	tkFare := services.CalcExtRasTk(inputData.IsTk, inputData.ZoneNumber, pricingVars.TK, pricingVars.VATPercent)
 
 	return models.CalcOutputData{
 		BaseFare:      baseFare,
 		ExpressFare:   expressFare,
 		InsuranceFare: insuranceFare,
+		ExtFare:       extFare,
+		RasFare:       rasFare,
+		TkFare:        tkFare,
 	}, nil
 }
 

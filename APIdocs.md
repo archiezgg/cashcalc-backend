@@ -93,15 +93,15 @@ Calculates the resulting fares based on the input.
 * Sample JSON response:
 ```
 {
-  "baseFare": 14696,
-  "expressFare": 0,
-  "insuranceFare": 3300,
-  "extFare": 0,
-  "rasFare": 0,
-  "tkFare": 990,
-  "fuelFare": 2572,
-  "emergencyFare": 65,
-  "result": 21623
+	"baseFare": 14696,
+	"expressFare": 0,
+	"insuranceFare": 3300,
+	"extFare": 0,
+	"rasFare": 0,
+	"tkFare": 990,
+	"fuelFare": 2572,
+	"emergencyFare": 65,
+	"result": 21623
 }
 ```
 

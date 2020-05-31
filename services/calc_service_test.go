@@ -6,7 +6,11 @@
 
 package services
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/IstvanN/cashcalc-backend/models"
+)
 
 func TestIsZoneEu(t *testing.T) {
 	testCases := []struct {
@@ -65,6 +69,27 @@ func TestCalcBaseFareWithVatAndDiscountAir(t *testing.T) {
 		if tc.expected != actual {
 			t.Errorf("CalcBaseFareWithVatAndDiscountAir(%v, %v, %v, %v) failed: expected %v, got %v", tc.zoneNumber, tc.discountPercent, tc.vatPercent, tc.baseFare,
 				tc.expected, actual)
+		}
+	}
+}
+
+func TestValidateInputData(t *testing.T) {
+	testCases := []struct {
+		inputData   models.CalcInputData
+		expectError bool
+	}{
+		{models.CalcInputData{ZoneNumber: 0, IsDocument: true, Weight: 1.5}, true},
+		{models.CalcInputData{ZoneNumber: 3, IsDocument: false, Weight: 2}, false},
+		{models.CalcInputData{ZoneNumber: 5, IsDocument: true, Weight: 2.5}, true},
+		{models.CalcInputData{ZoneNumber: 6, IsDocument: false, Weight: 1.5}, false},
+		{models.CalcInputData{ZoneNumber: 7, IsDocument: true, Weight: 2}, false},
+	}
+
+	for _, tc := range testCases {
+		err := ValidateInputData(tc.inputData)
+		actual := (err != nil)
+		if tc.expectError != actual {
+			t.Errorf("ValidateInputData(%v) failed: expected error %v, got error %v", tc.inputData, tc.expectError, actual)
 		}
 	}
 }

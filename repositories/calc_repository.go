@@ -11,8 +11,8 @@ import (
 	"github.com/IstvanN/cashcalc-backend/services"
 )
 
-// CalcResultAir takes input data and calculates the fares for air AND hungarian delivery
-func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error) {
+// CalcResult takes input data and calculates the fares
+func CalcResult(inputData models.CalcInputData) (models.CalcOutputData, error) {
 	if err := services.ValidateInputData(inputData); err != nil {
 		return models.CalcOutputData{}, err
 	}
@@ -26,14 +26,44 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 		return models.CalcOutputData{}, err
 	}
 
-	baseFare := services.CalcBaseFareWithVatAndDiscountAir(inputData.ZoneNumber, pricingVars.VATPercent, inputData.DiscountPercent, inputData.IsDocument, pricingFare)
+	express, err := getExpressFareBasedOnInputData(inputData)
+	if err != nil {
+		return models.CalcOutputData{}, err
+	}
+
+	baseFare := services.CalcBaseFareWithVatAndDiscountAir(inputData.ZoneNumber, inputData.DiscountPercent,
+		pricingVars.VATPercent, pricingFare.BaseFare)
+	expressFare := services.CalcExpressFare(inputData.ZoneNumber, pricingVars.VATPercent, express)
+	insuranceFare := services.CalcInsuranceFare(inputData.ZoneNumber, inputData.Insurance, pricingVars.InsuranceLimit,
+		pricingVars.MinInsurance, pricingVars.VATPercent)
+	extFare := services.CalcExtRasTk(inputData.IsExt, inputData.ZoneNumber, pricingVars.EXT, pricingVars.VATPercent)
+	rasFare := services.CalcExtRasTk(inputData.IsRas, inputData.ZoneNumber, pricingVars.RAS, pricingVars.VATPercent)
+	tkFare := services.CalcExtRasTk(inputData.IsTk, inputData.ZoneNumber, pricingVars.TK, pricingVars.VATPercent)
+	fuelFare := services.CalcFuelFare(baseFare, expressFare, rasFare, pricingVars.AirFuelFarePercent)
+	emergencyFare := services.CalcEmergencyFare(models.IsEmergency, inputData.Weight, models.EmergencyFee)
+	result := services.SumFares(baseFare, expressFare, insuranceFare, extFare, rasFare, tkFare, fuelFare, emergencyFare)
 
 	return models.CalcOutputData{
-		BaseFare: baseFare,
+		BaseFare:      baseFare,
+		ExpressFare:   expressFare,
+		InsuranceFare: insuranceFare,
+		ExtFare:       extFare,
+		RasFare:       rasFare,
+		TkFare:        tkFare,
+		FuelFare:      fuelFare,
+		EmergencyFare: emergencyFare,
+		Result:        result,
 	}, nil
 }
 
 func getPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {
+	if inputData.TransferType == models.TransferAir {
+		return getAirPricingFareBasedOnInputData(inputData)
+	}
+	return getRoadPricingFareBasedOnInputData(inputData)
+}
+
+func getAirPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {
 	if inputData.IsDocument {
 		pricingFare, err := GetAirDocFaresByZoneNumberAndWeight(inputData.ZoneNumber, inputData.Weight)
 		if err != nil {
@@ -47,4 +77,38 @@ func getPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare
 		return models.Fare{}, err
 	}
 	return pricingFare, nil
+}
+
+func getRoadPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {
+	pricingFare, err := GetRoadFaresByZoneNumberAndWeight(inputData.ZoneNumber, inputData.Weight)
+	if err != nil {
+		return models.Fare{}, err
+	}
+	return pricingFare, nil
+}
+
+func getExpressFareBasedOnInputData(inputData models.CalcInputData) (float64, error) {
+	pv, err := GetPricingVariables()
+	if err != nil {
+		return 0, err
+	}
+
+	// Hungary
+	if inputData.ZoneNumber == 0 {
+		if inputData.ExpressType == models.Express9h {
+			return float64(pv.Express9hHungarian), nil
+		}
+		if inputData.ExpressType == models.Express12h {
+			return float64(pv.Express12hHungarian), nil
+		}
+	}
+	// Not Hungary
+	if inputData.ExpressType == models.Express9h {
+		return float64(pv.Express9h), nil
+	}
+	if inputData.ExpressType == models.Express12h {
+		return float64(pv.Express12h), nil
+	}
+	// Express Worldwide
+	return 0, nil
 }

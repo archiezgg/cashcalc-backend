@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/IstvanN/cashcalc-backend/properties"
 	"github.com/IstvanN/cashcalc-backend/repositories"
 
 	"github.com/IstvanN/cashcalc-backend/security"
@@ -20,8 +21,10 @@ import (
 )
 
 func registerCalcRoutes(router *mux.Router) {
-	s := router.PathPrefix("/calc").Subrouter()
+	ep := properties.CalcEndpoint
+	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", calcHandler).Methods(http.MethodPost)
+	s.Use(security.AccessLevelCarrier)
 }
 
 func calcHandler(w http.ResponseWriter, r *http.Request) {

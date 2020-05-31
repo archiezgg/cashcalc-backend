@@ -73,3 +73,15 @@ func CalcInsuranceFare(zn, insurance, limit, min int, vatPercent float64) float6
 	}
 	return math.Round(0.01 * float64(insurance))
 }
+
+// CalcExtRasTk is a function for make Ext, Ras and TK calculations,
+// calculates based on shouldCalc (isExt, isRas, isTk), zone number (EU or not), the fare and VAT
+func CalcExtRasTk(shouldCalc bool, zn, fare int, vatPercent float64) float64 {
+	if !shouldCalc {
+		return 0
+	}
+	if isZoneEU(zn) {
+		return math.Round(IncreaseWithVat(float64(fare), vatPercent))
+	}
+	return float64(fare)
+}

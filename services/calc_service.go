@@ -28,8 +28,6 @@ func CalcBaseFareWithVatAndDiscountAir(zn int, discountPercent float64, vatPerce
 	return math.Round(applyDiscountToBaseFare(float64(baseFare), discountPercent))
 }
 
-// TODO: WRITE TEST
-
 // ValidateInputData takes an input data model and returns with an error if there is a logical error
 func ValidateInputData(input models.CalcInputData) error {
 	var err error
@@ -40,6 +38,7 @@ func ValidateInputData(input models.CalcInputData) error {
 
 	if input.IsDocument && input.Weight > 2 {
 		err = fmt.Errorf("weight %v, document status %v: document cannot have more weight than 2", input.Weight, input.IsDocument)
+		return err
 	}
 	return nil
 }

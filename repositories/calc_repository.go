@@ -11,8 +11,8 @@ import (
 	"github.com/IstvanN/cashcalc-backend/services"
 )
 
-// CalcResultAir takes input data and calculates the fares for air AND hungarian delivery
-func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error) {
+// CalcResult takes input data and calculates the fares
+func CalcResult(inputData models.CalcInputData) (models.CalcOutputData, error) {
 	if err := services.ValidateInputData(inputData); err != nil {
 		return models.CalcOutputData{}, err
 	}
@@ -57,6 +57,13 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 }
 
 func getPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {
+	if inputData.TransferType == models.TransferAir {
+		return getAirPricingFareBasedOnInputData(inputData)
+	}
+	return getRoadPricingFareBasedOnInputData(inputData)
+}
+
+func getAirPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {
 	if inputData.IsDocument {
 		pricingFare, err := GetAirDocFaresByZoneNumberAndWeight(inputData.ZoneNumber, inputData.Weight)
 		if err != nil {
@@ -66,6 +73,14 @@ func getPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare
 	}
 
 	pricingFare, err := GetAirFaresByZoneNumberAndWeight(inputData.ZoneNumber, inputData.Weight)
+	if err != nil {
+		return models.Fare{}, err
+	}
+	return pricingFare, nil
+}
+
+func getRoadPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {
+	pricingFare, err := GetRoadFaresByZoneNumberAndWeight(inputData.ZoneNumber, inputData.Weight)
 	if err != nil {
 		return models.Fare{}, err
 	}

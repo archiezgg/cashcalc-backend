@@ -334,6 +334,51 @@ Retrieves the pricing variables.
 {"vatPercent":27,"airFuelFarePercent":17.5,"roadFuelFarePercent":10,"express9h":8990,"express9hHun":3300,"express12h":2990,"express12hHun":1575,"insuranceLimit":330000,"minInsurance":3300,"ext":1320,"ras":6600,"tk":990}
 ```
 
+### /pricingvariables/update
+Updates the pricing variables with the given variables.
+* HTTP method: _PATCH_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Payload required:
+	* _vatPercent: float, mandatory_
+	* _airFuelFarePercent: float, mandatory_
+	* _roadFuelFarePercent:float, mandatory_
+	*_express9h: integer, mandatory_
+	*_express9hHun: integer, mandatory_
+	* _express12h: integer, mandatory_
+	* _express12hHun: integer, mandatory_
+	* _insuranceLimit: integer, mandatory_
+	* _minInsurance: integer, mandatory_
+	* _ext: integer, mandatory_
+	* _ras: integer, mandatory_
+	* _tk: integer, mandatory_
+
+* Sample required payload:
+```
+{
+  "vatPercent": 27,
+  "airFuelFarePercent": 17.5,
+  "roadFuelFarePercent": 10,
+  "express9h": 8990,
+  "express9hHun": 3300,
+  "express12h": 2990,
+  "express12hHun": 1575,
+  "insuranceLimit": 330000,
+  "minInsurance": 3300,
+  "ext": 1320,
+  "ras": 6600,
+  "tk": 990
+}
+```
+* Sample JSON response:
+```
+{
+  "message": "Pricing variables updated successfully"
+}
+```
+
 ### /tokens
 Retrieves the refresh tokens stored in database.
 * HTTP method: _GET_

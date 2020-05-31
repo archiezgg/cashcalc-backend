@@ -103,3 +103,12 @@ func CalcEmergencyFare(isEmergency bool, weight float64, emergencyFee int) float
 	}
 	return math.Round(float64(emergencyFee) * float64(int(weight)+1)) // converting weight to integer rounds it down
 }
+
+// SumFares takes any number of float64 numbers, and adds them together
+func SumFares(fares ...float64) float64 {
+	var result float64
+	for _, f := range fares {
+		result += f
+	}
+	return result
+}

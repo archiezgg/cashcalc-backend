@@ -90,3 +90,16 @@ func CalcExtRasTk(shouldCalc bool, zn, fare int, vatPercent float64) float64 {
 func CalcFuelFare(baseFare, expressFare, rasFare, fuelPercent float64) float64 {
 	return math.Round((fuelPercent / 100) * (baseFare + expressFare + rasFare))
 }
+
+// CalcEmergencyFare calculates fee based on whether there is emergency (COVID)
+// after every started kg of weight, it calculates weight * emergency fee
+func CalcEmergencyFare(isEmergency bool, weight float64, emergencyFee int) float64 {
+	if !isEmergency {
+		return 0
+	}
+
+	if weight == math.Round(weight) {
+		return math.Round(float64(emergencyFee) * weight)
+	}
+	return math.Round(float64(emergencyFee) * float64(int(weight)+1)) // converting weight to integer rounds it down
+}

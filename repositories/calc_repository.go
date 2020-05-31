@@ -31,12 +31,16 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 		return models.CalcOutputData{}, err
 	}
 
-	baseFare := services.CalcBaseFareWithVatAndDiscountAir(inputData.ZoneNumber, inputData.DiscountPercent, pricingVars.VATPercent, pricingFare.BaseFare)
+	baseFare := services.CalcBaseFareWithVatAndDiscountAir(inputData.ZoneNumber, inputData.DiscountPercent,
+		pricingVars.VATPercent, pricingFare.BaseFare)
 	expressFare := services.CalcExpressFare(inputData.ZoneNumber, pricingVars.VATPercent, express)
+	insuranceFare := services.CalcInsuranceFare(inputData.ZoneNumber, inputData.Insurance, pricingVars.InsuranceLimit,
+		pricingVars.MinInsurance, pricingVars.VATPercent)
 
 	return models.CalcOutputData{
-		BaseFare:    baseFare,
-		ExpressFare: expressFare,
+		BaseFare:      baseFare,
+		ExpressFare:   expressFare,
+		InsuranceFare: insuranceFare,
 	}, nil
 }
 

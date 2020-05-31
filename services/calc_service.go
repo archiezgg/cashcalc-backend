@@ -26,6 +26,11 @@ func ValidateInputData(input models.CalcInputData) error {
 		return err
 	}
 
+	if input.TransferType == models.TransferRoad && (input.IsDocument || input.IsExt) {
+		err = fmt.Errorf("road transfer type cannot be document delivery or EXT")
+		return err
+	}
+
 	if isZoneEU(input.ZoneNumber) && input.IsDocument {
 		err = fmt.Errorf("zone number %v, document status %v: no document delivery to EU", input.ZoneNumber, input.IsDocument)
 		return err

@@ -66,7 +66,7 @@ Calculates the resulting fares based on the input.
 * Payload required:
 	* _transferType: string ("air" | "road"), mandatory_
 	* _zoneNumber: integer between 0-9, mandatory_
-	* _weight: float between 0.5-200_
+	* _weight: float between 0.5-200, mandatory_
 	* _insurance: integer, optional, defaults to 0_
 	* _discountPercent: float, optional, defaults to 0_
 	* _expressType: string ("worldwide" | "9h" | "12h"), mandatory_
@@ -93,15 +93,15 @@ Calculates the resulting fares based on the input.
 * Sample JSON response:
 ```
 {
-  "baseFare": 14696,
-  "expressFare": 0,
-  "insuranceFare": 3300,
-  "extFare": 0,
-  "rasFare": 0,
-  "tkFare": 990,
-  "fuelFare": 2572,
-  "emergencyFare": 65,
-  "result": 21623
+	"baseFare": 14696,
+	"expressFare": 0,
+	"insuranceFare": 3300,
+	"extFare": 0,
+	"rasFare": 0,
+	"tkFare": 990,
+	"fuelFare": 2572,
+	"emergencyFare": 65,
+	"result": 21623
 }
 ```
 

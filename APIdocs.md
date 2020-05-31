@@ -56,6 +56,55 @@ Provides interface to refresh the access token.
 }
 ```
 
+### /calc
+Calculates the resulting fares based on the input.
+* HTTP method: _POST_
+* HTTP response: 
+	* _200 if successful_ 
+	* _422 if data payload is malformed_
+	* _403 if token is unauthorized for this endpoint_
+* Payload required:
+	* _transferType: string ("air" | "road"), mandatory_
+	* _zoneNumber: integer between 0-9, mandatory_
+	* _weight: float between 0.5-200_
+	* _insurance: integer, optional, defaults to 0_
+	* _discountPercent: float, optional, defaults to 0_
+	* _expressType: string ("worldwide" | "9h" | "12h"), mandatory_
+	* _isDocument: boolean, defaults to false_
+	* _isExt: boolean, defaults to false_
+	* _isTk: boolean, defaults to false_
+	* _isRas: boolean, defaults to false_
+
+* Sample required payload:
+```
+{
+	"transferType": "air",
+	"zoneNumber": 5,
+	"weight": 0.5,
+	"insurance": 1000,
+	"discountPercent": 10,
+	"expressType": "worldwide",
+	"isDocument": true,
+	"isExt": false,
+	"isTk": true,
+	"isRas": false
+}
+```
+* Sample JSON response:
+```
+{
+  "baseFare": 14696,
+  "expressFare": 0,
+  "insuranceFare": 3300,
+  "extFare": 0,
+  "rasFare": 0,
+  "tkFare": 990,
+  "fuelFare": 2572,
+  "emergencyFare": 65,
+  "result": 21623
+}
+```
+
 ### /countries
 Retrieves both air and road countries.
 * HTTP method: _GET_

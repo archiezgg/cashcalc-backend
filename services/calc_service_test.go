@@ -85,13 +85,18 @@ func TestValidateInputData(t *testing.T) {
 		{models.CalcInputData{TransferType: "air", ZoneNumber: 7, IsDocument: true, Weight: 2}, false},
 		{models.CalcInputData{TransferType: ""}, true},
 		{models.CalcInputData{TransferType: "non-valid"}, true},
+		{models.CalcInputData{TransferType: "road", IsDocument: false, IsExt: true}, true},
+		{models.CalcInputData{TransferType: "road", IsDocument: true, IsExt: false}, true},
+		{models.CalcInputData{TransferType: "road", IsDocument: false, IsExt: false}, false},
+		{models.CalcInputData{TransferType: "air", ZoneNumber: 0, IsDocument: true, IsExt: true}, true},
+		{models.CalcInputData{TransferType: "air", ZoneNumber: 5, IsDocument: true, IsExt: true}, false},
 	}
 
 	for _, tc := range testCases {
 		err := ValidateInputData(tc.inputData)
 		actual := (err != nil)
 		if tc.expectError != actual {
-			t.Errorf("ValidateInputData(%v) failed: expected error %v, got error %v", tc.inputData, tc.expectError, actual)
+			t.Errorf("ValidateInputData(%v) failed: expected error %v, got error %v", tc.inputData, tc.expectError, err)
 		}
 	}
 }

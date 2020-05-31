@@ -133,3 +133,25 @@ func TestCalcInsuranceFare(t *testing.T) {
 		}
 	}
 }
+
+func TestCalcExtRasTk(t *testing.T) {
+	testCases := []struct {
+		shouldCalc       bool
+		zoneNumber, fare int
+		vatPercent       float64
+		expected         float64
+	}{
+		{true, 0, 1000, 27, 1270},
+		{true, 5, 1000, 27, 1000},
+		{false, 3, 1000, 27, 0},
+		{false, 7, 1200, 27, 0},
+	}
+
+	for _, tc := range testCases {
+		actual := CalcExtRasTk(tc.shouldCalc, tc.zoneNumber, tc.fare, tc.vatPercent)
+		if actual != tc.expected {
+			t.Errorf("CalcExtRasTk(%v, %v, %v, %v) failed: expected %v, got %v", tc.shouldCalc, tc.zoneNumber, tc.fare, tc.vatPercent,
+				tc.expected, actual)
+		}
+	}
+}

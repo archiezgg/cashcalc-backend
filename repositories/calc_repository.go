@@ -26,7 +26,7 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 		return models.CalcOutputData{}, err
 	}
 
-	baseFare := services.CalcBaseFareWithVatAndDiscountAir(inputData.ZoneNumber, pricingVars.VATPercent, inputData.DiscountPercent, inputData.IsDocument, pricingFare)
+	baseFare := services.CalcBaseFareWithVatAndDiscountAir(inputData.ZoneNumber, inputData.DiscountPercent, pricingVars.VATPercent, pricingFare.BaseFare)
 
 	return models.CalcOutputData{
 		BaseFare: baseFare,

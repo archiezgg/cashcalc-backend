@@ -19,17 +19,13 @@ func isZoneEU(zn int) bool {
 }
 
 // CalcBaseFareWithVatAndDiscountAir calculates the basefare increased by VAT and applied discount
-func CalcBaseFareWithVatAndDiscountAir(inputData models.CalcInputData, vatPercent float64, baseFare int) float64 {
-	if isZoneEU(inputData.ZoneNumber) {
+func CalcBaseFareWithVatAndDiscountAir(zn int, discountPercent float64, vatPercent float64, baseFare int) float64 {
+	if isZoneEU(zn) {
 		baseFareIncreasedWithVat := IncreaseWithVat(float64(baseFare), vatPercent)
-		return math.Round(applyDiscountToBaseFare(baseFareIncreasedWithVat, inputData.DiscountPercent))
+		return math.Round(applyDiscountToBaseFare(baseFareIncreasedWithVat, discountPercent))
 	}
 
-	if inputData.IsDocument && inputData.Weight <= 2 {
-		return math.Round(applyDiscountToBaseFare(float64(baseFare), inputData.DiscountPercent))
-	}
-
-	return math.Round(applyDiscountToBaseFare(float64(baseFare), inputData.DiscountPercent))
+	return math.Round(applyDiscountToBaseFare(float64(baseFare), discountPercent))
 }
 
 // TODO: WRITE TEST

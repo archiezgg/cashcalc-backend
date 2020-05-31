@@ -78,18 +78,22 @@ func TestValidateInputData(t *testing.T) {
 		inputData   models.CalcInputData
 		expectError bool
 	}{
-		{models.CalcInputData{TransferType: "road", ZoneNumber: 0, IsDocument: true, Weight: 1.5}, true},
-		{models.CalcInputData{TransferType: "air", ZoneNumber: 3, IsDocument: false, Weight: 2}, false},
-		{models.CalcInputData{TransferType: "road", ZoneNumber: 5, IsDocument: true, Weight: 2.5}, true},
-		{models.CalcInputData{TransferType: "air", ZoneNumber: 6, IsDocument: false, Weight: 1.5}, false},
-		{models.CalcInputData{TransferType: "air", ZoneNumber: 7, IsDocument: true, Weight: 2}, false},
-		{models.CalcInputData{TransferType: ""}, true},
-		{models.CalcInputData{TransferType: "non-valid"}, true},
-		{models.CalcInputData{TransferType: "road", IsDocument: false, IsExt: true}, true},
-		{models.CalcInputData{TransferType: "road", IsDocument: true, IsExt: false}, true},
-		{models.CalcInputData{TransferType: "road", IsDocument: false, IsExt: false}, false},
-		{models.CalcInputData{TransferType: "air", ZoneNumber: 0, IsDocument: true, IsExt: true}, true},
-		{models.CalcInputData{TransferType: "air", ZoneNumber: 5, IsDocument: true, IsExt: true}, false},
+		{models.CalcInputData{TransferType: "road", ZoneNumber: 0, IsDocument: true, Weight: 1.5, ExpressType: models.ExpressWorldwide}, true},
+		{models.CalcInputData{TransferType: "air", ZoneNumber: 3, IsDocument: false, Weight: 2, ExpressType: models.Express9h}, false},
+		{models.CalcInputData{TransferType: "road", ZoneNumber: 5, IsDocument: true, Weight: 2.5, ExpressType: models.ExpressWorldwide}, true},
+		{models.CalcInputData{TransferType: "air", ZoneNumber: 6, IsDocument: false, Weight: 1.5, ExpressType: models.ExpressWorldwide}, false},
+		{models.CalcInputData{TransferType: "air", ZoneNumber: 7, IsDocument: true, Weight: 2, ExpressType: models.Express12h}, false},
+		{models.CalcInputData{TransferType: "", ExpressType: models.ExpressWorldwide}, true},
+		{models.CalcInputData{TransferType: "non-valid", ExpressType: models.ExpressWorldwide}, true},
+		{models.CalcInputData{TransferType: "road", IsDocument: false, IsExt: true, ExpressType: models.ExpressWorldwide}, true},
+		{models.CalcInputData{TransferType: "road", IsDocument: true, IsExt: false, ExpressType: models.ExpressWorldwide}, true},
+		{models.CalcInputData{TransferType: "road", IsDocument: false, IsExt: false, ExpressType: models.ExpressWorldwide}, false},
+		{models.CalcInputData{TransferType: "air", ZoneNumber: 0, IsDocument: true, IsExt: true, ExpressType: models.ExpressWorldwide}, true},
+		{models.CalcInputData{TransferType: "air", ZoneNumber: 5, IsDocument: true, IsExt: true, ExpressType: models.ExpressWorldwide}, false},
+		{models.CalcInputData{TransferType: "road", ExpressType: models.Express9h}, true},
+		{models.CalcInputData{TransferType: "road", ExpressType: models.Express12h}, true},
+		{models.CalcInputData{TransferType: "air", ExpressType: ""}, true},
+		{models.CalcInputData{TransferType: "air", ExpressType: "non-valid"}, true},
 	}
 
 	for _, tc := range testCases {

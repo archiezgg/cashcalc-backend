@@ -198,3 +198,22 @@ func TestCalcEmergencyFare(t *testing.T) {
 		}
 	}
 }
+
+func TestSumFares(t *testing.T) {
+	testCases := []struct {
+		a, b, c, d, e, f, expected float64
+	}{
+		{1, 0, 2, 0, 3, 0, 6},
+		{1, 1, 1, 1, 1, 1, 6},
+		{1, 10, 100, 1000, 10000, 0, 11111},
+		{0, 0, 0, 0, 0, 0, 0},
+	}
+
+	for _, tc := range testCases {
+		actual := SumFares(tc.a, tc.b, tc.c, tc.d, tc.e, tc.f)
+		if actual != tc.expected {
+			t.Errorf("SumFares(%v, %v, %v, %v, %v, %v) failed: expected %v, got %v", tc.a, tc.b, tc.c, tc.d, tc.e, tc.f,
+				tc.expected, actual)
+		}
+	}
+}

@@ -26,10 +26,17 @@ func CalcResultAir(inputData models.CalcInputData) (models.CalcOutputData, error
 		return models.CalcOutputData{}, err
 	}
 
+	express, err := getExpressFareBasedOnInputData(inputData)
+	if err != nil {
+		return models.CalcOutputData{}, err
+	}
+
 	baseFare := services.CalcBaseFareWithVatAndDiscountAir(inputData.ZoneNumber, inputData.DiscountPercent, pricingVars.VATPercent, pricingFare.BaseFare)
+	expressFare := services.CalcExpressFare(inputData.ZoneNumber, pricingVars.VATPercent, express)
 
 	return models.CalcOutputData{
-		BaseFare: baseFare,
+		BaseFare:    baseFare,
+		ExpressFare: expressFare,
 	}, nil
 }
 
@@ -47,4 +54,30 @@ func getPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare
 		return models.Fare{}, err
 	}
 	return pricingFare, nil
+}
+
+func getExpressFareBasedOnInputData(inputData models.CalcInputData) (float64, error) {
+	pv, err := GetPricingVariables()
+	if err != nil {
+		return 0, err
+	}
+
+	// Hungary
+	if inputData.ZoneNumber == 0 {
+		if inputData.ExpressType == models.Express9h {
+			return float64(pv.Express9hHungarian), nil
+		}
+		if inputData.ExpressType == models.Express12h {
+			return float64(pv.Express12hHungarian), nil
+		}
+	}
+	// Not Hungary
+	if inputData.ExpressType == models.Express9h {
+		return float64(pv.Express9h), nil
+	}
+	if inputData.ExpressType == models.Express12h {
+		return float64(pv.Express12h), nil
+	}
+	// Express Worldwide
+	return 0, nil
 }

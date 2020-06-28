@@ -2,7 +2,7 @@
 This section serves as an API documentation for the frontend side to be able to query data succesfully.
 
 ### /login
-Provides interface for login, returns with a JWT access token (as "Access-Token") and a refresh token (as "Refresh-Token") in the header if the login was succesful.
+Provides interface for login, returns with a JWT access token and a refresh token in cookies if the login was succesful.
 * HTTP method: _POST_
 * HTTP response: 
 	* _200 if successful_ 

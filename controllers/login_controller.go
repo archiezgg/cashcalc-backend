@@ -47,7 +47,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
-	if err := generateTokenPairsAndSetThemAsHeaders(w, u); err != nil {
+	if err := generateTokenPairsAndSetThemAsCookies(w, u); err != nil {
 		return
 	}
 	log.Printf("user '%v' has successfully logged in", u.Username)
@@ -72,7 +72,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := generateTokenPairsAndSetThemAsHeaders(w, user); err != nil {
+	if err := generateTokenPairsAndSetThemAsCookies(w, user); err != nil {
 		return
 	}
 
@@ -83,7 +83,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 	writeMessage(w, "Token refreshed successfully")
 }
 
-func generateTokenPairsAndSetThemAsHeaders(w http.ResponseWriter, user models.User) error {
+func generateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.User) error {
 	at, err := security.GenerateAccessToken(user)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
@@ -96,7 +96,19 @@ func generateTokenPairsAndSetThemAsHeaders(w http.ResponseWriter, user models.Us
 		return err
 	}
 
-	w.Header().Set("Access-Token", at)
-	w.Header().Set("Refresh-Token", rt)
+	accessTokenCookie := &http.Cookie{
+		Name:     "access-token",
+		Value:    at,
+		HttpOnly: true,
+	}
+
+	refreshTokenCookie := &http.Cookie{
+		Name:     "refresh-token",
+		Value:    rt,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, accessTokenCookie)
+	http.SetCookie(w, refreshTokenCookie)
 	return nil
 }

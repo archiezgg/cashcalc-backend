@@ -128,11 +128,9 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 }
 
 func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
-	accesTokenCookie, err := r.Cookie("access-token")
-	_, errInvalidToken := decodeClaimsFromToken(accesTokenCookie.Value, accessKey)
-
-	if err == nil && errInvalidToken == nil {
-		return accesTokenCookie.Value, nil
+	accessTokenCookie, err := validateAccessTokenCookie(r)
+	if err == nil {
+		return accessTokenCookie.Value, nil
 	}
 
 	refreshTokenCookie, err := r.Cookie("refresh-token")
@@ -145,6 +143,20 @@ func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, err
 		return "", err
 	}
 	return accessToken, nil
+}
+
+func validateAccessTokenCookie(r *http.Request) (*http.Cookie, error) {
+	accessTokenCookie, err := r.Cookie("access-token")
+	if err != nil {
+		return &http.Cookie{}, err
+	}
+
+	_, err = decodeClaimsFromToken(accessTokenCookie.Value, accessKey)
+	if err != nil {
+		return &http.Cookie{}, err
+	}
+
+	return accessTokenCookie, nil
 }
 
 func extractTokenFromHeader(r *http.Request) (string, error) {

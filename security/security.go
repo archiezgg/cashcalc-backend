@@ -59,11 +59,10 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	var token string
 	var err error
 
-	token, err = extractTokenFromCookie(r)
+	token, err = extractTokenFromCookie(w, r)
 	if err != nil {
 		token, err = extractTokenFromHeader(r)
 		if err != nil {
-			LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 			return false
 		}
 	}
@@ -127,7 +126,7 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 	return at, nil
 }
 
-func extractTokenFromCookie(r *http.Request) (string, error) {
+func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
 	accessTokenCookie, err := validateAccessTokenCookie(r)
 	if err == nil {
 		return accessTokenCookie.Value, nil
@@ -138,7 +137,7 @@ func extractTokenFromCookie(r *http.Request) (string, error) {
 		return "", err
 	}
 
-	accessToken, err := refreshToken(refreshTokenCookie.Value)
+	accessToken, err := RefreshTokenAndSetTokensAsCookies(w, refreshTokenCookie.Value)
 	if err != nil {
 		return "", err
 	}

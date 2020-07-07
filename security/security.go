@@ -13,7 +13,9 @@ import (
 	"strings"
 
 	"github.com/IstvanN/cashcalc-backend/models"
+	"github.com/IstvanN/cashcalc-backend/repositories"
 	jwt "github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // LogErrorAndSendHTTPError takes and error and a http status code, and formats them to
@@ -57,7 +59,7 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	var token string
 	var err error
 
-	token, err = extractTokenFromCookie(r)
+	token, err = extractTokenFromCookie(w, r)
 	if err != nil {
 		token, err = extractTokenFromHeader(r)
 		if err != nil {
@@ -80,12 +82,33 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	return true
 }
 
-// GenerateTokenPairsAndSetThemAsCookies generate access- and refresh-token, and sets them as http headers
-func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.User) error {
+// AuthenticateNewUser takes a user model, and checks if the credentials are valid, returns error if not
+func AuthenticateNewUser(w http.ResponseWriter, userToAuth models.User) error {
+	u, err := repositories.GetUserByUsername(userToAuth.Username)
+	if err != nil {
+		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
+	if err != nil {
+		err := fmt.Errorf("the given role-password combination is invalid: %v - %v", userToAuth.Username, userToAuth.Password)
+		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return err
+	}
+	if _, err := GenerateTokenPairsAndSetThemAsCookies(w, u); err != nil {
+		return err
+	}
+	log.Printf("user '%v' has successfully logged in", u.Username)
+	return nil
+}
+
+// GenerateTokenPairsAndSetThemAsCookies generate access- and refresh token, sets them as http headers, and returns with the access token
+func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.User) (string, error) {
 	at, rt, err := generateTokenPairs(user)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return err
+		return "", err
 	}
 	accessTokenCookie := &http.Cookie{
 		Name:     "access-token",
@@ -101,12 +124,14 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 
 	http.SetCookie(w, accessTokenCookie)
 	http.SetCookie(w, refreshTokenCookie)
-	return nil
+	return at, nil
 }
 
-func extractTokenFromCookie(r *http.Request) (string, error) {
+func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
 	accesTokenCookie, err := r.Cookie("access-token")
-	if err == nil {
+	_, errInvalidToken := decodeClaimsFromToken(accesTokenCookie.Value, accessKey)
+
+	if err == nil && errInvalidToken == nil {
 		return accesTokenCookie.Value, nil
 	}
 
@@ -115,7 +140,7 @@ func extractTokenFromCookie(r *http.Request) (string, error) {
 		return "", err
 	}
 
-	accessToken, err := refreshToken(refreshTokenCookie.Value)
+	accessToken, err := RefreshTokenAndSetTokensAsCookies(w, refreshTokenCookie.Value)
 	if err != nil {
 		return "", err
 	}
@@ -125,7 +150,7 @@ func extractTokenFromCookie(r *http.Request) (string, error) {
 func extractTokenFromHeader(r *http.Request) (string, error) {
 	tokenStrings, ok := r.Header["Authorization"]
 	if !ok {
-		return "", fmt.Errorf("no token provided in header")
+		return "", fmt.Errorf("no token provided in header or cookie")
 	}
 
 	bearerToken := tokenStrings[0]

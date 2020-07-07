@@ -101,6 +101,23 @@ func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken strin
 	return accessToken, nil
 }
 
+func refreshToken(refreshToken string) (string, error) {
+	user, err := DecodeUserFromRefreshToken(refreshToken)
+	if err != nil {
+		return "", err
+	}
+
+	if err := repositories.DeleteRefreshToken(refreshToken); err != nil {
+		return "", err
+	}
+
+	accessToken, _, err := generateTokenPairs(user)
+	if err != nil {
+		return "", err
+	}
+	return accessToken, nil
+}
+
 func generateTokenPairs(user models.User) (accessToken string, newRefreshToken string, err error) {
 	at, err := GenerateAccessToken(user)
 	if err != nil {

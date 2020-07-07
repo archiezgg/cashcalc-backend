@@ -81,41 +81,24 @@ func GenerateRefreshToken(user models.User) (string, error) {
 }
 
 // RefreshTokenAndSetTokensAsCookies takes a refresh token and a writer, refreshes the user's token and sends back as cookie
-func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken string) error {
+func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken string) (string, error) {
 	user, err := DecodeUserFromRefreshToken(refreshToken)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
-		return err
-	}
-
-	if err := GenerateTokenPairsAndSetThemAsCookies(w, user); err != nil {
-		return err
+		return "", err
 	}
 
 	if err := repositories.DeleteRefreshToken(refreshToken); err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return err
+		return "", err
 	}
 
-	return nil
-}
-
-func refreshToken(refreshToken string) (string, error) {
-	user, err := DecodeUserFromRefreshToken(refreshToken)
+	accessToken, err := GenerateTokenPairsAndSetThemAsCookies(w, user)
 	if err != nil {
 		return "", err
 	}
 
-	at, _, err := generateTokenPairs(user)
-	if err != nil {
-		return "", err
-	}
-
-	if err := repositories.DeleteRefreshToken(refreshToken); err != nil {
-		return "", err
-	}
-
-	return at, nil
+	return accessToken, nil
 }
 
 func generateTokenPairs(user models.User) (accessToken string, newRefreshToken string, err error) {

@@ -9,13 +9,10 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/IstvanN/cashcalc-backend/models"
 	"github.com/IstvanN/cashcalc-backend/properties"
-	"github.com/IstvanN/cashcalc-backend/repositories"
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/IstvanN/cashcalc-backend/security"
 
@@ -35,23 +32,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := repositories.GetUserByUsername(userToAuth.Username)
+	user, err := security.AuthenticateNewUser(w, userToAuth)
 	if err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
-	if err != nil {
-		err := fmt.Errorf("the given role-password combination is invalid: %v - %v", userToAuth.Username, userToAuth.Password)
-		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
-		return
-	}
-	if err := security.GenerateTokenPairsAndSetThemAsCookies(w, u); err != nil {
-		return
-	}
-	log.Printf("user '%v' has successfully logged in", u.Username)
-	msg := fmt.Sprintf("{\"message\": \"%s\",\"role\": \"%v\"}", "Logged in successfully", u.Role)
+	msg := fmt.Sprintf("{\"message\": \"%s\",\"role\": \"%v\"}", "Logged in successfully", user.Role)
 	w.Write([]byte(msg))
 }
 
@@ -66,7 +51,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := security.RefreshTokenAndSetTokensAsCookies(w, rb.RefreshToken); err != nil {
+	if _, err := security.RefreshTokenAndSetTokensAsCookies(w, rb.RefreshToken); err != nil {
 		return
 	}
 

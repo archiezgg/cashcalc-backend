@@ -63,6 +63,7 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	if err != nil {
 		token, err = extractTokenFromHeader(r)
 		if err != nil {
+			LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 			return false
 		}
 	}

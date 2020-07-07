@@ -84,7 +84,6 @@ func GenerateRefreshToken(user models.User) (string, error) {
 func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken string) (string, error) {
 	user, err := DecodeUserFromRefreshToken(refreshToken)
 	if err != nil {
-		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return "", err
 	}
 

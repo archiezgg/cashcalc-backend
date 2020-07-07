@@ -47,7 +47,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return
 	}
-	if err := generateTokenPairsAndSetThemAsCookies(w, u); err != nil {
+	if err := security.GenerateTokenPairsAndSetThemAsCookies(w, u); err != nil {
 		return
 	}
 	log.Printf("user '%v' has successfully logged in", u.Username)
@@ -66,49 +66,9 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := security.DecodeUserFromRefreshToken(rb.RefreshToken)
-	if err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+	if err := security.RefreshTokenAndSetTokensAsCookies(w, rb.RefreshToken); err != nil {
 		return
 	}
 
-	if err := generateTokenPairsAndSetThemAsCookies(w, user); err != nil {
-		return
-	}
-
-	if err := repositories.DeleteRefreshToken(rb.RefreshToken); err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return
-	}
 	writeMessage(w, "Token refreshed successfully")
-}
-
-func generateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.User) error {
-	at, err := security.GenerateAccessToken(user)
-	if err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return err
-	}
-
-	rt, err := security.GenerateRefreshToken(user)
-	if err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return err
-	}
-
-	accessTokenCookie := &http.Cookie{
-		Name:     "access-token",
-		Value:    at,
-		HttpOnly: true,
-	}
-
-	refreshTokenCookie := &http.Cookie{
-		Name:     "refresh-token",
-		Value:    rt,
-		HttpOnly: true,
-	}
-
-	http.SetCookie(w, accessTokenCookie)
-	http.SetCookie(w, refreshTokenCookie)
-	return nil
 }

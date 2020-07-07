@@ -54,10 +54,16 @@ func AccessLevelSuperuser(next http.Handler) http.Handler {
 }
 
 func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, r *http.Request) bool {
-	token, err := extractTokenFromHeader(r)
+	var token string
+	var err error
+
+	token, err = extractTokenFromCookie(r)
 	if err != nil {
-		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
-		return false
+		token, err = extractTokenFromHeader(r)
+		if err != nil {
+			LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+			return false
+		}
 	}
 
 	role, err := decodeRoleFromAccessToken(token)
@@ -72,6 +78,48 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	}
 
 	return true
+}
+
+// GenerateTokenPairsAndSetThemAsCookies generate access- and refresh-token, and sets them as http headers
+func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.User) error {
+	at, rt, err := generateTokenPairs(user)
+	if err != nil {
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return err
+	}
+	accessTokenCookie := &http.Cookie{
+		Name:     "access-token",
+		Value:    at,
+		HttpOnly: true,
+	}
+
+	refreshTokenCookie := &http.Cookie{
+		Name:     "refresh-token",
+		Value:    rt,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, accessTokenCookie)
+	http.SetCookie(w, refreshTokenCookie)
+	return nil
+}
+
+func extractTokenFromCookie(r *http.Request) (string, error) {
+	accesTokenCookie, err := r.Cookie("access-token")
+	if err == nil {
+		return accesTokenCookie.Value, nil
+	}
+
+	refreshTokenCookie, err := r.Cookie("refresh-token")
+	if err != nil {
+		return "", err
+	}
+
+	accessToken, err := refreshToken(refreshTokenCookie.Value)
+	if err != nil {
+		return "", err
+	}
+	return accessToken, nil
 }
 
 func extractTokenFromHeader(r *http.Request) (string, error) {

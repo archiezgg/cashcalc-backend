@@ -8,6 +8,7 @@ package security
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -77,6 +78,26 @@ func GenerateRefreshToken(user models.User) (string, error) {
 		return "", err
 	}
 	return refreshTokenString, nil
+}
+
+// RefreshToken takes a refresh token and a writer, refreshes the user's token and sends back as cookie
+func RefreshToken(w http.ResponseWriter, refreshToken string) error {
+	user, err := DecodeUserFromRefreshToken(refreshToken)
+	if err != nil {
+		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return err
+	}
+
+	if err := GenerateTokenPairsAndSetThemAsCookies(w, user); err != nil {
+		return err
+	}
+
+	if err := repositories.DeleteRefreshToken(refreshToken); err != nil {
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return err
+	}
+
+	return nil
 }
 
 // DecodeUserFromRefreshToken decodes the username from JWT refresh token

@@ -82,25 +82,25 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	return true
 }
 
-// AuthenticateNewUser takes a user model, and checks if the credentials are valid, returns error if not
-func AuthenticateNewUser(w http.ResponseWriter, userToAuth models.User) error {
+// AuthenticateNewUser takes a user model, and checks if the credentials are valid, returns with the user, returns error if not
+func AuthenticateNewUser(w http.ResponseWriter, userToAuth models.User) (models.User, error) {
 	u, err := repositories.GetUserByUsername(userToAuth.Username)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
-		return err
+		return models.User{}, err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userToAuth.Password))
 	if err != nil {
 		err := fmt.Errorf("the given role-password combination is invalid: %v - %v", userToAuth.Username, userToAuth.Password)
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
-		return err
+		return models.User{}, err
 	}
 	if _, err := GenerateTokenPairsAndSetThemAsCookies(w, u); err != nil {
-		return err
+		return models.User{}, err
 	}
 	log.Printf("user '%v' has successfully logged in", u.Username)
-	return nil
+	return u, nil
 }
 
 // GenerateTokenPairsAndSetThemAsCookies generate access- and refresh token, sets them as http headers, and returns with the access token

@@ -107,7 +107,7 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 func extractTokenFromCookie(r *http.Request) (string, error) {
 	accesTokenCookie, err := r.Cookie("access-token")
 	if err == nil {
-		return accesTokenCookie.String(), nil
+		return accesTokenCookie.Value, nil
 	}
 
 	refreshTokenCookie, err := r.Cookie("refresh-token")
@@ -115,7 +115,7 @@ func extractTokenFromCookie(r *http.Request) (string, error) {
 		return "", err
 	}
 
-	accessToken, err := refreshToken(refreshTokenCookie.String())
+	accessToken, err := refreshToken(refreshTokenCookie.Value)
 	if err != nil {
 		return "", err
 	}

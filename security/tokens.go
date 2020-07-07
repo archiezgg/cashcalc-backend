@@ -80,8 +80,8 @@ func GenerateRefreshToken(user models.User) (string, error) {
 	return refreshTokenString, nil
 }
 
-// RefreshToken takes a refresh token and a writer, refreshes the user's token and sends back as cookie
-func RefreshToken(w http.ResponseWriter, refreshToken string) error {
+// RefreshTokenAndSetTokensAsCookies takes a refresh token and a writer, refreshes the user's token and sends back as cookie
+func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken string) error {
 	user, err := DecodeUserFromRefreshToken(refreshToken)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
@@ -98,6 +98,38 @@ func RefreshToken(w http.ResponseWriter, refreshToken string) error {
 	}
 
 	return nil
+}
+
+func refreshToken(refreshToken string) (string, error) {
+	user, err := DecodeUserFromRefreshToken(refreshToken)
+	if err != nil {
+		return "", err
+	}
+
+	at, _, err := generateTokenPairs(user)
+	if err != nil {
+		return "", err
+	}
+
+	if err := repositories.DeleteRefreshToken(refreshToken); err != nil {
+		return "", err
+	}
+
+	return at, nil
+}
+
+func generateTokenPairs(user models.User) (accessToken string, newRefreshToken string, err error) {
+	at, err := GenerateAccessToken(user)
+	if err != nil {
+		return "", "", err
+	}
+
+	rt, err := GenerateRefreshToken(user)
+	if err != nil {
+		return "", "", err
+	}
+
+	return at, rt, nil
 }
 
 // DecodeUserFromRefreshToken decodes the username from JWT refresh token

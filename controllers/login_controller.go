@@ -52,6 +52,7 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if _, err := security.RefreshTokenAndSetTokensAsCookies(w, rb.RefreshToken); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 

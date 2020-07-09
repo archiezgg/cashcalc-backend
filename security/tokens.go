@@ -80,7 +80,8 @@ func GenerateRefreshToken(user models.User) (string, error) {
 	return refreshTokenString, nil
 }
 
-// RefreshTokenAndSetTokensAsCookies takes a refresh token and a writer, refreshes the user's token and sends back as cookie
+// RefreshTokenAndSetTokensAsCookies takes a refresh token and a writer,
+// refreshes the user's token and sends back as cookie
 func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken string) (string, error) {
 	user, err := DecodeUserFromRefreshToken(refreshToken)
 	if err != nil {

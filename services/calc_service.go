@@ -22,27 +22,32 @@ func isZoneEU(zn int) bool {
 func ValidateInputData(input models.CalcInputData) error {
 	var err error
 	if input.TransferType != models.TransferAir && input.TransferType != models.TransferRoad {
-		err = fmt.Errorf("transfer type could either be %v or %v, but got %v", models.TransferAir, models.TransferRoad, input.TransferType)
+		err = fmt.Errorf("transfer type could either be %v or %v, but got %v",
+			models.TransferAir, models.TransferRoad, input.TransferType)
 		return err
 	}
 
 	if input.ExpressType != models.ExpressWorldwide && input.ExpressType != models.Express9h && input.ExpressType != models.Express12h {
-		err = fmt.Errorf("express type could either be %v, %v or %v, but got %v", models.ExpressWorldwide, models.Express9h, models.Express12h, input.ExpressType)
+		err = fmt.Errorf("express type could either be %v, %v or %v, but got %v",
+			models.ExpressWorldwide, models.Express9h, models.Express12h, input.ExpressType)
 		return err
 	}
 
-	if input.TransferType == models.TransferRoad && (input.IsDocument || input.IsExt || input.ExpressType != models.ExpressWorldwide) {
+	if input.TransferType == models.TransferRoad &&
+		(input.IsDocument || input.IsExt || input.ExpressType != models.ExpressWorldwide) {
 		err = fmt.Errorf("road transfer type cannot be document delivery, EXT, express9h or express12h")
 		return err
 	}
 
 	if isZoneEU(input.ZoneNumber) && input.IsDocument {
-		err = fmt.Errorf("zone number %v, document status %v: no document delivery to EU", input.ZoneNumber, input.IsDocument)
+		err = fmt.Errorf("zone number %v, document status %v: no document delivery to EU",
+			input.ZoneNumber, input.IsDocument)
 		return err
 	}
 
 	if input.IsDocument && input.Weight > 2 {
-		err = fmt.Errorf("weight %v, document status %v: document cannot have more weight than 2", input.Weight, input.IsDocument)
+		err = fmt.Errorf("weight %v, document status %v: document cannot have more weight than 2",
+			input.Weight, input.IsDocument)
 		return err
 	}
 	return nil

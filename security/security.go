@@ -82,7 +82,8 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	return true
 }
 
-// AuthenticateNewUser takes a user model, and checks if the credentials are valid, returns with the user, returns error if not
+// AuthenticateNewUser takes a user model, and checks if the credentials are valid,
+// returns with the user if yes, returns error if not
 func AuthenticateNewUser(w http.ResponseWriter, userToAuth models.User) (models.User, error) {
 	u, err := repositories.GetUserByUsername(userToAuth.Username)
 	if err != nil {
@@ -103,7 +104,8 @@ func AuthenticateNewUser(w http.ResponseWriter, userToAuth models.User) (models.
 	return u, nil
 }
 
-// GenerateTokenPairsAndSetThemAsCookies generate access- and refresh token, sets them as http headers, and returns with the access token
+// GenerateTokenPairsAndSetThemAsCookies generate access- and refresh token,
+// sets them as http headers, and returns with the access token
 func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.User) (string, error) {
 	at, rt, err := generateTokenPairs(user)
 	if err != nil {

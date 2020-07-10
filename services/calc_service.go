@@ -27,7 +27,9 @@ func ValidateInputData(input models.CalcInputData) error {
 		return err
 	}
 
-	if input.ExpressType != models.ExpressWorldwide && input.ExpressType != models.Express9h && input.ExpressType != models.Express12h {
+	if input.ExpressType != models.ExpressWorldwide &&
+		input.ExpressType != models.Express9h &&
+		input.ExpressType != models.Express12h {
 		err = fmt.Errorf("express type could either be %v, %v or %v, but got %v",
 			models.ExpressWorldwide, models.Express9h, models.Express12h, input.ExpressType)
 		return err

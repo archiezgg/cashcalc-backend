@@ -24,7 +24,7 @@ func StartupRouter() (router *mux.Router) {
 	registerTokenRoutes(router)
 	registerUserRoutes(router)
 	registerCalcRoutes(router)
-	router.Use(setJSONHeaderMiddleWare)
+	router.Use(setHeaderMiddleWare)
 	return
 }
 
@@ -32,10 +32,11 @@ func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 	writeMessage(w, "Welcome to CashCalc!")
 }
 
-// setJSONHeaderMiddleWare sets the header to application/json for a given handler
-func setJSONHeaderMiddleWare(next http.Handler) http.Handler {
+// setHeaderMiddleWare sets the header with some pre-made options
+func setHeaderMiddleWare(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		next.ServeHTTP(w, r)
 	})
 }

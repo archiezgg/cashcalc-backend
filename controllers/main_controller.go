@@ -16,7 +16,7 @@ import (
 // StartupRouter creates instance of registers all the routes of the subroutes, supposed to be called in main func
 func StartupRouter() (router *mux.Router) {
 	router = mux.NewRouter()
-	router.HandleFunc("/", welcomeHandler).Methods("GET")
+	router.HandleFunc("/", welcomeHandler).Methods(http.MethodGet)
 	registerLoginRoutes(router)
 	registerCountriesRoutes(router)
 	registerPricingsRoutes(router)

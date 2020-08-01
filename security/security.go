@@ -18,6 +18,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	// AccessTokenCookieKey is the key for access tokens in cookies
+	AccessTokenCookieKey = "access-token"
+	// RefreshTokenCookieKey is the key for refresh tokens in cookies
+	RefreshTokenCookieKey = "refresh-token"
+)
+
 // LogErrorAndSendHTTPError takes and error and a http status code, and formats them to
 // create proper logging and formatted http respond at the same time
 func LogErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode int) {
@@ -113,7 +120,7 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 		return "", err
 	}
 	accessTokenCookie := &http.Cookie{
-		Name:     "access-token",
+		Name:     AccessTokenCookieKey,
 		Value:    at,
 		HttpOnly: true,
 		// SameSite: http.SameSiteNoneMode,
@@ -121,7 +128,7 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 	}
 
 	refreshTokenCookie := &http.Cookie{
-		Name:     "refresh-token",
+		Name:     RefreshTokenCookieKey,
 		Value:    rt,
 		HttpOnly: true,
 		// SameSite: http.SameSiteNoneMode,
@@ -139,7 +146,7 @@ func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, err
 		return accessTokenCookie.Value, nil
 	}
 
-	refreshTokenCookie, err := r.Cookie("refresh-token")
+	refreshTokenCookie, err := r.Cookie(RefreshTokenCookieKey)
 	if err != nil {
 		return "", err
 	}
@@ -152,7 +159,7 @@ func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, err
 }
 
 func validateAccessTokenCookie(r *http.Request) (*http.Cookie, error) {
-	accessTokenCookie, err := r.Cookie("access-token")
+	accessTokenCookie, err := r.Cookie(AccessTokenCookieKey)
 	if err != nil {
 		return &http.Cookie{}, err
 	}

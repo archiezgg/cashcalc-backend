@@ -61,17 +61,9 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	accessTokenCookie, err := r.Cookie(security.AccessTokenCookieKey)
-	if err != nil {
+	if err := security.DeleteTokensFromCookies(w, r); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
 	}
-	refreshTokenCookie, err := r.Cookie(security.RefreshTokenCookieKey)
-	if err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-	}
-
-	accessTokenCookie.MaxAge = -1
-	refreshTokenCookie.MaxAge = -1
-	http.SetCookie(w, accessTokenCookie)
-	http.SetCookie(w, refreshTokenCookie)
+	writeMessage(w, "Logged out succesfully")
 }

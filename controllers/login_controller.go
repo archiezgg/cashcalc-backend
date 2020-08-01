@@ -22,6 +22,7 @@ import (
 func registerLoginRoutes(router *mux.Router) {
 	router.HandleFunc(properties.LoginEndpoint, loginHandler).Methods(http.MethodPost)
 	router.HandleFunc(properties.RefreshEndpoint, refreshHandler).Methods(http.MethodPost)
+	router.HandleFunc("/logout", logoutHandler).Methods(http.MethodPost)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -57,4 +58,20 @@ func refreshHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeMessage(w, "Token refreshed successfully")
+}
+
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	accessTokenCookie, err := r.Cookie(security.AccessTokenCookieKey)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+	}
+	refreshTokenCookie, err := r.Cookie(security.RefreshTokenCookieKey)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+	}
+
+	accessTokenCookie.MaxAge = -1
+	refreshTokenCookie.MaxAge = -1
+	http.SetCookie(w, accessTokenCookie)
+	http.SetCookie(w, refreshTokenCookie)
 }

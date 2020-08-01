@@ -56,6 +56,19 @@ Provides interface to refresh the access token.
 }
 ```
 
+### /logout
+Provides interface for logout, deletes the access and refresh tokens from cookies.
+* HTTP method: _POST_
+* HTTP response: 
+	* _200 if successful_ 
+	* _500 if no cookie provided_
+* Sample JSON response after succesful login:
+```
+{
+  "message": "Logged out successfully",
+}
+```
+
 ### /calc
 Calculates the resulting fares based on the input.
 * HTTP method: _POST_

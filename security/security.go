@@ -116,12 +116,16 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 		Name:     "access-token",
 		Value:    at,
 		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 
 	refreshTokenCookie := &http.Cookie{
 		Name:     "refresh-token",
 		Value:    rt,
 		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 
 	http.SetCookie(w, accessTokenCookie)

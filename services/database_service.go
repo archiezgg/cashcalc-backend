@@ -11,5 +11,10 @@ import "strings"
 // GetDBNameFromURI splits the given URI and returns the name of the DB
 func GetDBNameFromURI(uri string) string {
 	splitURI := strings.SplitAfter(uri, "/")
-	return splitURI[len(splitURI)-1]
+	dbName := splitURI[len(splitURI)-1]
+
+	if strings.Contains(dbName, "?") {
+		dbName = strings.Split(dbName, "?")[0]
+	}
+	return dbName
 }

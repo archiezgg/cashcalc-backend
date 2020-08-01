@@ -20,6 +20,7 @@ func TestGetDBNameFromURI(t *testing.T) {
 		{"db", "db"},
 		{"/db", "db"},
 		{"/host:port/db", "db"},
+		{"mongodb://user:pw@host:port/db?ssl=true", "db"},
 	}
 
 	for _, tc := range testCases {

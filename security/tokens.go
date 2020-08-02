@@ -154,6 +154,7 @@ func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
 		Value:    "",
 		MaxAge:   -1,
 		HttpOnly: true,
+		Path:     "/",
 	}
 	http.SetCookie(w, accessTokenCookie)
 
@@ -176,6 +177,7 @@ func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
 		Value:    "",
 		MaxAge:   -1,
 		HttpOnly: true,
+		Path:     "/",
 	}
 	http.SetCookie(w, refreshTokenCookie)
 

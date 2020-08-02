@@ -123,6 +123,7 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 		Name:     AccessTokenCookieKey,
 		Value:    at,
 		HttpOnly: true,
+		Path:     "/",
 		// SameSite: http.SameSiteNoneMode,
 		// Secure:   true,
 	}
@@ -131,6 +132,7 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 		Name:     RefreshTokenCookieKey,
 		Value:    rt,
 		HttpOnly: true,
+		Path:     "/",
 		// SameSite: http.SameSiteNoneMode,
 		// Secure:   true,
 	}

@@ -30,7 +30,7 @@ func registerPricingsRoutes(router *mux.Router) {
 		Methods(http.MethodGet)
 	s.HandleFunc("/air/docfares/{zn:[5-9]}", airDocFaresByZoneNumberHandler).
 		Methods(http.MethodGet)
-	s.Use(security.AccessLevelAdmin)
+	s.Use(security.AccessLevelCarrier)
 }
 
 func allPricingsHandler(w http.ResponseWriter, r *http.Request) {

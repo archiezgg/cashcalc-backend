@@ -22,8 +22,7 @@ func isZoneEU(zn int) bool {
 func ValidateInputData(input models.CalcInputData) error {
 	var err error
 	if input.TransferType != models.TransferAir && input.TransferType != models.TransferRoad {
-		err = fmt.Errorf("transfer type could either be %v or %v, but got %v",
-			models.TransferAir, models.TransferRoad, input.TransferType)
+		err = fmt.Errorf("invalid transfer type in input data: %v", input.TransferType)
 		return err
 	}
 

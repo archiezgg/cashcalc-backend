@@ -7,6 +7,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/IstvanN/cashcalc-backend/models"
 	"github.com/IstvanN/cashcalc-backend/services"
 )
@@ -59,8 +61,10 @@ func CalcResult(inputData models.CalcInputData) (models.CalcOutputData, error) {
 func getPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {
 	if inputData.TransferType == models.TransferAir {
 		return getAirPricingFareBasedOnInputData(inputData)
+	} else if inputData.TransferType == models.TransferRoad {
+		return getRoadPricingFareBasedOnInputData(inputData)
 	}
-	return getRoadPricingFareBasedOnInputData(inputData)
+	return models.Fare{}, fmt.Errorf("invalid transfer type in input data: %v", inputData.TransferType)
 }
 
 func getAirPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {

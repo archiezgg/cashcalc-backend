@@ -26,8 +26,7 @@ func main() {
 	defer redis.Close()
 
 	router := controllers.StartupRouter()
-	router.Methods(http.MethodOptions)
 
-	log.Println("CashCalc 2020 is up and running on port", port)
+	log.Println("cashcalc-backend is up and running on port", port)
 	log.Fatal(http.ListenAndServe(port, router))
 }

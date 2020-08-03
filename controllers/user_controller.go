@@ -22,15 +22,15 @@ import (
 func registerUserRoutes(router *mux.Router) {
 	ep := properties.UsersEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("", usernamesHandler).Methods(http.MethodGet)
+	s.HandleFunc("", usernamesHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.Use(security.AccessLevelAdmin)
 	carriers := s.PathPrefix("/carrier").Subrouter()
-	carriers.HandleFunc("/create", createCarrierHandler).Methods(http.MethodPut)
-	carriers.HandleFunc("/delete", deleteCarrierHandler).Methods(http.MethodDelete)
+	carriers.HandleFunc("/create", createCarrierHandler).Methods(http.MethodPut, http.MethodOptions)
+	carriers.HandleFunc("/delete", deleteCarrierHandler).Methods(http.MethodDelete, http.MethodOptions)
 	carriers.Use(security.AccessLevelAdmin)
 	admins := s.PathPrefix("/admin").Subrouter()
-	admins.HandleFunc("/create", createAdminHandler)
-	admins.HandleFunc("/delete", deleteAdminHandler)
+	admins.HandleFunc("/create", createAdminHandler).Methods(http.MethodPut, http.MethodOptions)
+	admins.HandleFunc("/delete", deleteAdminHandler).Methods(http.MethodDelete, http.MethodOptions)
 	admins.Use(security.AccessLevelSuperuser)
 }
 

@@ -20,9 +20,9 @@ import (
 func registerCountriesRoutes(router *mux.Router) {
 	ep := properties.CountriesEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("", allCountriesHandler).Methods(http.MethodGet)
-	s.HandleFunc("/air", airCountriesHandler).Methods(http.MethodGet)
-	s.HandleFunc("/road", roadCountriesHandler).Methods(http.MethodGet)
+	s.HandleFunc("", allCountriesHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/air", airCountriesHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/road", roadCountriesHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.Use(security.AccessLevelCarrier)
 }
 

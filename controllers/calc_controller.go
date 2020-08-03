@@ -23,8 +23,9 @@ import (
 func registerCalcRoutes(router *mux.Router) {
 	ep := properties.CalcEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("", calcHandler).Methods(http.MethodPost)
+	s.HandleFunc("", calcHandler).Methods(http.MethodPost, http.MethodOptions)
 	s.Use(security.AccessLevelCarrier)
+	s.Methods(http.MethodOptions)
 }
 
 func calcHandler(w http.ResponseWriter, r *http.Request) {

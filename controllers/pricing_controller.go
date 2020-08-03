@@ -21,15 +21,15 @@ import (
 func registerPricingsRoutes(router *mux.Router) {
 	ep := properties.PricingsEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("", allPricingsHandler).Methods(http.MethodGet)
-	s.HandleFunc("/road", roadPricingsHandler).Methods(http.MethodGet)
-	s.HandleFunc("/air", airPricingsHandler).Methods(http.MethodGet)
+	s.HandleFunc("", allPricingsHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/road", roadPricingsHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/air", airPricingsHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.HandleFunc("/road/fares/{zn:[1-5]}", roadFaresByZoneNumberHandler).
-		Methods(http.MethodGet)
+		Methods(http.MethodGet, http.MethodOptions)
 	s.HandleFunc("/air/fares/{zn:[0-9]}", airFaresByZoneNumberHandler).
-		Methods(http.MethodGet)
+		Methods(http.MethodGet, http.MethodOptions)
 	s.HandleFunc("/air/docfares/{zn:[5-9]}", airDocFaresByZoneNumberHandler).
-		Methods(http.MethodGet)
+		Methods(http.MethodGet, http.MethodOptions)
 	s.Use(security.AccessLevelCarrier)
 }
 

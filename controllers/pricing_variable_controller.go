@@ -23,8 +23,8 @@ import (
 func registerPricingVarsRoutes(router *mux.Router) {
 	ep := properties.PricingVarsEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("", allPricingVarsHandler).Methods(http.MethodGet)
-	s.HandleFunc("/update", updatePricingVarsHandler).Methods(http.MethodPatch)
+	s.HandleFunc("", allPricingVarsHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/update", updatePricingVarsHandler).Methods(http.MethodPatch, http.MethodOptions)
 	s.Use(security.AccessLevelAdmin)
 }
 

@@ -20,9 +20,9 @@ import (
 )
 
 func registerLoginRoutes(router *mux.Router) {
-	router.HandleFunc(properties.LoginEndpoint, loginHandler).Methods(http.MethodPost)
-	router.HandleFunc(properties.RefreshEndpoint, refreshHandler).Methods(http.MethodPost)
-	router.HandleFunc(properties.LogoutEndpoint, logoutHandler).Methods(http.MethodPost)
+	router.HandleFunc(properties.LoginEndpoint, loginHandler).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc(properties.RefreshEndpoint, refreshHandler).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc(properties.LogoutEndpoint, logoutHandler).Methods(http.MethodPost, http.MethodOptions)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {

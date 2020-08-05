@@ -63,8 +63,9 @@ func getPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare
 		return getAirPricingFareBasedOnInputData(inputData)
 	} else if inputData.TransferType == models.TransferRoad {
 		return getRoadPricingFareBasedOnInputData(inputData)
+	} else {
+		return models.Fare{}, fmt.Errorf("invalid transfer type in input data: %v", inputData.TransferType)
 	}
-	return models.Fare{}, fmt.Errorf("invalid transfer type in input data: %v", inputData.TransferType)
 }
 
 func getAirPricingFareBasedOnInputData(inputData models.CalcInputData) (models.Fare, error) {

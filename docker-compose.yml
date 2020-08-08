@@ -13,6 +13,7 @@ services:
             REDIS_URL: "redis://redis:6379"
             ACCESS_KEY: "test_access_key"
             REFRESH_KEY: "test_refresh_key"
+            ENVIRONMENT: "DEV"
         depends_on:
             - mongo
             - redis

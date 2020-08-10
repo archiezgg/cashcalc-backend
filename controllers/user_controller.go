@@ -30,6 +30,7 @@ func registerUserRoutes(router *mux.Router) {
 	carriers.HandleFunc("/delete", deleteCarrierHandler).Methods(http.MethodDelete, http.MethodOptions)
 	carriers.Use(security.AccessLevelAdmin)
 	admins := s.PathPrefix("/admins").Subrouter()
+	admins.HandleFunc("", getAdminsHandler).Methods(http.MethodGet, http.MethodOptions)
 	admins.HandleFunc("/create", createAdminHandler).Methods(http.MethodPut, http.MethodOptions)
 	admins.HandleFunc("/delete", deleteAdminHandler).Methods(http.MethodDelete, http.MethodOptions)
 	admins.Use(security.AccessLevelSuperuser)
@@ -53,6 +54,16 @@ func getCarriersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(carriers)
+}
+
+func getAdminsHandler(w http.ResponseWriter, r *http.Request) {
+	admins, err := repositories.GetUsernamesByRole(models.RoleAdmin)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(admins)
 }
 
 func createCarrierHandler(w http.ResponseWriter, r *http.Request) {

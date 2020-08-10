@@ -484,7 +484,22 @@ Retrieves all registered usernames, including all roles.
 ]
 ```
 
-### /users/carrier/create
+### /users/carriers
+Retrieves all registered carrier usernames.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample JSON response:
+```
+[
+  "some-carrier",
+  "another-carrier"
+]
+```
+
+### /users/carriers/create
 Creates a user with the role carrier.
 * HTTP method: _PUT_
 * HTTP response: 
@@ -505,7 +520,7 @@ Creates a user with the role carrier.
 }
 ```
 
-### /users/carrier/delete
+### /users/carriers/delete
 Deletes a user with the role carrier.
 * HTTP method: _DELETE_
 * HTTP response: 
@@ -525,7 +540,7 @@ Deletes a user with the role carrier.
 }
 ```
 
-### /users/admin/create
+### /users/admins/create
 Creates a user with the role admin.
 * HTTP method: _PUT_
 * HTTP response: 
@@ -546,7 +561,7 @@ Creates a user with the role admin.
 }
 ```
 
-### /users/admin/delete
+### /users/admins/delete
 Deletes a user with the role admin.
 * HTTP method: _DELETE_
 * HTTP response: 

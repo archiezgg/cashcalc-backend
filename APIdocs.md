@@ -499,21 +499,6 @@ Retrieves all registered carrier usernames.
 ]
 ```
 
-### /users/admins
-Retrieves all registered admin usernames.
-* HTTP method: _GET_
-* HTTP response: 
-	* _200 if successful_
-	* _401 if no valid token is provided_
-	* _403 if token is unathorized for this endpoint_
-* Sample JSON response:
-```
-[
-  "some-admin",
-  "another-admin"
-]
-```
-
 ### /users/carriers/create
 Creates a user with the role carrier.
 * HTTP method: _PUT_
@@ -553,6 +538,21 @@ Deletes a user with the role carrier.
 {
   "message": "Carrier deleted successfully"
 }
+```
+
+### /users/admins
+Retrieves all registered admin usernames.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample JSON response:
+```
+[
+  "some-admin",
+  "another-admin"
+]
 ```
 
 ### /users/admins/create

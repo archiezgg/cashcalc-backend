@@ -22,13 +22,15 @@ import (
 func registerUserRoutes(router *mux.Router) {
 	ep := properties.UsersEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("", usernamesHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/all", usernamesHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.Use(security.AccessLevelAdmin)
-	carriers := s.PathPrefix("/carrier").Subrouter()
+	carriers := s.PathPrefix("/carriers").Subrouter()
+	carriers.HandleFunc("", getCarriersHandler).Methods(http.MethodGet, http.MethodOptions)
 	carriers.HandleFunc("/create", createCarrierHandler).Methods(http.MethodPut, http.MethodOptions)
 	carriers.HandleFunc("/delete", deleteCarrierHandler).Methods(http.MethodDelete, http.MethodOptions)
 	carriers.Use(security.AccessLevelAdmin)
-	admins := s.PathPrefix("/admin").Subrouter()
+	admins := s.PathPrefix("/admins").Subrouter()
+	admins.HandleFunc("", getAdminsHandler).Methods(http.MethodGet, http.MethodOptions)
 	admins.HandleFunc("/create", createAdminHandler).Methods(http.MethodPut, http.MethodOptions)
 	admins.HandleFunc("/delete", deleteAdminHandler).Methods(http.MethodDelete, http.MethodOptions)
 	admins.Use(security.AccessLevelSuperuser)
@@ -38,9 +40,30 @@ func usernamesHandler(w http.ResponseWriter, r *http.Request) {
 	usernames, err := repositories.GetUsernames()
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
 	}
 
 	json.NewEncoder(w).Encode(usernames)
+}
+
+func getCarriersHandler(w http.ResponseWriter, r *http.Request) {
+	carriers, err := repositories.GetUsernamesByRole(models.RoleCarrier)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(carriers)
+}
+
+func getAdminsHandler(w http.ResponseWriter, r *http.Request) {
+	admins, err := repositories.GetUsernamesByRole(models.RoleAdmin)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(admins)
 }
 
 func createCarrierHandler(w http.ResponseWriter, r *http.Request) {

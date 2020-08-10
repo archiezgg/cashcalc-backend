@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"heroku_nf79k3h1.objectlabs-system.admin.collections"}],"uuid":"dd20c0fb915c426f81584e9e4bf92210"}

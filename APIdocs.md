@@ -469,8 +469,8 @@ Revokes all refresh tokens.
 }
 ```
 
-### /users
-Retrieves all registered usernames.
+### /users/usernames
+Retrieves all registered usernames, including all roles.
 * HTTP method: _GET_
 * HTTP response: 
 	* _200 if successful_

@@ -46,6 +46,22 @@ func GetUsernames() ([]string, error) {
 	return usernames, nil
 }
 
+// GetUsernamesByRole returns all usernames by the given role
+func GetUsernamesByRole(role models.Role) ([]string, error) {
+	users, err := GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	var usernames []string
+	for _, u := range users {
+		if u.Role == role {
+			usernames = append(usernames, u.Username)
+		}
+	}
+	return usernames, nil
+}
+
 // GetUserByUsername retrieves the user by its username
 func GetUserByUsername(username string) (models.User, error) {
 	users, err := GetUsers()

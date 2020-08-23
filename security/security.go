@@ -124,18 +124,16 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 		Value:    at,
 		HttpOnly: true,
 		Path:     "/",
-		// SameSite: http.SameSiteNoneMode,
-		// Secure:   true,
 	}
+	setCookieBasedOnEnvironment(accessTokenCookie)
 
 	refreshTokenCookie := &http.Cookie{
 		Name:     RefreshTokenCookieKey,
 		Value:    rt,
 		HttpOnly: true,
 		Path:     "/",
-		// SameSite: http.SameSiteNoneMode,
-		// Secure:   true,
 	}
+	setCookieBasedOnEnvironment(refreshTokenCookie)
 
 	http.SetCookie(w, accessTokenCookie)
 	http.SetCookie(w, refreshTokenCookie)

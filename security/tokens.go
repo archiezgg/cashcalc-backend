@@ -149,14 +149,11 @@ func checkIfRefreshTokenIsInDB(username string, refreshToken string) error {
 //DeleteTokensFromCookies sets access and refresh token cookies' MaxAge to 0
 // and deletes the refresh token from the DB
 func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
-	accessTokenCookie := &http.Cookie{
-		Name:     AccessTokenCookieKey,
-		Value:    "",
-		MaxAge:   -1,
-		HttpOnly: true,
-		Path:     "/",
+	accessTokenCookie, err := r.Cookie(AccessTokenCookieKey)
+	if err != nil {
+		return err
 	}
-	setCookieBasedOnEnvironment(accessTokenCookie)
+	invalidateCookie(accessTokenCookie)
 	http.SetCookie(w, accessTokenCookie)
 
 	refreshTokenCookie, err := r.Cookie(RefreshTokenCookieKey)
@@ -172,15 +169,7 @@ func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
 	if err := repositories.DeleteRefreshToken(user.Username); err != nil {
 		return err
 	}
-
-	refreshTokenCookie = &http.Cookie{
-		Name:     RefreshTokenCookieKey,
-		Value:    "",
-		MaxAge:   -1,
-		HttpOnly: true,
-		Path:     "/",
-	}
-	setCookieBasedOnEnvironment(refreshTokenCookie)
+	invalidateCookie(refreshTokenCookie)
 	http.SetCookie(w, refreshTokenCookie)
 
 	return nil
@@ -192,4 +181,9 @@ func setCookieBasedOnEnvironment(cookie *http.Cookie) {
 		cookie.Secure = true
 		cookie.SameSite = http.SameSiteNoneMode
 	}
+}
+
+func invalidateCookie(cookie *http.Cookie) {
+	cookie.MaxAge = -1
+	cookie.Value = ""
 }

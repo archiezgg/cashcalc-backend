@@ -156,6 +156,7 @@ func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
 		HttpOnly: true,
 		Path:     "/",
 	}
+	setCookieBasedOnEnvironment(accessTokenCookie)
 	http.SetCookie(w, accessTokenCookie)
 
 	refreshTokenCookie, err := r.Cookie(RefreshTokenCookieKey)
@@ -179,7 +180,16 @@ func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
 		HttpOnly: true,
 		Path:     "/",
 	}
+	setCookieBasedOnEnvironment(refreshTokenCookie)
 	http.SetCookie(w, refreshTokenCookie)
 
 	return nil
+}
+
+// setCookieBasedOnEnvironment sets cookie Secure and SameSite values based on the 'ENVIRONMENT' env variable
+func setCookieBasedOnEnvironment(cookie *http.Cookie) {
+	if os.Getenv("ENVIRONMENT") == "PROD" {
+		cookie.Secure = true
+		cookie.SameSite = http.SameSiteNoneMode
+	}
 }

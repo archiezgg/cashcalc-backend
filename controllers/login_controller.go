@@ -83,5 +83,5 @@ func isAuthorizedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeMessage(w, "authorized")
+	writeMessage(w, "Authorized")
 }

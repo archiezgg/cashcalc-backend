@@ -78,7 +78,7 @@ Provides interface to check if the user in the token is authorized to reach cont
 	* _403 if the token is not authorized for the given user's contents_
 	* _500 if the given role is not valid_
 * Queries:
-  * role (mandatory): _the role that should be checked for ("carrier" | "admin" | "superuser)_
+  * role (mandatory): _the role that should be checked for ("carrier" | "admin" | "superuser")_
 * Sample JSON response:
 ```
 {

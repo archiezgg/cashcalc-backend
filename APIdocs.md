@@ -82,7 +82,7 @@ Provides interface to check if the user in the token is authorized to reach cont
 * Sample JSON response:
 ```
 {
-  "message": "Authorized",
+  "message": "Authorized"
 }
 ```
 

@@ -432,7 +432,7 @@ Revokes a single user's refresh token.
 }
 ```
 
-### /tokens/revokeBulk
+### /tokens/revoke-bulk
 Revokes multiple users' refresh tokens.
 * HTTP method: _DELETE_
 * HTTP response: 
@@ -455,7 +455,7 @@ Revokes multiple users' refresh tokens.
 }
 ```
 
-### /tokens/revokeAll
+### /tokens/revoke-all
 Revokes all refresh tokens.
 * HTTP method: _DELETE_
 * HTTP response: 

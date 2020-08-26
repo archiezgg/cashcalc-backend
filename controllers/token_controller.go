@@ -22,8 +22,8 @@ func registerTokenRoutes(router *mux.Router) {
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", tokensHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.HandleFunc("/revoke", revokeTokenHandler).Methods(http.MethodDelete, http.MethodOptions)
-	s.HandleFunc("/revokeBulk", revokeBulkTokenHandler).Methods(http.MethodDelete, http.MethodOptions)
-	s.HandleFunc("/revokeAll", revokeAllTokensHandler).Methods(http.MethodDelete, http.MethodOptions)
+	s.HandleFunc("/revoke-bulk", revokeBulkTokenHandler).Methods(http.MethodDelete, http.MethodOptions)
+	s.HandleFunc("/revoke-all", revokeAllTokensHandler).Methods(http.MethodDelete, http.MethodOptions)
 	s.Use(security.AccessLevelSuperuser)
 }
 

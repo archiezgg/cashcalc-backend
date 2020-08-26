@@ -38,7 +38,7 @@ func LogErrorAndSendHTTPError(w http.ResponseWriter, err error, httpStatusCode i
 // AccessLevelCarrier serves as middleware for carrier access level
 func AccessLevelCarrier(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForAccessLevel(models.RoleCarrier, w, r) {
+		if IsTokenValidForAccessLevel(models.RoleCarrier, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
@@ -47,7 +47,7 @@ func AccessLevelCarrier(next http.Handler) http.Handler {
 // AccessLevelAdmin serves as middleware for admin access level
 func AccessLevelAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForAccessLevel(models.RoleAdmin, w, r) {
+		if IsTokenValidForAccessLevel(models.RoleAdmin, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
@@ -56,13 +56,15 @@ func AccessLevelAdmin(next http.Handler) http.Handler {
 // AccessLevelSuperuser serves as middleware for superuser access level
 func AccessLevelSuperuser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isTokenValidForAccessLevel(models.RoleSuperuser, w, r) {
+		if IsTokenValidForAccessLevel(models.RoleSuperuser, w, r) {
 			next.ServeHTTP(w, r)
 		}
 	})
 }
 
-func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, r *http.Request) bool {
+// IsTokenValidForAccessLevel checks if the role in the cookies can get the resources
+// for given access level
+func IsTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, r *http.Request) bool {
 	var token string
 	var err error
 
@@ -78,6 +80,12 @@ func isTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	role, err := decodeRoleFromAccessToken(token)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return false
+	}
+
+	if accessLevel != models.RoleCarrier && accessLevel != models.RoleAdmin && accessLevel != models.RoleSuperuser {
+		err := fmt.Errorf("given role can either be %v, %v or %v", models.RoleCarrier, models.RoleAdmin, models.RoleSuperuser)
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return false
 	}
 
@@ -186,6 +194,7 @@ func extractTokenFromHeader(r *http.Request) (string, error) {
 	return sliced[1], nil
 }
 
+// decodeRoleFromAccessToken decodes the role from the access token JWT string
 func decodeRoleFromAccessToken(tokenString string) (models.Role, error) {
 	claims, err := decodeClaimsFromToken(tokenString, accessKey)
 	if err != nil {

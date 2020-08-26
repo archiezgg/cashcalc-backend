@@ -69,6 +69,23 @@ Provides interface for logout, deletes the access and refresh tokens from cookie
 }
 ```
 
+### /is-authorized
+Provides interface to check if the user in the token is authorized to reach content for given user's contents.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if the user is authorized_
+	* _401 if user is not authenticated_
+	* _403 if the token is not authorized for the given user's contents_
+	* _500 if the given role is not valid_
+* Queries:
+  * role (mandatory): _the role that should be checked for ("carrier" | "admin" | "superuser")_
+* Sample JSON response:
+```
+{
+  "message": "Authorized"
+}
+```
+
 ### /calc
 Calculates the resulting fares based on the input.
 * HTTP method: _POST_
@@ -269,7 +286,7 @@ Retrieves the road fares of the zone provided.
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 1-5
 * Queries:
-  * weight(optional): _retrieves only the fare of for the weight provided_
+  * weight (optional): _retrieves only the fare of for the weight provided_
 * Example: _/pricings/road/fares/4_
 * Sample JSON response:
 ```
@@ -296,7 +313,7 @@ Retrieves the air fares of the zone provided.
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 0-9
 * Queries:
-  * weight(optional): _retrieves only the fare of for the weight provided_
+  * weight (optional): _retrieves only the fare of for the weight provided_
 * Example: _/pricings/air/fares/4_
 * Sample JSON response:
 ```
@@ -323,7 +340,7 @@ Retrieves the air document fares of the zone provided.
 	* _403 if token is unathorized for this endpoint_
 * Zone number: an integer between 5-9
 * Queries:
-  * weight(optional): _retrieves only the fare of for the weight provided_
+  * weight (optional): _retrieves only the fare of for the weight provided_
 * Example: _/pricings/air/docfares/5_
 * Sample JSON response:
 ```
@@ -432,7 +449,7 @@ Revokes a single user's refresh token.
 }
 ```
 
-### /tokens/revokeBulk
+### /tokens/revoke-bulk
 Revokes multiple users' refresh tokens.
 * HTTP method: _DELETE_
 * HTTP response: 
@@ -455,7 +472,7 @@ Revokes multiple users' refresh tokens.
 }
 ```
 
-### /tokens/revokeAll
+### /tokens/revoke-all
 Revokes all refresh tokens.
 * HTTP method: _DELETE_
 * HTTP response: 

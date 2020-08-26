@@ -24,6 +24,7 @@ const (
 	loginEndpointProp         = "endpoint.login"
 	logoutEndpointProp        = "endpoint.logout"
 	refreshEndpointProp       = "endpoint.refresh"
+	isAuthorizedEndpointProp  = "endpoint.isAuthorized"
 	pricingsEndpointProp      = "endpoint.pricings"
 	countriesEndpointProp     = "endpoint.countries"
 	pricingVarsEndpointProp   = "endpoint.pricingvars"
@@ -61,6 +62,8 @@ var (
 	LogoutEndpoint string
 	// RefreshEndpoint is the endpoint for refreshing tokens
 	RefreshEndpoint string
+	// IsAuthorizedEndpoint is the endpoint to check if the token is valid for given user
+	IsAuthorizedEndpoint string
 	// PricingsEndpoint is the endpoint for pricings
 	PricingsEndpoint string
 	// CountriesEndpoint is the endpoint for countries
@@ -114,6 +117,7 @@ func InitProperties() {
 	LoginEndpoint = p.MustGetString(loginEndpointProp)
 	LogoutEndpoint = p.MustGetString(logoutEndpointProp)
 	RefreshEndpoint = p.MustGetString(refreshEndpointProp)
+	IsAuthorizedEndpoint = p.MustGetString(isAuthorizedEndpointProp)
 	PricingsEndpoint = p.MustGetString(pricingsEndpointProp)
 	CountriesEndpoint = p.MustGetString(countriesEndpointProp)
 	PricingVarsEndpoint = p.MustGetString(pricingVarsEndpointProp)

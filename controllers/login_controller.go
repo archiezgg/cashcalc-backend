@@ -9,6 +9,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/IstvanN/cashcalc-backend/models"
@@ -23,6 +24,7 @@ func registerLoginRoutes(router *mux.Router) {
 	router.HandleFunc(properties.LoginEndpoint, loginHandler).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc(properties.RefreshEndpoint, refreshHandler).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc(properties.LogoutEndpoint, logoutHandler).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc(properties.IsAuthorizedEndpoint, isAuthorizedHandler).Methods(http.MethodGet, http.MethodOptions)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -66,4 +68,20 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeMessage(w, "Logged out succesfully")
+}
+
+func isAuthorizedHandler(w http.ResponseWriter, r *http.Request) {
+	roleToCompare, ok := r.URL.Query()["role"]
+	if !ok {
+		err := fmt.Errorf("role parameter not found in URL query")
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	log.Println(roleToCompare)
+	if !security.IsTokenValidForAccessLevel(models.Role(roleToCompare[0]), w, r) {
+		return
+	}
+
+	writeMessage(w, "Authorized")
 }

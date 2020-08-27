@@ -184,7 +184,7 @@ func validateAccessTokenCookie(r *http.Request) (*http.Cookie, error) {
 func extractTokenFromHeader(r *http.Request) (string, error) {
 	tokenStrings, ok := r.Header["Authorization"]
 	if !ok {
-		return "", fmt.Errorf("no token provided in header or cookie")
+		return "", fmt.Errorf("no token provided in header")
 	}
 
 	bearerToken := tokenStrings[0]

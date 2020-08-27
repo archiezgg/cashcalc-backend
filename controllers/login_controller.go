@@ -9,7 +9,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/IstvanN/cashcalc-backend/models"
@@ -78,7 +77,6 @@ func isAuthorizedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println(roleToCompare)
 	if !security.IsTokenValidForAccessLevel(models.Role(roleToCompare[0]), w, r) {
 		return
 	}

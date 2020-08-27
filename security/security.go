@@ -156,6 +156,7 @@ func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, err
 
 	refreshTokenCookie, err := r.Cookie(RefreshTokenCookieKey)
 	if err != nil {
+		log.Printf("Cookies received with the request are: %v\n", r.Cookies())
 		return "", err
 	}
 

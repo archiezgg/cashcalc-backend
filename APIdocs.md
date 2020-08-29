@@ -544,12 +544,9 @@ Deletes a user with the role carrier.
 	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
-* Sample required payload:
-```
-{
-	"username": "some-user"
-}
-```
+* Queries:
+  * username (mandatory): _deletes the given carrier_
+
 * Sample JSON response:
 ```
 {
@@ -600,12 +597,9 @@ Deletes a user with the role admin.
 	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
-* Sample required payload:
-```
-{
-	"username": "some-user"
-}
-```
+* Queries:
+  * username (mandatory): _deletes the given admin_
+
 * Sample JSON response:
 ```
 {

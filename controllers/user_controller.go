@@ -8,6 +8,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/IstvanN/cashcalc-backend/models"
@@ -87,17 +88,14 @@ func createCarrierHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteCarrierHandler(w http.ResponseWriter, r *http.Request) {
-	type requestedBody struct {
-		Username string `json:"username"`
-	}
-
-	var rb requestedBody
-	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Username == "" {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+	username, ok := r.URL.Query()["username"]
+	if !ok {
+		err := fmt.Errorf("username parameter is not defined")
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if err := repositories.DeleteUserByUsernameAndRole(rb.Username, models.RoleCarrier); err != nil {
+	if err := repositories.DeleteUserByUsernameAndRole(username[0], models.RoleCarrier); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
@@ -125,17 +123,14 @@ func createAdminHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteAdminHandler(w http.ResponseWriter, r *http.Request) {
-	type requestedBody struct {
-		Username string `json:"username"`
-	}
-
-	var rb requestedBody
-	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Username == "" {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+	username, ok := r.URL.Query()["username"]
+	if !ok {
+		err := fmt.Errorf("username parameter is not defined")
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if err := repositories.DeleteUserByUsernameAndRole(rb.Username, models.RoleAdmin); err != nil {
+	if err := repositories.DeleteUserByUsernameAndRole(username[0], models.RoleAdmin); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}

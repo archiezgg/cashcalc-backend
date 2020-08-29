@@ -144,6 +144,23 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 	return at, nil
 }
 
+func generateAccessTokenAndSetItAsCookie(w http.ResponseWriter, user models.User) (string, error) {
+	at, err := GenerateAccessToken(user)
+	if err != nil {
+		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return "", err
+	}
+	accessTokenCookie := &http.Cookie{
+		Name:     AccessTokenCookieKey,
+		Value:    at,
+		HttpOnly: true,
+		Path:     "/",
+	}
+	setCookieBasedOnEnvironment(accessTokenCookie)
+	http.SetCookie(w, accessTokenCookie)
+	return at, nil
+}
+
 func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
 	accessTokenCookie, err := validateAccessTokenCookie(r)
 	if err == nil {

@@ -228,3 +228,24 @@ func TestSumFares(t *testing.T) {
 		}
 	}
 }
+
+func TestAreAllIntegersPositive(t *testing.T) {
+	testCases := []struct {
+		a, b, c, d, e, f float64
+		expected         bool
+	}{
+		{0, 1, 2.2, 3, 4, 5.6, true},
+		{-1, 0, 1.5, 2, 3, 4, false},
+		{66, 78, 100000, -567.5, 88, 9999, false},
+		{-7, -88, -89, -99, -10000, -67, false},
+		{0, 0, 0, 0, 0, 0, true},
+	}
+
+	for _, tc := range testCases {
+		actual := areAllNumbersPositive(tc.a, tc.b, tc.c, tc.d, tc.e, tc.f)
+		if actual != tc.expected {
+			t.Errorf("AreAllNumbersPositive(%v, %v, %v, %v, %v, %v) failed: expected %v, got %v", tc.a, tc.b, tc.c, tc.d, tc.e, tc.f,
+				tc.expected, actual)
+		}
+	}
+}

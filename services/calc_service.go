@@ -21,6 +21,9 @@ func isZoneEU(zn int) bool {
 // ValidateInputData takes an input data model and returns with an error if there is a logical error
 func ValidateInputData(input models.CalcInputData) error {
 	var err error
+
+	// if areAllIntegersPositive(input.ZoneNumber, input)
+
 	if input.TransferType != models.TransferAir && input.TransferType != models.TransferRoad {
 		err = fmt.Errorf("invalid transfer type in input data: %v", input.TransferType)
 		return err
@@ -132,4 +135,13 @@ func SumFares(fares ...float64) float64 {
 		result += f
 	}
 	return result
+}
+
+func areAllNumbersPositive(numbers ...float64) bool {
+	for _, n := range numbers {
+		if n < 0 {
+			return false
+		}
+	}
+	return true
 }

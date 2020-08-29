@@ -8,7 +8,6 @@ package controllers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -48,7 +47,7 @@ func setHeaderMiddleWare(next http.Handler) http.Handler {
 		} else {
 			w.Header().Set("Access-Control-Allow-Origin", "https://cashcalc.web.app")
 		}
-		log.Printf("pontosan itt: %v\n", r.Method)
+
 		if r.Method == "OPTIONS" {
 			return
 		}

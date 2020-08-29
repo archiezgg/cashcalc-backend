@@ -8,7 +8,6 @@ package security
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -84,7 +83,6 @@ func GenerateRefreshToken(user models.User) (string, error) {
 // RefreshTokenAndSetTokensAsCookies takes a refresh token and a writer,
 // refreshes the user's token and sends back as cookie
 func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken string) (string, error) {
-	log.Printf("refresh token 1x: %v\n", refreshToken)
 	user, err := DecodeUserFromRefreshToken(refreshToken)
 	if err != nil {
 		return "", err
@@ -99,7 +97,6 @@ func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken strin
 	if err != nil {
 		return "", err
 	}
-	log.Printf("refresh token 1x: %v\n", refreshToken)
 	return accessToken, nil
 }
 

@@ -145,7 +145,6 @@ func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.Us
 }
 
 func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
-	log.Println(r.Method)
 	accessTokenCookie, err := validateAccessTokenCookie(r)
 	if err == nil {
 		return accessTokenCookie.Value, nil

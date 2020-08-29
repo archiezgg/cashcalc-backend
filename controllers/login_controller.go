@@ -70,14 +70,14 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func isAuthorizedHandler(w http.ResponseWriter, r *http.Request) {
-	roleToCompare, ok := r.URL.Query()["role"]
-	if !ok {
+	roleToCompare := r.URL.Query().Get("role")
+	if roleToCompare == "" {
 		err := fmt.Errorf("role parameter not found in URL query")
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if !security.IsTokenValidForAccessLevel(models.Role(roleToCompare[0]), w, r) {
+	if !security.IsTokenValidForAccessLevel(models.Role(roleToCompare), w, r) {
 		return
 	}
 

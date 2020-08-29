@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/IstvanN/cashcalc-backend/models"
 	"github.com/IstvanN/cashcalc-backend/repositories"
@@ -68,13 +67,10 @@ func IsTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	var token string
 	var err error
 
-	token, err = extractTokenFromHeader(r)
+	token, err = extractTokenFromCookie(w, r)
 	if err != nil {
-		token, err = extractTokenFromCookie(w, r)
-		if err != nil {
-			LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
-			return false
-		}
+		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
+		return false
 	}
 
 	role, err := decodeRoleFromAccessToken(token)
@@ -178,20 +174,6 @@ func validateAccessTokenCookie(r *http.Request) (*http.Cookie, error) {
 	}
 
 	return accessTokenCookie, nil
-}
-
-func extractTokenFromHeader(r *http.Request) (string, error) {
-	tokenStrings, ok := r.Header["Authorization"]
-	if !ok {
-		return "", fmt.Errorf("no token provided in header")
-	}
-
-	bearerToken := tokenStrings[0]
-	sliced := strings.Split(bearerToken, " ")
-	if len(sliced) != 2 {
-		return "", fmt.Errorf("token format is not \"Bearer <Token>\"")
-	}
-	return sliced[1], nil
 }
 
 // decodeRoleFromAccessToken decodes the role from the access token JWT string

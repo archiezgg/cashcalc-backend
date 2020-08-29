@@ -97,7 +97,6 @@ func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken strin
 	if err != nil {
 		return "", err
 	}
-
 	return accessToken, nil
 }
 

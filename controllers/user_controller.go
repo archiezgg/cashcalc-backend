@@ -88,14 +88,14 @@ func createCarrierHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteCarrierHandler(w http.ResponseWriter, r *http.Request) {
-	username, ok := r.URL.Query()["username"]
-	if !ok {
+	username := r.URL.Query().Get("username")
+	if username == "" {
 		err := fmt.Errorf("username parameter is not defined")
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if err := repositories.DeleteUserByUsernameAndRole(username[0], models.RoleCarrier); err != nil {
+	if err := repositories.DeleteUserByUsernameAndRole(username, models.RoleCarrier); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
@@ -123,14 +123,14 @@ func createAdminHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteAdminHandler(w http.ResponseWriter, r *http.Request) {
-	username, ok := r.URL.Query()["username"]
-	if !ok {
+	username := r.URL.Query().Get("username")
+	if username == "" {
 		err := fmt.Errorf("username parameter is not defined")
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if err := repositories.DeleteUserByUsernameAndRole(username[0], models.RoleAdmin); err != nil {
+	if err := repositories.DeleteUserByUsernameAndRole(username, models.RoleAdmin); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}

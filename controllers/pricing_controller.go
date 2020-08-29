@@ -62,10 +62,10 @@ func airPricingsHandler(w http.ResponseWriter, r *http.Request) {
 
 func roadFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
-	weightAsString, queryIsPresent := r.URL.Query()["weight"]
+	weightAsString := r.URL.Query().Get("weight")
 
-	if queryIsPresent {
-		weight, err := strconv.ParseFloat(weightAsString[0], 64)
+	if weightAsString != "" {
+		weight, err := strconv.ParseFloat(weightAsString, 64)
 		if err != nil {
 			security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 			return
@@ -90,10 +90,10 @@ func roadFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 
 func airFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
-	weightAsString, queryIsPresent := r.URL.Query()["weight"]
+	weightAsString := r.URL.Query().Get("weight")
 
-	if queryIsPresent {
-		weight, err := strconv.ParseFloat(weightAsString[0], 64)
+	if weightAsString != "" {
+		weight, err := strconv.ParseFloat(weightAsString, 64)
 		if err != nil {
 			security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 			return
@@ -118,10 +118,10 @@ func airFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 
 func airDocFaresByZoneNumberHandler(w http.ResponseWriter, r *http.Request) {
 	zn, _ := strconv.Atoi(mux.Vars(r)["zn"])
-	weightAsString, queryIsPresent := r.URL.Query()["weight"]
+	weightAsString := r.URL.Query().Get("weight")
 
-	if queryIsPresent {
-		weight, err := strconv.ParseFloat(weightAsString[0], 64)
+	if weightAsString != "" {
+		weight, err := strconv.ParseFloat(weightAsString, 64)
 		if err != nil {
 			security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 			return

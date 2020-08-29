@@ -22,7 +22,15 @@ func isZoneEU(zn int) bool {
 func ValidateInputData(input models.CalcInputData) error {
 	var err error
 
-	// if areAllIntegersPositive(input.ZoneNumber, input)
+	if !areAllNumbersPositive(float64(input.ZoneNumber), input.Weight, float64(input.Insurance), input.DiscountPercent) {
+		err = fmt.Errorf("invalid negative number in input data")
+		return err
+	}
+
+	if input.Weight == 0 {
+		err = fmt.Errorf("weight cannot be 0")
+		return err
+	}
 
 	if input.TransferType != models.TransferAir && input.TransferType != models.TransferRoad {
 		err = fmt.Errorf("invalid transfer type in input data: %v", input.TransferType)

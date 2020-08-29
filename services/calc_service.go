@@ -133,3 +133,12 @@ func SumFares(fares ...float64) float64 {
 	}
 	return result
 }
+
+func areAllIntegersPositive(integers ...int) bool {
+	for _, i := range integers {
+		if i < 0 {
+			return false
+		}
+	}
+	return true
+}

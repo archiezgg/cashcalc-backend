@@ -45,6 +45,7 @@ const (
 	roadFaresWeightMaxProp    = "road.fares.weight.max"
 	accessTokenExpProp        = "access.token.expiration.minutes"
 	refreshTokenExpProp       = "refresh.token.expiration.minutes"
+	userPasswordMinLength     = "user.password.min.length"
 )
 
 var (
@@ -104,6 +105,8 @@ var (
 	AccessTokenExp time.Duration
 	// RefreshTokenExp is the expiration time of refresh tokens in minutes
 	RefreshTokenExp time.Duration
+	// UserPasswordMinLength sets the minimum required password length
+	UserPasswordMinLength int
 )
 
 // InitProperties initialize all properties based on the properties file,
@@ -138,4 +141,5 @@ func InitProperties() {
 	RoadFaresWeightMax = p.MustGetFloat64(roadFaresWeightMaxProp)
 	AccessTokenExp = p.MustGetDuration(accessTokenExpProp)
 	RefreshTokenExp = p.MustGetDuration(refreshTokenExpProp)
+	UserPasswordMinLength = p.MustGetInt(userPasswordMinLength)
 }

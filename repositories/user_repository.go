@@ -84,6 +84,10 @@ func CreateUser(username, password string, role models.Role) error {
 		return err
 	}
 
+	if len(password) < properties.UserPasswordMinLength {
+		return fmt.Errorf("password must be at least %v characters", properties.UserPasswordMinLength)
+	}
+
 	hashedPw, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		return err

@@ -10,9 +10,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 )
+
+var isProcessOngoing bool
 
 // StartupRouter creates instance of registers all the routes of the subroutes, supposed to be called in main func
 func StartupRouter() (router *mux.Router) {
@@ -35,6 +38,9 @@ func welcomeHandler(w http.ResponseWriter, r *http.Request) {
 
 // setHeaderMiddleWare sets the header with some pre-made CORS-enabling options
 func setHeaderMiddleWare(next http.Handler) http.Handler {
+	if isProcessOngoing {
+		time.Sleep(time.Second * 1)
+	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -52,7 +58,9 @@ func setHeaderMiddleWare(next http.Handler) http.Handler {
 			return
 		}
 
+		isProcessOngoing = true
 		next.ServeHTTP(w, r)
+		isProcessOngoing = false
 	})
 }
 

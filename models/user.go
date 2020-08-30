@@ -6,7 +6,11 @@
 
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // User is the main struct for users such as carrier, admin and superuser
 type User struct {
@@ -14,6 +18,14 @@ type User struct {
 	Username string `gorm:"string;not null;unique"`
 	Password string `gorm:"string;not null"`
 	Role     Role   `gorm:"string;not null"`
+}
+
+// UserDTO is the user structure that is sent back as JSON
+type UserDTO struct {
+	ID        uint      `json:"id"`
+	Username  string    `json:"username"`
+	Role      Role      `json:"role"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // Role is an enum that can either be carrier, admin or superuser

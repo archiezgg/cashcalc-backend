@@ -9,32 +9,45 @@ package repositories
 import (
 	"fmt"
 
-	"golang.org/x/crypto/bcrypt"
-
-	"github.com/IstvanN/cashcalc-backend/properties"
-
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/models"
+	"github.com/IstvanN/cashcalc-backend/properties"
+	"golang.org/x/crypto/bcrypt"
 )
 
-// GetUsers retrieves all users from the database
-func GetUsers() ([]models.User, error) {
-	coll := database.GetCollectionByName(properties.UsersCollection)
-
-	var users []models.User
-	err := coll.Find(nil).All(&users)
-	if err != nil {
-		errMsg := fmt.Errorf("error while retrieving collection %v from database: %v",
-			properties.UsersCollection, err)
-		return nil, errMsg
+// GetUserByID retrieves the user by id
+func GetUserByID(id uint) (models.User, error) {
+	var u models.User
+	result := database.GetPostgresDB().First(&u, id)
+	if result.Error != nil {
+		return models.User{}, result.Error
 	}
+	return u, nil
+}
 
+// GetUserByUsername retrieves the user by its username
+func GetUserByUsername(username string) (models.User, error) {
+	var u models.User
+	result := database.GetPostgresDB().Where("username = ?", username).First(&u)
+	if result.Error != nil {
+		return models.User{}, result.Error
+	}
+	return u, nil
+}
+
+// GetAllUsers retrieves all users
+func GetAllUsers() ([]models.User, error) {
+	var users []models.User
+	result := database.GetPostgresDB().Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 	return users, nil
 }
 
-// GetUsernames returns all usernames from DB
-func GetUsernames() ([]string, error) {
-	users, err := GetUsers()
+// GetAllUsernames retrieves all usernames
+func GetAllUsernames() ([]string, error) {
+	users, err := GetAllUsers()
 	if err != nil {
 		return nil, err
 	}
@@ -46,41 +59,19 @@ func GetUsernames() ([]string, error) {
 	return usernames, nil
 }
 
-// GetUsernamesByRole returns all usernames by the given role
-func GetUsernamesByRole(role models.Role) ([]string, error) {
-	users, err := GetUsers()
-	if err != nil {
-		return nil, err
+// GetUsersByRole retrieves all users by given role
+func GetUsersByRole(role models.Role) ([]models.User, error) {
+	var users []models.User
+	result := database.GetPostgresDB().Where("role = ?", role).Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
 	}
-
-	var usernames []string
-	for _, u := range users {
-		if u.Role == role {
-			usernames = append(usernames, u.Username)
-		}
-	}
-	return usernames, nil
+	return users, nil
 }
 
-// GetUserByUsername retrieves the user by its username
-func GetUserByUsername(username string) (models.User, error) {
-	users, err := GetUsers()
-	if err != nil {
-		return models.User{}, err
-	}
-
-	for _, u := range users {
-		if u.Username == username {
-			return u, nil
-		}
-	}
-	err = fmt.Errorf("user cannot be found in db by username: %v", username)
-	return models.User{}, err
-}
-
-// CreateUser creates a user by given username, password and role and saves it to DB
+// CreateUser creates user based on a username, password and a role
 func CreateUser(username, password string, role models.Role) error {
-	if err := checkIfUserNameIsTaken(username); err != nil {
+	if err := checkIfUsernameIsTaken(username); err != nil {
 		return err
 	}
 
@@ -99,39 +90,31 @@ func CreateUser(username, password string, role models.Role) error {
 		Role:     role,
 	}
 
-	coll := database.GetCollectionByName(properties.UsersCollection)
-	if err := coll.Insert(user); err != nil {
-		err = fmt.Errorf("user %v cannot be created: %v", username, err)
-		return err
+	result := database.GetPostgresDB().Create(&user)
+	if result.Error != nil {
+		return result.Error
 	}
 	return nil
 }
 
-// DeleteUserByUsernameAndRole deletes given carrier from the DB, returns error if user is not a carrier
-func DeleteUserByUsernameAndRole(username string, role models.Role) error {
-	userToDel, err := GetUserByUsername(username)
-	if err != nil || userToDel.Role != role {
-		return fmt.Errorf("user %v cannot be deleted", username)
-	}
-	coll := database.GetCollectionByName(properties.UsersCollection)
-	if err := coll.Remove(userToDel); err != nil {
-		err = fmt.Errorf("user %v cannot be deleted: %v", username, err)
-		return err
-	}
-	if err := DeleteRefreshToken(username); err != nil {
-		return err
+// DeleteUserByIDAndRole deletes the user by given ID and role
+// returns error if the user by id is not matched for given role
+func DeleteUserByIDAndRole(id uint, role models.Role) error {
+	result := database.GetPostgresDB().Where("role = ?", role).Delete(&models.User{}, id)
+	if result.Error != nil {
+		return result.Error
 	}
 	return nil
 }
 
-func checkIfUserNameIsTaken(username string) error {
-	usernames, err := GetUsernames()
+func checkIfUsernameIsTaken(username string) error {
+	users, err := GetAllUsers()
 	if err != nil {
 		return err
 	}
 
-	for _, u := range usernames {
-		if username == u {
+	for _, u := range users {
+		if u.Username == username {
 			return fmt.Errorf("username already taken: %v", username)
 		}
 	}

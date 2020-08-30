@@ -39,7 +39,7 @@ func StartupPostgres() {
 		try := 1
 		for try <= 6 && err != nil {
 			log.Printf("establishing connection to the database... %d\nExiting after 5 tries.", try)
-			time.Sleep(5 * time.Second)
+			time.Sleep(2 * time.Second)
 			postgresDB, err = gorm.Open(postgres.Open(dbSpecs), &gorm.Config{})
 			try++
 			if try == 6 {

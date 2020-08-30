@@ -49,7 +49,7 @@ func usernamesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getCarriersHandler(w http.ResponseWriter, r *http.Request) {
-	carriers, err := repositories.GetUsersByRole(models.RoleCarrier)
+	carriers, err := repositories.GetUserDTOsByRole(models.RoleCarrier)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -59,7 +59,7 @@ func getCarriersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAdminsHandler(w http.ResponseWriter, r *http.Request) {
-	admins, err := repositories.GetUsersByRole(models.RoleAdmin)
+	admins, err := repositories.GetUserDTOsByRole(models.RoleAdmin)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return

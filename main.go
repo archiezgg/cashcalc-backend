@@ -22,6 +22,7 @@ func main() {
 	properties.InitProperties()
 	mongo := database.StartupMongo()
 	redis := database.StartupRedis()
+	database.StartupPostgres()
 	defer mongo.Close()
 	defer redis.Close()
 

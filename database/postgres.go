@@ -4,16 +4,52 @@
 	mailto: nemethistvanius@gmail.com
 */
 
+package database
+
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"github.com/IstvanN/cashcalc-backend/services"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
 	postgresDB  *gorm.DB
-	postgresURL = os.Getenv("DATABASE_URL")
+	postgresURL = os.Getenv("POSTGRES_URL")
 )
 
+// StartupPostgres is the init call of the Postgres DB, supposed to be called in the main function
 func StartupPostgres() {
+	if postgresURL == "" {
+		log.Fatalln("unable to connect to Postgres DB: no URL provided")
+		return
+	}
 	dbHost, dbUser, dbPort, dbPw, dbName := services.GetPostgresDBSpecsFromURL(postgresURL)
+	dbSpecs := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable TimeZone=Europe/Budapest",
+		dbHost, dbPort, dbUser, dbPw, dbName)
+
+	var err error
+	postgresDB, err = gorm.Open(postgres.Open(dbSpecs), &gorm.Config{})
+	if err != nil {
+		try := 1
+		for try <= 6 && err != nil {
+			log.Printf("establishing connection to the database... %d\nExiting after 5 tries.", try)
+			time.Sleep(5 * time.Second)
+			postgresDB, err = gorm.Open(postgres.Open(dbSpecs), &gorm.Config{})
+			try++
+			if try == 6 {
+				panic(err)
+			}
+		}
+	}
+	log.Println("successfully connected to Postgres DB")
+}
+
+// GetPostgresDB is the conventional function to access the DB session
+func GetPostgresDB() *gorm.DB {
+	return postgresDB
 }

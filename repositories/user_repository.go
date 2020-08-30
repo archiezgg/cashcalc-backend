@@ -142,5 +142,7 @@ func CreateUserDTOFromUser(user models.User) models.UserDTO {
 		Username:  user.Username,
 		Role:      user.Role,
 		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		DeletedAt: user.DeletedAt.Time,
 	}
 }

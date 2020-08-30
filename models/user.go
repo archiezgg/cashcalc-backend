@@ -6,11 +6,14 @@
 
 package models
 
+import "gorm.io/gorm"
+
 // User is the main struct for users such as carrier, admin and superuser
 type User struct {
-	Username string `bson:"username" json:"username"`
-	Role     Role   `bson:"role" json:"role"`
-	Password string `bson:"password" json:"password"`
+	gorm.Model
+	Username string `gorm:"string;not null;unique"`
+	Password string `gorm:"string;not null"`
+	Role     Role   `gorm:"string;not null"`
 }
 
 // Role is an enum that can either be carrier, admin or superuser

@@ -34,7 +34,7 @@ func StartupMongo() *mgo.Session {
 
 // GetCollectionByName returns a collection type from the db by its name
 func GetCollectionByName(collectionName string) *mgo.Collection {
-	dbName := services.GetDBNameFromURI(mongoURI)
+	dbName := services.GetMongoDBNameFromURI(mongoURI)
 	coll := dbSession.DB(dbName).C(collectionName)
 	return coll
 }

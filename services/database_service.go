@@ -6,15 +6,18 @@
 
 package services
 
-import "strings"
+import (
+	"strings"
+)
 
-// GetDBNameFromURI splits the given URI and returns the name of the DB
-func GetDBNameFromURI(uri string) string {
+// GetMongoDBNameFromURI splits the given URI and returns the name of the DB
+func GetMongoDBNameFromURI(uri string) string {
 	splitURI := strings.SplitAfter(uri, "/")
 	dbName := splitURI[len(splitURI)-1]
 
 	if strings.Contains(dbName, "?") {
 		dbName = strings.Split(dbName, "?")[0]
 	}
+
 	return dbName
 }

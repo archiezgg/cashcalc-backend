@@ -8,7 +8,7 @@ package services
 
 import "testing"
 
-func TestGetDBNameFromURI(t *testing.T) {
+func TestGetMongoDBNameFromURI(t *testing.T) {
 	testCases := []struct {
 		input    string
 		expected string
@@ -24,7 +24,7 @@ func TestGetDBNameFromURI(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		actual := GetDBNameFromURI(tc.input)
+		actual := GetMongoDBNameFromURI(tc.input)
 		if actual != tc.expected {
 			t.Errorf("getDBnameFromURI(%v) failed: expected: %v, got: %v", tc.input, tc.expected, actual)
 		}

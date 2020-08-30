@@ -24,7 +24,7 @@ import (
 func registerUserRoutes(router *mux.Router) {
 	ep := properties.UsersEndpoint
 	s := router.PathPrefix(ep).Subrouter()
-	s.HandleFunc("/all", usernamesHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/usernames", usernamesHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.Use(security.AccessLevelAdmin)
 	carriers := s.PathPrefix("/carriers").Subrouter()
 	carriers.HandleFunc("", getCarriersHandler).Methods(http.MethodGet, http.MethodOptions)

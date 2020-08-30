@@ -12,6 +12,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/IstvanN/cashcalc-backend/models"
 	"github.com/IstvanN/cashcalc-backend/services"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -46,7 +47,9 @@ func StartupPostgres() {
 			}
 		}
 	}
-	log.Println("successfully connected to Postgres DB")
+
+	postgresDB.AutoMigrate(&models.User{})
+	log.Println("successfully connected to Postgres DB!")
 }
 
 // GetPostgresDB is the conventional function to access the DB session

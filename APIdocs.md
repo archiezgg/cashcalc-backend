@@ -486,7 +486,7 @@ Revokes all refresh tokens.
 }
 ```
 
-### /users/all
+### /users/usernames
 Retrieves all registered usernames regardless of their roles.
 * HTTP method: _GET_
 * HTTP response: 
@@ -511,8 +511,22 @@ Retrieves all registered carrier usernames.
 * Sample JSON response:
 ```
 [
-  "some-carrier",
-  "another-carrier"
+  {
+    "id": 2,
+    "username": "carrier-test",
+    "role": "carrier",
+    "createdAt": "2020-08-30T21:07:48.541908Z",
+    "updatedAt": "2020-08-30T21:07:48.541908Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "username": "carrier-test1",
+    "role": "carrier",
+    "createdAt": "2020-08-30T21:07:50.705943Z",
+    "updatedAt": "2020-08-30T21:07:50.705943Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  }
 ]
 ```
 
@@ -545,7 +559,7 @@ Deletes a user with the role carrier.
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Queries:
-  * username (mandatory): _deletes the given carrier_
+  * id (mandatory): _deletes the given carrier by ID_
 
 * Sample JSON response:
 ```
@@ -564,8 +578,22 @@ Retrieves all registered admin usernames.
 * Sample JSON response:
 ```
 [
-  "some-admin",
-  "another-admin"
+  {
+    "id": 2,
+    "username": "admin-test",
+    "role": "admin",
+    "createdAt": "2020-08-30T21:07:48.541908Z",
+    "updatedAt": "2020-08-30T21:07:48.541908Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "username": "admin-test1",
+    "role": "admin",
+    "createdAt": "2020-08-30T21:07:50.705943Z",
+    "updatedAt": "2020-08-30T21:07:50.705943Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  }
 ]
 ```
 
@@ -598,7 +626,7 @@ Deletes a user with the role admin.
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Queries:
-  * username (mandatory): _deletes the given admin_
+  * id (mandatory): _deletes the given admin by ID_
 
 * Sample JSON response:
 ```

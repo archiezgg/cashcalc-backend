@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/IstvanN/cashcalc-backend/models"
 	"github.com/IstvanN/cashcalc-backend/properties"
@@ -38,7 +39,7 @@ func registerUserRoutes(router *mux.Router) {
 }
 
 func usernamesHandler(w http.ResponseWriter, r *http.Request) {
-	usernames, err := repositories.GetUsernames()
+	usernames, err := repositories.GetAllUsernames()
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -48,7 +49,7 @@ func usernamesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getCarriersHandler(w http.ResponseWriter, r *http.Request) {
-	carriers, err := repositories.GetUsernamesByRole(models.RoleCarrier)
+	carriers, err := repositories.GetUsersByRole(models.RoleCarrier)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -58,7 +59,7 @@ func getCarriersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAdminsHandler(w http.ResponseWriter, r *http.Request) {
-	admins, err := repositories.GetUsernamesByRole(models.RoleAdmin)
+	admins, err := repositories.GetUsersByRole(models.RoleAdmin)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -88,14 +89,19 @@ func createCarrierHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteCarrierHandler(w http.ResponseWriter, r *http.Request) {
-	username := r.URL.Query().Get("username")
-	if username == "" {
-		err := fmt.Errorf("username parameter is not defined")
+	idAsString := r.URL.Query().Get("id")
+	if idAsString == "" {
+		err := fmt.Errorf("user id parameter is not defined")
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if err := repositories.DeleteUserByUsernameAndRole(username, models.RoleCarrier); err != nil {
+	id, err := strconv.Atoi(idAsString)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+	}
+
+	if err := repositories.DeleteUserByIDAndRole(uint(id), models.RoleCarrier); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
@@ -123,14 +129,19 @@ func createAdminHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteAdminHandler(w http.ResponseWriter, r *http.Request) {
-	username := r.URL.Query().Get("username")
-	if username == "" {
-		err := fmt.Errorf("username parameter is not defined")
+	idAsString := r.URL.Query().Get("id")
+	if idAsString == "" {
+		err := fmt.Errorf("user id parameter is not defined")
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if err := repositories.DeleteUserByUsernameAndRole(username, models.RoleAdmin); err != nil {
+	id, err := strconv.Atoi(idAsString)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+	}
+
+	if err := repositories.DeleteUserByIDAndRole(uint(id), models.RoleAdmin); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}

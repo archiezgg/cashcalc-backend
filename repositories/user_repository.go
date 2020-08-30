@@ -114,6 +114,15 @@ func CreateUser(username, password string, role models.Role) error {
 // DeleteUserByIDAndRole deletes the user by given ID and role
 // returns error if the user by id is not matched for given role
 func DeleteUserByIDAndRole(id uint, role models.Role) error {
+	user, err := GetUserByID(id)
+	if err != nil {
+		return err
+	}
+
+	if user.Role != role {
+		return fmt.Errorf("user with id: %v has no role: %v", id, role)
+	}
+
 	result := database.GetPostgresDB().Where("role = ?", role).Delete(&models.User{}, id)
 	if result.Error != nil {
 		return result.Error

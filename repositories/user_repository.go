@@ -120,3 +120,13 @@ func checkIfUsernameIsTaken(username string) error {
 	}
 	return nil
 }
+
+// CreateUserDTOFromUser creates a user DTO that is sent back via endpoints
+func CreateUserDTOFromUser(user models.User) models.UserDTO {
+	return models.UserDTO{
+		ID:        user.ID,
+		Username:  user.Username,
+		Role:      user.Role,
+		CreatedAt: user.CreatedAt,
+	}
+}

@@ -111,6 +111,14 @@ func CreateUser(username, password string, role models.Role) error {
 	return nil
 }
 
+func SaveUser(user models.User) error {
+	result := database.GetPostgresDB().Save(&user)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 // DeleteUserByIDAndRole deletes the user by given ID and role
 // returns error if the user by id is not matched for given role
 func DeleteUserByIDAndRole(id uint, role models.Role) error {
@@ -154,4 +162,13 @@ func CreateUserDTOFromUser(user models.User) models.UserDTO {
 		UpdatedAt: user.UpdatedAt,
 		DeletedAt: user.DeletedAt.Time,
 	}
+}
+
+// SaveRefreshTokenForUser saves the refresh token for the user in the DB
+func SaveRefreshTokenForUser(user models.User, rt models.RefreshToken) error {
+	user.RefreshTokens = append(user.RefreshTokens, rt)
+	if err := SaveUser(user); err != nil {
+		return err
+	}
+	return nil
 }

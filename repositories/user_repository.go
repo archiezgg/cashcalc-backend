@@ -168,7 +168,7 @@ func CreateUserDTOFromUser(user models.User) models.UserDTO {
 // SaveRefreshTokenForUser saves the refresh token for the user in the DB
 func SaveRefreshTokenForUser(user models.User, rt models.RefreshToken) error {
 	user.RefreshTokens = append(user.RefreshTokens, rt)
-	if err := saveUser(user); err != nil {
+	if err := SaveUser(user); err != nil {
 		return err
 	}
 	return nil

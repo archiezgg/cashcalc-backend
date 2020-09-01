@@ -13,11 +13,12 @@ import (
 	"github.com/IstvanN/cashcalc-backend/models"
 )
 
-// CreateRefreshToken creates a refresh token struct from data
+// CreateRefreshTokenAndSaveForUser creates a refresh token struct from data
 // and saves it in DB
-func CreateRefreshToken(user models.User, tokenString string, expiresAt time.Time) (models.RefreshToken, error) {
+func CreateRefreshTokenAndSaveForUser(user models.User, tokenString string, expiresAt time.Time) (models.RefreshToken, error) {
 	rt := models.RefreshToken{
 		TokenString: tokenString,
+		CreatedAt:   time.Now(),
 		ExpiresAt:   expiresAt,
 	}
 
@@ -27,12 +28,43 @@ func CreateRefreshToken(user models.User, tokenString string, expiresAt time.Tim
 	return rt, nil
 }
 
-// GetRefreshTokenByUserID retrieves the refresh token by given user ID
-func GetRefreshTokenByUserID(userID uint) (models.RefreshToken, error) {
+func GetRefreshTokenByTokenString(tokenString string) (models.RefreshToken, error) {
 	var rt models.RefreshToken
-	result := database.GetPostgresDB().Where("userID = ?", userID).First(&rt)
+	result := database.GetPostgresDB().First(&rt)
 	if result.Error != nil {
-		return models.RefreshToken{}, nil
+		return models.RefreshToken{}, result.Error
 	}
 	return rt, nil
+}
+
+// GetRefreshTokensByUserID retrieves the refresh token by given user ID
+func GetRefreshTokensByUserID(userID uint) ([]models.RefreshToken, error) {
+	var refreshTokens []models.RefreshToken
+	result := database.GetPostgresDB().Where("user_id = ?", userID).Find(&refreshTokens)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return refreshTokens, nil
+}
+
+func GetAllRefreshTokens() ([]models.RefreshToken, error) {
+	var refreshTokens []models.RefreshToken
+	result := database.GetPostgresDB().Find(&refreshTokens)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return refreshTokens, nil
+}
+
+func DeleteRefreshTokenByTokenString(tokenString string) error {
+	rt, err := GetRefreshTokenByTokenString(tokenString)
+	if err != nil {
+		return err
+	}
+
+	result := database.GetPostgresDB().Delete(rt)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

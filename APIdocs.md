@@ -25,7 +25,8 @@ Provides interface for login, returns with a JWT access token and a refresh toke
 * Sample JSON response after succesful login:
 ```
 {
-  "message": "Logged in succesfully",
+  "message": "Logged in successfully",
+  "username": "some-user",
   "role": "some-role"
 }
 ```

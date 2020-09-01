@@ -25,17 +25,21 @@ func registerUserRoutes(router *mux.Router) {
 	ep := properties.UsersEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("/usernames", usernamesHandler).Methods(http.MethodGet, http.MethodOptions)
-	s.Use(security.AccessLevelAdmin)
+	// s.Use(security.AccessLevelAdmin)
 	carriers := s.PathPrefix("/carriers").Subrouter()
 	carriers.HandleFunc("", getCarriersHandler).Methods(http.MethodGet, http.MethodOptions)
 	carriers.HandleFunc("/create", createCarrierHandler).Methods(http.MethodPut, http.MethodOptions)
 	carriers.HandleFunc("/delete", deleteCarrierHandler).Methods(http.MethodDelete, http.MethodOptions)
-	carriers.Use(security.AccessLevelAdmin)
+	// carriers.Use(security.AccessLevelAdmin)
 	admins := s.PathPrefix("/admins").Subrouter()
 	admins.HandleFunc("", getAdminsHandler).Methods(http.MethodGet, http.MethodOptions)
 	admins.HandleFunc("/create", createAdminHandler).Methods(http.MethodPut, http.MethodOptions)
 	admins.HandleFunc("/delete", deleteAdminHandler).Methods(http.MethodDelete, http.MethodOptions)
-	admins.Use(security.AccessLevelSuperuser)
+	// admins.Use(security.AccessLevelSuperuser)
+	superusers := s.PathPrefix("/superusers").Subrouter().Methods(http.MethodPut, http.MethodOptions).Subrouter()
+	superusers.HandleFunc("", getSuperusersHandler).Methods(http.MethodGet, http.MethodOptions)
+	superusers.HandleFunc("/create", createSuperuserHandler).Methods(http.MethodPut, http.MethodOptions)
+	superusers.Use(security.AccessLevelSuperuser)
 }
 
 func usernamesHandler(w http.ResponseWriter, r *http.Request) {
@@ -146,4 +150,34 @@ func deleteAdminHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeMessage(w, "Admin deleted successfully")
+}
+
+func getSuperusersHandler(w http.ResponseWriter, r *http.Request) {
+	superusers, err := repositories.GetUserDTOsByRole(models.RoleSuperuser)
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(superusers)
+}
+
+func createSuperuserHandler(w http.ResponseWriter, r *http.Request) {
+	type requestedBody struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil ||
+		rb.Username == "" || rb.Password == "" {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repositories.CreateUser(rb.Username, rb.Password, models.RoleSuperuser); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	writeMessage(w, "Superuser created successfully")
 }

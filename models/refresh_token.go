@@ -8,14 +8,12 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 // RefreshToken stores the structure of a refresh token
 type RefreshToken struct {
-	gorm.Model
+	TokenString string `gorm:"primaryKey;not null" json:"tokenString"`
 	UserID      uint
-	TokenString string    `json:"tokenString"`
+	CreatedAt   time.Time
 	ExpiresAt   time.Time `json:"expiresAt"`
 }

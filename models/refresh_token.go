@@ -16,8 +16,6 @@ import (
 type RefreshToken struct {
 	gorm.Model
 	UserID      uint
-	Username    string    `json:"username"`
-	Role        Role      `json:"role"`
 	TokenString string    `json:"tokenString"`
 	ExpiresAt   time.Time `json:"expiresAt"`
 }

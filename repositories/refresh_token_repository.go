@@ -17,15 +17,11 @@ import (
 // and saves it in DB
 func CreateRefreshToken(user models.User, tokenString string, expiresAt time.Time) (models.RefreshToken, error) {
 	rt := models.RefreshToken{
-		UserID:      user.ID,
-		Username:    user.Username,
-		Role:        user.Role,
 		TokenString: tokenString,
 		ExpiresAt:   expiresAt,
 	}
 
-	result := database.GetPostgresDB().Create(&rt)
-	if result.Error != nil {
+	if err := SaveRefreshTokenForUser(user, rt); err != nil {
 		return models.RefreshToken{}, nil
 	}
 	return rt, nil

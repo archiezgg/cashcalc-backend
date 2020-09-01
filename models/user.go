@@ -15,9 +15,10 @@ import (
 // User is the main struct for users such as carrier, admin and superuser
 type User struct {
 	gorm.Model
-	Username string `gorm:"string;not null;unique"`
-	Password string `gorm:"string;not null"`
-	Role     Role   `gorm:"string;not null"`
+	Username      string `gorm:"string;not null;unique"`
+	Password      string `gorm:"string;not null"`
+	Role          Role   `gorm:"string;not null"`
+	RefreshTokens []RefreshToken
 }
 
 // UserDTO is the user structure that is sent back as JSON

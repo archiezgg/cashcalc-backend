@@ -17,7 +17,7 @@ services:
             ENVIRONMENT: "DEV"
         depends_on:
             - postgres
-            - redis
+            
     postgres:
         image: postgres:latest
         container_name: cashcalc-postgres

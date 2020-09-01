@@ -34,11 +34,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := security.AuthenticateNewUser(w, userToAuth)
+	user, err := security.AuthenticateUser(w, userToAuth)
 	if err != nil {
 		return
 	}
-	msg := fmt.Sprintf("{\"message\": \"%s\",\"role\": \"%v\"}", "Logged in successfully", user.Role)
+	msg := fmt.Sprintf("{\"message\": \"%s\", \"username\": \"%v\", \"role\": \"%v\"}", "Logged in successfully", user.Username, user.Role)
 	w.Write([]byte(msg))
 }
 

@@ -49,6 +49,7 @@ func StartupPostgres() {
 	}
 
 	postgresDB.AutoMigrate(&models.User{})
+	postgresDB.AutoMigrate(&models.RefreshToken{})
 	log.Println("successfully connected to Postgres DB!")
 }
 

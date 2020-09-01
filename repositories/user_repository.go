@@ -111,6 +111,7 @@ func CreateUser(username, password string, role models.Role) error {
 	return nil
 }
 
+// SaveUser updates the user in DB with the given user object
 func SaveUser(user models.User) error {
 	result := database.GetPostgresDB().Save(&user)
 	if result.Error != nil {
@@ -167,7 +168,7 @@ func CreateUserDTOFromUser(user models.User) models.UserDTO {
 // SaveRefreshTokenForUser saves the refresh token for the user in the DB
 func SaveRefreshTokenForUser(user models.User, rt models.RefreshToken) error {
 	user.RefreshTokens = append(user.RefreshTokens, rt)
-	if err := SaveUser(user); err != nil {
+	if err := saveUser(user); err != nil {
 		return err
 	}
 	return nil

@@ -123,13 +123,9 @@ func CalcFuelFare(baseFare, expressFare, rasFare, fuelPercent float64) float64 {
 	return math.Round((fuelPercent / 100) * (baseFare + expressFare + rasFare))
 }
 
-// CalcEmergencyFare calculates fee based on whether there is emergency (COVID)
+// CalcEmergencyFare calculates fee
 // after every started kg of weight, it calculates weight * emergency fee
-func CalcEmergencyFare(isEmergency bool, weight float64, emergencyFee int) float64 {
-	if !isEmergency {
-		return 0
-	}
-
+func CalcEmergencyFare(weight float64, emergencyFee int) float64 {
 	if weight == math.Round(weight) {
 		return math.Round(float64(emergencyFee) * weight)
 	}

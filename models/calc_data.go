@@ -6,12 +6,6 @@
 
 package models
 
-// IsEmergency variable shows if COVID-based rules are impacting Hungary still
-var (
-	IsEmergency  = true
-	EmergencyFee = 65
-)
-
 // CalcInputData is the structure to which the inpu json will be parsed to
 type CalcInputData struct {
 	TransferType    Transfer `json:"transferType"`

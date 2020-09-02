@@ -361,7 +361,7 @@ Retrieves the pricing variables.
 	* _403 if token is unathorized for this endpoint_
 * Sample JSON response:
 ```
-{"vatPercent":27,"airFuelFarePercent":17.5,"roadFuelFarePercent":10,"express9h":8990,"express9hHun":3300,"express12h":2990,"express12hHun":1575,"insuranceLimit":330000,"minInsurance":3300,"ext":1320,"ras":6600,"tk":990,"emergencyFee":65}
+{"vatPercent":27,"airFuelFarePercent":17.5,"roadFuelFarePercent":10,"express9h":8990,"express9hHun":3300,"express12h":2990,"express12hHun":1575,"insuranceLimit":330000,"minInsurance":3300,"ext":1320,"ras":6600,"tk":990,"emergencyFare":65}
 ```
 
 ### /pricingvariables/update
@@ -401,7 +401,7 @@ Updates the pricing variables with the given variables.
   "ext": 1320,
   "ras": 6600,
   "tk": 990,
-  "emergencyFee": 65
+  "emergencyFare": 65
 }
 ```
 * Sample JSON response:

@@ -20,5 +20,5 @@ type PricingVariables struct {
 	EXT                 int     `bson:"ext" json:"ext"`
 	RAS                 int     `bson:"ras" json:"ras"`
 	TK                  int     `bson:"tk" json:"tk"`
-	EmergencyFee        int     `bson:"emergencyFee" json:"emergencyFee"`
+	EmergencyFare       int     `bson:"emergencyFare" json:"emergencyFare"`
 }

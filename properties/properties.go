@@ -55,14 +55,10 @@ var (
 	CountriesCollection string
 	// PricingVarsCollection is the name of the DB collection of pricing variables
 	PricingVarsCollection string
-	// UsersCollection is the name of the DB collection of users
-	UsersCollection string
 	// LoginEndpoint is the endpoint for handling login requests
 	LoginEndpoint string
 	// LogoutEndpoint is the endpoint for log out user
 	LogoutEndpoint string
-	// RefreshEndpoint is the endpoint for refreshing tokens
-	RefreshEndpoint string
 	// IsAuthorizedEndpoint is the endpoint to check if the token is valid for given user
 	IsAuthorizedEndpoint string
 	// PricingsEndpoint is the endpoint for pricings
@@ -116,10 +112,8 @@ func InitProperties() {
 	PricingsCollection = p.MustGetString(pricingsCollectionProp)
 	CountriesCollection = p.MustGetString(countriesCollectionProp)
 	PricingVarsCollection = p.MustGetString(pricingVarsCollectionProp)
-	UsersCollection = p.MustGetString(usersCollectionProp)
 	LoginEndpoint = p.MustGetString(loginEndpointProp)
 	LogoutEndpoint = p.MustGetString(logoutEndpointProp)
-	RefreshEndpoint = p.MustGetString(refreshEndpointProp)
 	IsAuthorizedEndpoint = p.MustGetString(isAuthorizedEndpointProp)
 	PricingsEndpoint = p.MustGetString(pricingsEndpointProp)
 	CountriesEndpoint = p.MustGetString(countriesEndpointProp)

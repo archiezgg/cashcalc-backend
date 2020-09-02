@@ -19,7 +19,9 @@ services:
             - postgres
             
     postgres:
-        image: postgres:latest
+        build:
+            context: local_dev
+            dockerfile: Dockerfile.cashcalc-psql
         container_name: cashcalc-postgres
         environment:
             POSTGRES_USER: "cash"

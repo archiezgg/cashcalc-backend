@@ -21,7 +21,6 @@ import (
 
 func registerLoginRoutes(router *mux.Router) {
 	router.HandleFunc(properties.LoginEndpoint, loginHandler).Methods(http.MethodPost, http.MethodOptions)
-	router.HandleFunc(properties.RefreshEndpoint, refreshHandler).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc(properties.LogoutEndpoint, logoutHandler).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc(properties.IsAuthorizedEndpoint, isAuthorizedHandler).Methods(http.MethodGet, http.MethodOptions)
 }
@@ -40,25 +39,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	msg := fmt.Sprintf("{\"message\": \"%s\", \"username\": \"%v\", \"role\": \"%v\"}", "Logged in successfully", user.Username, user.Role)
 	w.Write([]byte(msg))
-}
-
-func refreshHandler(w http.ResponseWriter, r *http.Request) {
-	type requestedBody struct {
-		RefreshToken string `json:"refreshToken"`
-	}
-
-	var rb requestedBody
-	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.RefreshToken == "" {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
-		return
-	}
-
-	if _, err := security.RefreshTokenAndSetTokensAsCookies(w, rb.RefreshToken); err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	writeMessage(w, "Token refreshed successfully")
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {

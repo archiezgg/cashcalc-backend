@@ -204,7 +204,7 @@ func GetAllLoggedInUsers() ([]models.User, error) {
 	}
 
 	var loggedInUsers []models.User
-	result := database.GetPostgresDB().Find(&loggedInUsers, loggedInUsersIDs)
+	result := database.GetPostgresDB().Where("id IN ?", loggedInUsersIDs).Find(&loggedInUsers)
 	if result.Error != nil {
 		return nil, result.Error
 	}

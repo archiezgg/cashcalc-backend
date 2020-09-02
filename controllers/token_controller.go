@@ -21,14 +21,15 @@ func registerTokenRoutes(router *mux.Router) {
 	ep := properties.TokensEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", tokensHandler).Methods(http.MethodGet, http.MethodOptions)
-	s.HandleFunc("/revoke", revokeTokenHandler).Methods(http.MethodDelete, http.MethodOptions)
-	s.HandleFunc("/revoke-bulk", revokeBulkTokenHandler).Methods(http.MethodDelete, http.MethodOptions)
-	s.HandleFunc("/revoke-all", revokeAllTokensHandler).Methods(http.MethodDelete, http.MethodOptions)
+	s.HandleFunc("/logged-in-users", loggedInUsersHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/revoke", revokeTokensHandler).Methods(http.MethodDelete, http.MethodOptions)
+	// s.HandleFunc("/revoke-bulk", revokeBulkTokenHandler).Methods(http.MethodDelete, http.MethodOptions)
+	// s.HandleFunc("/revoke-all", revokeAllTokensHandler).Methods(http.MethodDelete, http.MethodOptions)
 	s.Use(security.AccessLevelSuperuser)
 }
 
 func tokensHandler(w http.ResponseWriter, r *http.Request) {
-	tokens, err := repositories.GetAllTokens()
+	tokens, err := repositories.GetAllRefreshTokens()
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
@@ -36,46 +37,55 @@ func tokensHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tokens)
 }
 
-func revokeTokenHandler(w http.ResponseWriter, r *http.Request) {
+func loggedInUsersHandler(w http.ResponseWriter, r *http.Request) {
+	loggedInUsers, err := repositories.GetAllLoggedInUsers()
+	if err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(loggedInUsers)
+}
+
+func revokeTokensHandler(w http.ResponseWriter, r *http.Request) {
 	type requestedBody struct {
-		Username string `json:"username"`
+		UserID uint `json:"userID"`
 	}
 
 	var rb requestedBody
-	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Username == "" {
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
 		return
 	}
 
-	if err := repositories.DeleteRefreshToken(rb.Username); err != nil {
+	if err := repositories.DeleteAllRefreshTokensForUser(rb.UserID); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 	w.Write([]byte("{\"message\": \"Token revoked successfully\"}"))
 }
 
-func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
-	type requestedBody struct {
-		Usernames []string `json:"usernames"`
-	}
+// func revokeBulkTokenHandler(w http.ResponseWriter, r *http.Request) {
+// 	type requestedBody struct {
+// 		Usernames []string `json:"usernames"`
+// 	}
 
-	var rb requestedBody
-	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Usernames == nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
-		return
-	}
+// 	var rb requestedBody
+// 	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil || rb.Usernames == nil {
+// 		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+// 		return
+// 	}
 
-	if err := repositories.DeleteBulkRefreshToken(rb.Usernames); err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return
-	}
-	w.Write([]byte("{\"message\": \"Multiple tokens revoked successfully\"}"))
-}
+// 	if err := repositories.DeleteBulkRefreshToken(rb.Usernames); err != nil {
+// 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+// 		return
+// 	}
+// 	w.Write([]byte("{\"message\": \"Multiple tokens revoked successfully\"}"))
+// }
 
-func revokeAllTokensHandler(w http.ResponseWriter, r *http.Request) {
-	if err := repositories.DeleteAllTokens(); err != nil {
-		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-		return
-	}
-	w.Write([]byte("{\"message\": \"All tokens revoked successfully\"}"))
-}
+// func revokeAllTokensHandler(w http.ResponseWriter, r *http.Request) {
+// 	if err := repositories.DeleteAllTokens(); err != nil {
+// 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+// 		return
+// 	}
+// 	w.Write([]byte("{\"message\": \"All tokens revoked successfully\"}"))
+// }

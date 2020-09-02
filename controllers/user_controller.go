@@ -53,23 +53,27 @@ func usernamesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getCarriersHandler(w http.ResponseWriter, r *http.Request) {
-	carriers, err := repositories.GetUserDTOsByRole(models.RoleCarrier)
+	carriers, err := repositories.GetUsersByRole(models.RoleCarrier)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	json.NewEncoder(w).Encode(carriers)
+	carrierDTOs := repositories.CreateUserDTOsFromUsers(carriers)
+
+	json.NewEncoder(w).Encode(carrierDTOs)
 }
 
 func getAdminsHandler(w http.ResponseWriter, r *http.Request) {
-	admins, err := repositories.GetUserDTOsByRole(models.RoleAdmin)
+	admins, err := repositories.GetUsersByRole(models.RoleAdmin)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	json.NewEncoder(w).Encode(admins)
+	adminDTOs := repositories.CreateUserDTOsFromUsers(admins)
+
+	json.NewEncoder(w).Encode(adminDTOs)
 }
 
 func createCarrierHandler(w http.ResponseWriter, r *http.Request) {
@@ -153,13 +157,15 @@ func deleteAdminHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSuperusersHandler(w http.ResponseWriter, r *http.Request) {
-	superusers, err := repositories.GetUserDTOsByRole(models.RoleSuperuser)
+	superusers, err := repositories.GetUsersByRole(models.RoleSuperuser)
 	if err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	json.NewEncoder(w).Encode(superusers)
+	superuserDTOs := repositories.CreateUserDTOsFromUsers(superusers)
+
+	json.NewEncoder(w).Encode(superuserDTOs)
 }
 
 func createSuperuserHandler(w http.ResponseWriter, r *http.Request) {

@@ -69,20 +69,6 @@ func GetUsersByRole(role models.Role) ([]models.User, error) {
 	return users, nil
 }
 
-// GetUserDTOsByRole retrieves all user DTO by given role
-func GetUserDTOsByRole(role models.Role) ([]models.UserDTO, error) {
-	users, err := GetUsersByRole(role)
-	if err != nil {
-		return nil, err
-	}
-
-	var userDTOs []models.UserDTO
-	for _, u := range users {
-		userDTOs = append(userDTOs, CreateUserDTOFromUser(u))
-	}
-	return userDTOs, nil
-}
-
 // CreateUser creates user based on a username, password and a role
 func CreateUser(username, password string, role models.Role) error {
 	if err := checkIfUsernameIsTaken(username); err != nil {
@@ -182,6 +168,18 @@ func CreateUserDTOFromUser(user models.User) models.UserDTO {
 		UpdatedAt: user.UpdatedAt,
 		DeletedAt: user.DeletedAt.Time,
 	}
+}
+
+// CreateUserDTOsFromUsers takes a slice of users
+// and returns with a slice with userDTOs
+func CreateUserDTOsFromUsers(users []models.User) []models.UserDTO {
+	var userDTOs []models.UserDTO
+
+	for _, u := range users {
+		userDTOs = append(userDTOs, CreateUserDTOFromUser(u))
+	}
+
+	return userDTOs
 }
 
 // SaveRefreshTokenForUser saves the refresh token for the user in the DB

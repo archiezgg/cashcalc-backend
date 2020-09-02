@@ -120,6 +120,25 @@ func SaveUser(user models.User) error {
 	return nil
 }
 
+// DeleteUserByID checks if user with given ID is in DB and deletes it
+// and all the refresh tokens of the user
+func DeleteUserByID(id uint) error {
+	_, err := GetUserByID(id)
+	if err != nil {
+		return err
+	}
+
+	if err := DeleteAllRefreshTokensForUser(id); err != nil {
+		return err
+	}
+
+	result := database.GetPostgresDB().Delete(&models.User{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 // DeleteUserByIDAndRole deletes the user by given ID and role
 // returns error if the user by id is not matched for given role
 func DeleteUserByIDAndRole(id uint, role models.Role) error {
@@ -132,10 +151,10 @@ func DeleteUserByIDAndRole(id uint, role models.Role) error {
 		return fmt.Errorf("user with id: %v has no role: %v", id, role)
 	}
 
-	result := database.GetPostgresDB().Where("role = ?", role).Delete(&models.User{}, id)
-	if result.Error != nil {
-		return result.Error
+	if err := DeleteUserByID(id); err != nil {
+		return err
 	}
+
 	return nil
 }
 
@@ -172,4 +191,24 @@ func SaveRefreshTokenForUser(user models.User, rt models.RefreshToken) error {
 		return err
 	}
 	return nil
+}
+
+// GetAllLoggedInUsers retrieves all the users if they have refresh tokens stored in DB
+func GetAllLoggedInUsers() ([]models.User, error) {
+	refreshTokens, err := GetAllRefreshTokens()
+	if err != nil {
+		return nil, err
+	}
+
+	var loggedInUsersIDs []uint
+	for _, rt := range refreshTokens {
+		loggedInUsersIDs = append(loggedInUsersIDs, rt.UserID)
+	}
+
+	var loggedInUsers []models.User
+	result := database.GetPostgresDB().Find(&loggedInUsers, loggedInUsersIDs)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return loggedInUsers, nil
 }

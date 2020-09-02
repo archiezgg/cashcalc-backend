@@ -10,7 +10,7 @@ services:
         environment:
             PORT: "8080"
             MONGODB_URI: ${CASHCALC_MONGO_URI}
-            POSTGRES_URL: "postgres://cash:kek@postgres:5432/cashcalc"
+            DATABASE_URL: "postgres://cash:kek@postgres:5432/cashcalc"
             REDIS_URL: "redis://redis:6379"
             ACCESS_KEY: "test_access_key"
             REFRESH_KEY: "test_refresh_key"

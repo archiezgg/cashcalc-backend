@@ -20,7 +20,7 @@ import (
 
 var (
 	postgresDB  *gorm.DB
-	postgresURL = os.Getenv("POSTGRES_URL")
+	postgresURL = os.Getenv("DATABASE_URL")
 )
 
 // StartupPostgres is the init call of the Postgres DB, supposed to be called in the main function

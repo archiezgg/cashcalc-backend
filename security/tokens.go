@@ -12,9 +12,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/IstvanN/cashcalc-backend/repositories"
-
 	"github.com/IstvanN/cashcalc-backend/properties"
+	"github.com/IstvanN/cashcalc-backend/repositories"
 
 	"github.com/IstvanN/cashcalc-backend/models"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -32,20 +31,24 @@ type CustomClaims struct {
 	Role models.Role `json:"role"`
 }
 
+func createCustomClaims(user models.User) CustomClaims {
+	return CustomClaims{
+		jwt.StandardClaims{
+			Issuer:   user.Username,
+			IssuedAt: time.Now().Unix(),
+		},
+		user.Role,
+	}
+}
+
 // GenerateAccessToken takes a user as param and generates a signed access token
 func GenerateAccessToken(user models.User) (string, error) {
 	if string(accessKey) == "" {
 		return "", fmt.Errorf("ACCESS_KEY is unset")
 	}
 
-	claims := CustomClaims{
-		jwt.StandardClaims{
-			Issuer:    user.Username,
-			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Minute * properties.AccessTokenExp).Unix(),
-		},
-		user.Role,
-	}
+	claims := createCustomClaims(user)
+	claims.ExpiresAt = time.Now().Add(time.Minute * properties.AccessTokenExp).Unix()
 
 	accessTokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(accessKey)
 	if err != nil {
@@ -60,23 +63,19 @@ func GenerateRefreshToken(user models.User) (string, error) {
 		return "", fmt.Errorf("REFRESH_KEY is unset")
 	}
 
-	claims := CustomClaims{
-		jwt.StandardClaims{
-			Issuer:    user.Username,
-			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix(),
-		},
-		user.Role,
-	}
+	claims := createCustomClaims(user)
+	claims.ExpiresAt = time.Now().Add(time.Minute * properties.RefreshTokenExp).Unix()
 
 	refreshTokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(refreshKey)
 	if err != nil {
 		return "", err
 	}
 
-	if err := repositories.SaveRefreshToken(user, refreshTokenString); err != nil {
+	_, err = repositories.CreateRefreshTokenAndSaveForUser(user, refreshTokenString, time.Unix(claims.ExpiresAt, 0))
+	if err != nil {
 		return "", err
 	}
+
 	return refreshTokenString, nil
 }
 
@@ -126,23 +125,25 @@ func DecodeUserFromRefreshToken(refreshTokenString string) (models.User, error) 
 		return models.User{}, err
 	}
 
-	if err := checkIfRefreshTokenIsInDB(user.Username, refreshTokenString); err != nil {
+	if err := checkIfRefreshTokenIsInDB(user, refreshTokenString); err != nil {
 		return models.User{}, err
 	}
 
 	return user, nil
 }
 
-func checkIfRefreshTokenIsInDB(username string, refreshToken string) error {
-	tokenInDB, err := repositories.GetRefreshTokenByUsername(username)
+func checkIfRefreshTokenIsInDB(user models.User, refreshTokenString string) error {
+	tokensInDB, err := repositories.GetRefreshTokensByUserID(user.ID)
 	if err != nil {
 		return err
 	}
 
-	if tokenInDB.TokenString != refreshToken {
-		return fmt.Errorf("refresh token %v for user %v is not in db", refreshToken, username)
+	for _, t := range tokensInDB {
+		if t.TokenString == refreshTokenString {
+			return nil
+		}
 	}
-	return nil
+	return fmt.Errorf("refresh token %v for user %v is not in db", refreshTokenString, user.Username)
 }
 
 //DeleteTokensFromCookies sets access and refresh token cookies' MaxAge to 0
@@ -160,12 +161,7 @@ func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	user, err := DecodeUserFromRefreshToken(refreshTokenCookie.Value)
-	if err != nil {
-		return err
-	}
-
-	if err := repositories.DeleteRefreshToken(user.Username); err != nil {
+	if err := repositories.DeleteRefreshTokenByTokenString(refreshTokenCookie.Value); err != nil {
 		return err
 	}
 	invalidateCookie(refreshTokenCookie)

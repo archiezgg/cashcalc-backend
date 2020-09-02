@@ -25,34 +25,9 @@ Provides interface for login, returns with a JWT access token and a refresh toke
 * Sample JSON response after succesful login:
 ```
 {
-  "message": "Logged in succesfully",
+  "message": "Logged in successfully",
+  "username": "some-user",
   "role": "some-role"
-}
-```
-
-### /refresh
-Provides interface to refresh the access token.
-* HTTP method: _POST_
-* HTTP response: 
-	* _200 if successful_ 
-	* _422 if data payload is malformed_
-	* _401 if the refresh token is not valid_
-* Sample required payload:
-```
-{
-	"refreshToken": "some-refresh-token"
-}
-```
-* Sample errror JSON response:
-```
-{
-  "error": "Unauthorized"
-}
-```
-* Sample JSON response after succesful token refreshing:
-```
-{
-  "message": "Token refreshed succesfully"
 }
 ```
 
@@ -422,28 +397,45 @@ Retrieves the refresh tokens stored in database.
 ```
 [
   {
+    "tokenString": "some-token-string",
+    "UserID": 1,
+    "CreatedAt": "2020-09-02T21:04:42.770321Z",
+    "expiresAt": "2020-09-09T21:04:42Z"
+  }
+]
+```
+
+### /tokens/loggedin
+Retrieves the logged in users.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample JSON response:
+```
+[
+  {
+    "id": 1,
     "username": "some-user",
-    "role": "carrier",
-    "tokenString": "some-refresh-token",
-    "issuedAt": 1590740566,
-    "expiresAt": 1590935428
+    "role": "some-role",
+    "createdAt": "2020-09-02T21:00:06.820115Z",
+    "updatedAt": "2020-09-02T21:04:42.770679Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
   }
 ]
 ```
 
 ### /tokens/revoke
-Revokes a single user's refresh token.
+Revokes a single user's all refresh tokens, esentially logging it out.
 * HTTP method: _DELETE_
 * HTTP response: 
 	* _200 if successful_
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
-* Sample required payload:
-```
-{
-	"username": "some-user"
-}
-```
+* Queries:
+  * userid (mandatory): _deletes the refresh tokens belonging to the user_
+
 * Sample JSON response:
 ```
 {
@@ -451,44 +443,7 @@ Revokes a single user's refresh token.
 }
 ```
 
-### /tokens/revoke-bulk
-Revokes multiple users' refresh tokens.
-* HTTP method: _DELETE_
-* HTTP response: 
-	* _200 if successful_
-	* _401 if no valid token is provided_
-	* _403 if token is unathorized for this endpoint_
-* Sample required payload:
-```
-{
-	"usernames": [
-		"some-username",
-		"another-username"
-	]
-}
-```
-* Sample JSON response:
-```
-{
-  "message": "Multiple tokens revoked successfully"
-}
-```
-
-### /tokens/revoke-all
-Revokes all refresh tokens.
-* HTTP method: _DELETE_
-* HTTP response: 
-	* _200 if successful_
-	* _401 if no valid token is provided_
-	* _403 if token is unathorized for this endpoint_
-* Sample JSON response:
-```
-{
-  "message": "All tokens revoked successfully"
-}
-```
-
-### /users/all
+### /users/usernames
 Retrieves all registered usernames regardless of their roles.
 * HTTP method: _GET_
 * HTTP response: 
@@ -504,7 +459,7 @@ Retrieves all registered usernames regardless of their roles.
 ```
 
 ### /users/carriers
-Retrieves all registered carrier usernames.
+Retrieves all registered carrier users.
 * HTTP method: _GET_
 * HTTP response: 
 	* _200 if successful_
@@ -513,8 +468,22 @@ Retrieves all registered carrier usernames.
 * Sample JSON response:
 ```
 [
-  "some-carrier",
-  "another-carrier"
+  {
+    "id": 2,
+    "username": "carrier-test",
+    "role": "carrier",
+    "createdAt": "2020-08-30T21:07:48.541908Z",
+    "updatedAt": "2020-08-30T21:07:48.541908Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "username": "carrier-test1",
+    "role": "carrier",
+    "createdAt": "2020-08-30T21:07:50.705943Z",
+    "updatedAt": "2020-08-30T21:07:50.705943Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  }
 ]
 ```
 
@@ -547,7 +516,7 @@ Deletes a user with the role carrier.
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Queries:
-  * username (mandatory): _deletes the given carrier_
+  * id (mandatory): _deletes the given carrier by ID_
 
 * Sample JSON response:
 ```
@@ -557,7 +526,7 @@ Deletes a user with the role carrier.
 ```
 
 ### /users/admins
-Retrieves all registered admin usernames.
+Retrieves all registered admin users.
 * HTTP method: _GET_
 * HTTP response: 
 	* _200 if successful_
@@ -566,8 +535,22 @@ Retrieves all registered admin usernames.
 * Sample JSON response:
 ```
 [
-  "some-admin",
-  "another-admin"
+  {
+    "id": 2,
+    "username": "admin-test",
+    "role": "admin",
+    "createdAt": "2020-08-30T21:07:48.541908Z",
+    "updatedAt": "2020-08-30T21:07:48.541908Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "username": "admin-test1",
+    "role": "admin",
+    "createdAt": "2020-08-30T21:07:50.705943Z",
+    "updatedAt": "2020-08-30T21:07:50.705943Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  }
 ]
 ```
 
@@ -600,11 +583,61 @@ Deletes a user with the role admin.
 	* _401 if no valid token is provided_
 	* _403 if token is unathorized for this endpoint_
 * Queries:
-  * username (mandatory): _deletes the given admin_
+  * id (mandatory): _deletes the given admin by ID_
 
 * Sample JSON response:
 ```
 {
   "message": "Admin deleted successfully"
+}
+```
+
+### /users/superusers
+Retrieves all registered superuser users.
+* HTTP method: _GET_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample JSON response:
+```
+[
+  {
+    "id": 2,
+    "username": "sudo-test",
+    "role": "superuser",
+    "createdAt": "2020-08-30T21:07:48.541908Z",
+    "updatedAt": "2020-08-30T21:07:48.541908Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "username": "sudo-test1",
+    "role": "superuser",
+    "createdAt": "2020-08-30T21:07:50.705943Z",
+    "updatedAt": "2020-08-30T21:07:50.705943Z",
+    "deletedAt": "0001-01-01T00:00:00Z"
+  }
+]
+```
+
+### /users/admins/create
+Creates a user with the role superuser.
+* HTTP method: _PUT_
+* HTTP response: 
+	* _200 if successful_
+	* _401 if no valid token is provided_
+	* _403 if token is unathorized for this endpoint_
+* Sample required payload:
+```
+{
+	"username": "some-user",
+	"password": "some-password"
+}
+```
+* Sample JSON response:
+```
+{
+  "message": "Superuser created successfully"
 }
 ```

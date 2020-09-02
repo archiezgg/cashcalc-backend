@@ -93,9 +93,9 @@ func IsTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	return true
 }
 
-// AuthenticateNewUser takes a user model, and checks if the credentials are valid,
+// AuthenticateUser takes a user model, and checks if the credentials are valid,
 // returns with the user if yes, returns error if not
-func AuthenticateNewUser(w http.ResponseWriter, userToAuth models.User) (models.User, error) {
+func AuthenticateUser(w http.ResponseWriter, userToAuth models.User) (models.User, error) {
 	u, err := repositories.GetUserByUsername(userToAuth.Username)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
@@ -108,16 +108,17 @@ func AuthenticateNewUser(w http.ResponseWriter, userToAuth models.User) (models.
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return models.User{}, err
 	}
-	if _, err := GenerateTokenPairsAndSetThemAsCookies(w, u); err != nil {
+	if _, err := GenerateTokenPairsForUserAndSetThemAsCookies(w, u); err != nil {
 		return models.User{}, err
 	}
 	log.Printf("user '%v' has successfully logged in", u.Username)
 	return u, nil
 }
 
-// GenerateTokenPairsAndSetThemAsCookies generate access- and refresh token,
+// GenerateTokenPairsForUserAndSetThemAsCookies generate access- and refresh token,
+// saves them for given user in DB,
 // sets them as http headers, and returns with the access token
-func GenerateTokenPairsAndSetThemAsCookies(w http.ResponseWriter, user models.User) (string, error) {
+func GenerateTokenPairsForUserAndSetThemAsCookies(w http.ResponseWriter, user models.User) (string, error) {
 	at, rt, err := generateTokenPairs(user)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)

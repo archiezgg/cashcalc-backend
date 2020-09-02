@@ -6,11 +6,14 @@
 
 package models
 
+import (
+	"time"
+)
+
 // RefreshToken stores the structure of a refresh token
 type RefreshToken struct {
-	Username    string `json:"username"`
-	Role        Role   `json:"role"`
-	TokenString string `json:"tokenString"`
-	IssuedAt    int64  `json:"issuedAt"`
-	ExpiresAt   int64  `json:"expiresAt"`
+	TokenString string `gorm:"primaryKey;not null" json:"tokenString"`
+	UserID      uint
+	CreatedAt   time.Time
+	ExpiresAt   time.Time `json:"expiresAt"`
 }

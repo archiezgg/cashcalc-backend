@@ -42,7 +42,7 @@ func CalcResult(inputData models.CalcInputData) (models.CalcOutputData, error) {
 	rasFare := services.CalcExtRasTk(inputData.IsRas, inputData.ZoneNumber, pricingVars.RAS, pricingVars.VATPercent)
 	tkFare := services.CalcExtRasTk(inputData.IsTk, inputData.ZoneNumber, pricingVars.TK, pricingVars.VATPercent)
 	fuelFare := services.CalcFuelFare(baseFare, expressFare, rasFare, pricingVars.AirFuelFarePercent)
-	emergencyFare := services.CalcEmergencyFare(inputData.Weight, pricingVars.EmergencyFee)
+	emergencyFare := services.CalcEmergencyFare(inputData.Weight, pricingVars.EmergencyFare)
 	result := services.SumFares(baseFare, expressFare, insuranceFare, extFare, rasFare, tkFare, fuelFare, emergencyFare)
 
 	return models.CalcOutputData{

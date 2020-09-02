@@ -125,11 +125,11 @@ func CalcFuelFare(baseFare, expressFare, rasFare, fuelPercent float64) float64 {
 
 // CalcEmergencyFare calculates fee
 // after every started kg of weight, it calculates weight * emergency fee
-func CalcEmergencyFare(weight float64, emergencyFee int) float64 {
+func CalcEmergencyFare(weight float64, emergencyFare int) float64 {
 	if weight == math.Round(weight) {
-		return math.Round(float64(emergencyFee) * weight)
+		return math.Round(float64(emergencyFare) * weight)
 	}
-	return math.Round(float64(emergencyFee) * float64(int(weight)+1)) // converting weight to integer rounds it down
+	return math.Round(float64(emergencyFare) * float64(int(weight)+1)) // converting weight to integer rounds it down
 }
 
 // SumFares takes any number of float64 numbers, and adds them together

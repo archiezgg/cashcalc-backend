@@ -384,7 +384,7 @@ Updates the pricing variables with the given variables.
 	* _ext: integer, mandatory_
 	* _ras: integer, mandatory_
 	* _tk: integer, mandatory_
-	* _emergencyFee: integer, mandatory_
+	* _emergencyFare: integer, mandatory_
 
 * Sample required payload:
 ```

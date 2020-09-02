@@ -189,9 +189,9 @@ func TestCalcFuelFare(t *testing.T) {
 
 func TestCalcEmergencyFare(t *testing.T) {
 	testCases := []struct {
-		weight       float64
-		emergencyFee int
-		expected     float64
+		weight        float64
+		emergencyFare int
+		expected      float64
 	}{
 		{6, 10, 60},
 		{6.1, 10, 70},
@@ -202,9 +202,9 @@ func TestCalcEmergencyFare(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		actual := CalcEmergencyFare(tc.weight, tc.emergencyFee)
+		actual := CalcEmergencyFare(tc.weight, tc.emergencyFare)
 		if actual != tc.expected {
-			t.Errorf("CalcEmergencyFare(%v, %v) failed: expected %v, got %v", tc.weight, tc.emergencyFee,
+			t.Errorf("CalcEmergencyFare(%v, %v) failed: expected %v, got %v", tc.weight, tc.emergencyFare,
 				tc.expected, actual)
 		}
 	}

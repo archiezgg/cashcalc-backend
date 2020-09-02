@@ -23,7 +23,7 @@ func registerTokenRoutes(router *mux.Router) {
 	ep := properties.TokensEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", tokensHandler).Methods(http.MethodGet, http.MethodOptions)
-	s.HandleFunc("/logged-in-users", loggedInUsersHandler).Methods(http.MethodGet, http.MethodOptions)
+	s.HandleFunc("/loggedin", loggedInUsersHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.HandleFunc("/revoke", revokeTokensHandler).Methods(http.MethodDelete, http.MethodOptions)
 	s.Use(security.AccessLevelSuperuser)
 }
@@ -49,7 +49,7 @@ func loggedInUsersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func revokeTokensHandler(w http.ResponseWriter, r *http.Request) {
-	idAsString := r.URL.Query().Get("id")
+	idAsString := r.URL.Query().Get("userid")
 	if idAsString == "" {
 		err := fmt.Errorf("user id parameter is not defined")
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)

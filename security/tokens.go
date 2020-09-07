@@ -87,12 +87,16 @@ func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken strin
 		return "", err
 	}
 
-	// if err := repositories.DeleteRefreshToken(refreshToken); err != nil {
-	// 	LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
-	// 	return "", err
-	// }
-
-	accessToken, err := generateAccessTokenAndSetItAsCookie(w, user)
+	var accessToken string
+	if properties.RefreshTokenRotationOn {
+		if err := repositories.DeleteRefreshTokenByTokenString(refreshToken); err != nil {
+			LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+			return "", err
+		}
+		accessToken, err = GenerateTokenPairsForUserAndSetThemAsCookies(w, user)
+	} else {
+		accessToken, err = generateAccessTokenAndSetItAsCookie(w, user)
+	}
 	if err != nil {
 		return "", err
 	}

@@ -46,6 +46,9 @@ const (
 	accessTokenExpProp        = "access.token.expiration.minutes"
 	refreshTokenExpProp       = "refresh.token.expiration.minutes"
 	userPasswordMinLength     = "user.password.min.length"
+	userPasswordMaxLength     = "user.password.max.length"
+	userUsernameMinLength     = "user.username.min.length"
+	userUsernameMaxLength     = "user.username.max.length"
 )
 
 var (
@@ -103,6 +106,12 @@ var (
 	RefreshTokenExp time.Duration
 	// UserPasswordMinLength sets the minimum required password length
 	UserPasswordMinLength int
+	// UserPasswordMaxLength sets the maximum required password length
+	UserPasswordMaxLength int
+	// UserUsernameMinLength sets the minimum required username length
+	UserUsernameMinLength int
+	// UserUsernameMaxLength sets the minimum required username length
+	UserUsernameMaxLength int
 )
 
 // InitProperties initialize all properties based on the properties file,
@@ -136,4 +145,7 @@ func InitProperties() {
 	AccessTokenExp = p.MustGetDuration(accessTokenExpProp)
 	RefreshTokenExp = p.MustGetDuration(refreshTokenExpProp)
 	UserPasswordMinLength = p.MustGetInt(userPasswordMinLength)
+	UserPasswordMaxLength = p.MustGetInt(userPasswordMaxLength)
+	UserUsernameMinLength = p.MustGetInt(userUsernameMinLength)
+	UserUsernameMaxLength = p.MustGetInt(userUsernameMaxLength)
 }

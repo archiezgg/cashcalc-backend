@@ -17,38 +17,39 @@ var (
 )
 
 const (
-	pricingsCollectionProp    = "collection.pricings"
-	countriesCollectionProp   = "collection.countries"
-	pricingVarsCollectionProp = "collection.pricingvars"
-	usersCollectionProp       = "collection.users"
-	loginEndpointProp         = "endpoint.login"
-	logoutEndpointProp        = "endpoint.logout"
-	refreshEndpointProp       = "endpoint.refresh"
-	isAuthorizedEndpointProp  = "endpoint.isAuthorized"
-	pricingsEndpointProp      = "endpoint.pricings"
-	countriesEndpointProp     = "endpoint.countries"
-	pricingVarsEndpointProp   = "endpoint.pricingvars"
-	tokensEndpointProp        = "endpoint.tokens"
-	usersEndpointProp         = "endpoint.users"
-	calcEndpointProp          = "endpoint.calc"
-	airFaresZnMinProp         = "air.fares.zn.min"
-	airFaresZnMaxProp         = "air.fares.zn.max"
-	airDocFaresZnMinProp      = "air.docfares.zn.min"
-	airDocFaresZnMaxProp      = "air.docfares.zn.max"
-	roadFaresZnMinProp        = "road.fares.zn.min"
-	roadFaresZnMaxProp        = "road.fares.zn.max"
-	airFaresWeightMinProp     = "air.fares.weight.min"
-	airFaresWeightMaxProp     = "air.fares.weight.max"
-	airDocFaresWeightMinProp  = "air.docfares.weight.min"
-	airDocFaresWeightMaxProp  = "air.docfares.weight.max"
-	roadFaresWeightMinProp    = "road.fares.weight.min"
-	roadFaresWeightMaxProp    = "road.fares.weight.max"
-	accessTokenExpProp        = "access.token.expiration.minutes"
-	refreshTokenExpProp       = "refresh.token.expiration.minutes"
-	userPasswordMinLength     = "user.password.min.length"
-	userPasswordMaxLength     = "user.password.max.length"
-	userUsernameMinLength     = "user.username.min.length"
-	userUsernameMaxLength     = "user.username.max.length"
+	pricingsCollectionProp     = "collection.pricings"
+	countriesCollectionProp    = "collection.countries"
+	pricingVarsCollectionProp  = "collection.pricingvars"
+	usersCollectionProp        = "collection.users"
+	loginEndpointProp          = "endpoint.login"
+	logoutEndpointProp         = "endpoint.logout"
+	refreshEndpointProp        = "endpoint.refresh"
+	isAuthorizedEndpointProp   = "endpoint.isAuthorized"
+	pricingsEndpointProp       = "endpoint.pricings"
+	countriesEndpointProp      = "endpoint.countries"
+	pricingVarsEndpointProp    = "endpoint.pricingvars"
+	tokensEndpointProp         = "endpoint.tokens"
+	usersEndpointProp          = "endpoint.users"
+	calcEndpointProp           = "endpoint.calc"
+	airFaresZnMinProp          = "air.fares.zn.min"
+	airFaresZnMaxProp          = "air.fares.zn.max"
+	airDocFaresZnMinProp       = "air.docfares.zn.min"
+	airDocFaresZnMaxProp       = "air.docfares.zn.max"
+	roadFaresZnMinProp         = "road.fares.zn.min"
+	roadFaresZnMaxProp         = "road.fares.zn.max"
+	airFaresWeightMinProp      = "air.fares.weight.min"
+	airFaresWeightMaxProp      = "air.fares.weight.max"
+	airDocFaresWeightMinProp   = "air.docfares.weight.min"
+	airDocFaresWeightMaxProp   = "air.docfares.weight.max"
+	roadFaresWeightMinProp     = "road.fares.weight.min"
+	roadFaresWeightMaxProp     = "road.fares.weight.max"
+	accessTokenExpProp         = "access.token.expiration.minutes"
+	refreshTokenExpProp        = "refresh.token.expiration.minutes"
+	refreshTokenRotationOnProp = "refresh.token.rotation.on"
+	userPasswordMinLengthProp  = "user.password.min.length"
+	userPasswordMaxLengthProp  = "user.password.max.length"
+	userUsernameMinLengthProp  = "user.username.min.length"
+	userUsernameMaxLengthProp  = "user.username.max.length"
 )
 
 var (
@@ -104,6 +105,8 @@ var (
 	AccessTokenExp time.Duration
 	// RefreshTokenExp is the expiration time of refresh tokens in minutes
 	RefreshTokenExp time.Duration
+	// RefreshTokenRotationOn sets whether refresh tokens should be rotated or not
+	RefreshTokenRotationOn bool
 	// UserPasswordMinLength sets the minimum required password length
 	UserPasswordMinLength int
 	// UserPasswordMaxLength sets the maximum required password length
@@ -144,8 +147,9 @@ func InitProperties() {
 	RoadFaresWeightMax = p.MustGetFloat64(roadFaresWeightMaxProp)
 	AccessTokenExp = p.MustGetDuration(accessTokenExpProp)
 	RefreshTokenExp = p.MustGetDuration(refreshTokenExpProp)
-	UserPasswordMinLength = p.MustGetInt(userPasswordMinLength)
-	UserPasswordMaxLength = p.MustGetInt(userPasswordMaxLength)
-	UserUsernameMinLength = p.MustGetInt(userUsernameMinLength)
-	UserUsernameMaxLength = p.MustGetInt(userUsernameMaxLength)
+	RefreshTokenRotationOn = p.MustGetBool(refreshTokenRotationOnProp)
+	UserPasswordMinLength = p.MustGetInt(userPasswordMinLengthProp)
+	UserPasswordMaxLength = p.MustGetInt(userPasswordMaxLengthProp)
+	UserUsernameMinLength = p.MustGetInt(userUsernameMinLengthProp)
+	UserUsernameMaxLength = p.MustGetInt(userUsernameMaxLengthProp)
 }

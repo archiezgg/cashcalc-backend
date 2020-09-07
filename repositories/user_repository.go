@@ -8,6 +8,7 @@ package repositories
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/models"
@@ -75,8 +76,8 @@ func CreateUser(username, password string, role models.Role) error {
 		return err
 	}
 
-	if len(password) < properties.UserPasswordMinLength {
-		return fmt.Errorf("password must be at least %v characters", properties.UserPasswordMinLength)
+	if err := checkIfUsernameAndPasswordFulfillsRequirements(username, password); err != nil {
+		return err
 	}
 
 	hashedPw, err := bcrypt.GenerateFromPassword([]byte(password), 10)
@@ -94,6 +95,7 @@ func CreateUser(username, password string, role models.Role) error {
 	if result.Error != nil {
 		return result.Error
 	}
+	log.Printf("new user added: username: %v role: %v\n", username, role)
 	return nil
 }
 
@@ -118,7 +120,7 @@ func DeleteUserByID(id uint) error {
 		return err
 	}
 
-	result := database.GetPostgresDB().Delete(&models.User{}, id)
+	result := database.GetPostgresDB().Unscoped().Delete(&models.User{}, id)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -209,4 +211,15 @@ func GetAllLoggedInUsers() ([]models.User, error) {
 		return nil, result.Error
 	}
 	return loggedInUsers, nil
+}
+
+func checkIfUsernameAndPasswordFulfillsRequirements(username, pw string) error {
+	if len(username) < properties.UserUsernameMinLength || len(username) > properties.UserUsernameMaxLength {
+		return fmt.Errorf("username must be between %v and %v characters", properties.UserUsernameMinLength, properties.UserUsernameMaxLength)
+	}
+
+	if len(pw) < properties.UserPasswordMinLength || len(pw) > properties.UserPasswordMaxLength {
+		return fmt.Errorf("password must be between %v and %v characters", properties.UserPasswordMinLength, properties.UserPasswordMaxLength)
+	}
+	return nil
 }

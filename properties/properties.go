@@ -46,6 +46,9 @@ const (
 	accessTokenExpProp        = "access.token.expiration.minutes"
 	refreshTokenExpProp       = "refresh.token.expiration.minutes"
 	userPasswordMinLength     = "user.password.min.length"
+	userPasswordMaxLength     = "user.password.max.length"
+	userUsernameMinLength     = "user.username.min.length"
+	userUsernameMaxLength     = "user.username.max.length"
 )
 
 var (
@@ -55,14 +58,10 @@ var (
 	CountriesCollection string
 	// PricingVarsCollection is the name of the DB collection of pricing variables
 	PricingVarsCollection string
-	// UsersCollection is the name of the DB collection of users
-	UsersCollection string
 	// LoginEndpoint is the endpoint for handling login requests
 	LoginEndpoint string
 	// LogoutEndpoint is the endpoint for log out user
 	LogoutEndpoint string
-	// RefreshEndpoint is the endpoint for refreshing tokens
-	RefreshEndpoint string
 	// IsAuthorizedEndpoint is the endpoint to check if the token is valid for given user
 	IsAuthorizedEndpoint string
 	// PricingsEndpoint is the endpoint for pricings
@@ -107,6 +106,12 @@ var (
 	RefreshTokenExp time.Duration
 	// UserPasswordMinLength sets the minimum required password length
 	UserPasswordMinLength int
+	// UserPasswordMaxLength sets the maximum required password length
+	UserPasswordMaxLength int
+	// UserUsernameMinLength sets the minimum required username length
+	UserUsernameMinLength int
+	// UserUsernameMaxLength sets the minimum required username length
+	UserUsernameMaxLength int
 )
 
 // InitProperties initialize all properties based on the properties file,
@@ -116,10 +121,8 @@ func InitProperties() {
 	PricingsCollection = p.MustGetString(pricingsCollectionProp)
 	CountriesCollection = p.MustGetString(countriesCollectionProp)
 	PricingVarsCollection = p.MustGetString(pricingVarsCollectionProp)
-	UsersCollection = p.MustGetString(usersCollectionProp)
 	LoginEndpoint = p.MustGetString(loginEndpointProp)
 	LogoutEndpoint = p.MustGetString(logoutEndpointProp)
-	RefreshEndpoint = p.MustGetString(refreshEndpointProp)
 	IsAuthorizedEndpoint = p.MustGetString(isAuthorizedEndpointProp)
 	PricingsEndpoint = p.MustGetString(pricingsEndpointProp)
 	CountriesEndpoint = p.MustGetString(countriesEndpointProp)
@@ -142,4 +145,7 @@ func InitProperties() {
 	AccessTokenExp = p.MustGetDuration(accessTokenExpProp)
 	RefreshTokenExp = p.MustGetDuration(refreshTokenExpProp)
 	UserPasswordMinLength = p.MustGetInt(userPasswordMinLength)
+	UserPasswordMaxLength = p.MustGetInt(userPasswordMaxLength)
+	UserUsernameMinLength = p.MustGetInt(userUsernameMinLength)
+	UserUsernameMaxLength = p.MustGetInt(userUsernameMaxLength)
 }

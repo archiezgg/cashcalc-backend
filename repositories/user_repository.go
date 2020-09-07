@@ -8,6 +8,7 @@ package repositories
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/IstvanN/cashcalc-backend/database"
 	"github.com/IstvanN/cashcalc-backend/models"
@@ -94,6 +95,7 @@ func CreateUser(username, password string, role models.Role) error {
 	if result.Error != nil {
 		return result.Error
 	}
+	log.Printf("new user added: username: %v role: %v\n", username, role)
 	return nil
 }
 

@@ -420,8 +420,7 @@ Retrieves the logged in users.
     "username": "some-user",
     "role": "some-role",
     "createdAt": "2020-09-02T21:00:06.820115Z",
-    "updatedAt": "2020-09-02T21:04:42.770679Z",
-    "deletedAt": "0001-01-01T00:00:00Z"
+    "updatedAt": "2020-09-02T21:04:42.770679Z"
   }
 ]
 ```
@@ -473,16 +472,14 @@ Retrieves all registered carrier users.
     "username": "carrier-test",
     "role": "carrier",
     "createdAt": "2020-08-30T21:07:48.541908Z",
-    "updatedAt": "2020-08-30T21:07:48.541908Z",
-    "deletedAt": "0001-01-01T00:00:00Z"
+    "updatedAt": "2020-08-30T21:07:48.541908Z"
   },
   {
     "id": 3,
     "username": "carrier-test1",
     "role": "carrier",
     "createdAt": "2020-08-30T21:07:50.705943Z",
-    "updatedAt": "2020-08-30T21:07:50.705943Z",
-    "deletedAt": "0001-01-01T00:00:00Z"
+    "updatedAt": "2020-08-30T21:07:50.705943Z"
   }
 ]
 ```
@@ -540,16 +537,14 @@ Retrieves all registered admin users.
     "username": "admin-test",
     "role": "admin",
     "createdAt": "2020-08-30T21:07:48.541908Z",
-    "updatedAt": "2020-08-30T21:07:48.541908Z",
-    "deletedAt": "0001-01-01T00:00:00Z"
+    "updatedAt": "2020-08-30T21:07:48.541908Z"
   },
   {
     "id": 3,
     "username": "admin-test1",
     "role": "admin",
     "createdAt": "2020-08-30T21:07:50.705943Z",
-    "updatedAt": "2020-08-30T21:07:50.705943Z",
-    "deletedAt": "0001-01-01T00:00:00Z"
+    "updatedAt": "2020-08-30T21:07:50.705943Z"
   }
 ]
 ```
@@ -607,16 +602,14 @@ Retrieves all registered superuser users.
     "username": "sudo-test",
     "role": "superuser",
     "createdAt": "2020-08-30T21:07:48.541908Z",
-    "updatedAt": "2020-08-30T21:07:48.541908Z",
-    "deletedAt": "0001-01-01T00:00:00Z"
+    "updatedAt": "2020-08-30T21:07:48.541908Z"
   },
   {
     "id": 3,
     "username": "sudo-test1",
     "role": "superuser",
     "createdAt": "2020-08-30T21:07:50.705943Z",
-    "updatedAt": "2020-08-30T21:07:50.705943Z",
-    "deletedAt": "0001-01-01T00:00:00Z"
+    "updatedAt": "2020-08-30T21:07:50.705943Z"
   }
 ]
 ```

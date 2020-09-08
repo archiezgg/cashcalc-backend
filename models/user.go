@@ -28,7 +28,6 @@ type UserDTO struct {
 	Role      Role      `json:"role"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
-	DeletedAt time.Time `json:"deletedAt"`
 }
 
 // Role is an enum that can either be carrier, admin or superuser

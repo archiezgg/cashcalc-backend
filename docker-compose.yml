@@ -21,7 +21,7 @@ services:
     postgres:
         build:
             context: local_dev
-            dockerfile: Dockerfile.cashcalc-psql
+            dockerfile: cashcalc-psql.Dockerfile
         container_name: cashcalc-postgres
         environment:
             POSTGRES_USER: "cash"

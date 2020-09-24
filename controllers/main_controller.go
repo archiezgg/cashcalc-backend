@@ -47,7 +47,7 @@ func setHeaderMiddleWare(next http.Handler) http.Handler {
 		if os.Getenv("ENVIRONMENT") == "DEV" {
 			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		} else {
-			w.Header().Set("Access-Control-Allow-Origin", "https://cashcalc-frontend.herokuapp.com")
+			w.Header().Set("Access-Control-Allow-Origin", "https://cashcalc.web.app")
 		}
 
 		if r.Method == "OPTIONS" {

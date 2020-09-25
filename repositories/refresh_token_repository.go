@@ -83,7 +83,7 @@ func DeleteAllRefreshTokensForUser(userID uint) error {
 
 // DeleteExpiredRefreshTokens delete all expired refresh tokens
 func DeleteExpiredRefreshTokens() error {
-	result := database.GetPostgresDB().Where("expires_at > ?", time.Now()).Delete(&models.RefreshToken{})
+	result := database.GetPostgresDB().Where("expires_at < ?", time.Now()).Delete(&models.RefreshToken{})
 	if result.Error != nil {
 		return result.Error
 	}

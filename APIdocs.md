@@ -634,3 +634,16 @@ Creates a user with the role superuser.
   "message": "Superuser created successfully"
 }
 ```
+
+## /delete-expired-tokens
+Deletes all expired refresh tokens.
+* HTTP method: _DELETE_
+* HTTP response: 
+	* _200 if successful_
+* Sample required payload:
+* Sample JSON response:
+```
+{
+  "message": "Expired refresh tokens successfully deleted"
+}
+```

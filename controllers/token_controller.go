@@ -20,12 +20,21 @@ import (
 )
 
 func registerTokenRoutes(router *mux.Router) {
+	router.HandleFunc("/delete-expired-tokens", deleteExpiredRefreshTokens).Methods(http.MethodDelete, http.MethodOptions)
 	ep := properties.TokensEndpoint
 	s := router.PathPrefix(ep).Subrouter()
 	s.HandleFunc("", tokensHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.HandleFunc("/loggedin", loggedInUsersHandler).Methods(http.MethodGet, http.MethodOptions)
 	s.HandleFunc("/revoke", revokeTokensHandler).Methods(http.MethodDelete, http.MethodOptions)
 	s.Use(security.AccessLevelSuperuser)
+}
+
+func deleteExpiredRefreshTokens(w http.ResponseWriter, r *http.Request) {
+	if err := repositories.DeleteExpiredRefreshTokens(); err != nil {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
+		return
+	}
+	writeMessage(w, "Expired refresh tokens successfully deleted")
 }
 
 func tokensHandler(w http.ResponseWriter, r *http.Request) {

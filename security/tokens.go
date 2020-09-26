@@ -174,8 +174,12 @@ func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// setCookieBasedOnEnvironment sets cookie Secure and SameSite values based on the 'ENVIRONMENT' env variable
+// setCookieBasedOnEnvironment sets cookie HttpOnly and Path for all env and
+// Secure and SameSite values based on the 'ENVIRONMENT' env variable
 func setCookieBasedOnEnvironment(cookie *http.Cookie) {
+	cookie.HttpOnly = true
+	cookie.Path = "/"
+
 	if os.Getenv("ENVIRONMENT") == "PROD" {
 		cookie.Secure = true
 		cookie.SameSite = http.SameSiteNoneMode
@@ -185,4 +189,5 @@ func setCookieBasedOnEnvironment(cookie *http.Cookie) {
 func invalidateCookie(cookie *http.Cookie) {
 	cookie.MaxAge = -1
 	cookie.Value = ""
+	setCookieBasedOnEnvironment(cookie)
 }

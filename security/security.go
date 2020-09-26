@@ -125,18 +125,14 @@ func GenerateTokenPairsForUserAndSetThemAsCookies(w http.ResponseWriter, user mo
 		return "", err
 	}
 	accessTokenCookie := &http.Cookie{
-		Name:     AccessTokenCookieKey,
-		Value:    at,
-		HttpOnly: true,
-		Path:     "/",
+		Name:  AccessTokenCookieKey,
+		Value: at,
 	}
 	setCookieBasedOnEnvironment(accessTokenCookie)
 
 	refreshTokenCookie := &http.Cookie{
-		Name:     RefreshTokenCookieKey,
-		Value:    rt,
-		HttpOnly: true,
-		Path:     "/",
+		Name:  RefreshTokenCookieKey,
+		Value: rt,
 	}
 	setCookieBasedOnEnvironment(refreshTokenCookie)
 

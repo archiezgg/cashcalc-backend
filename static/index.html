@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accept cookie</title>
+    <script>
+      const acceptWithUserGesture = async (event) => {
+        const hasAccess = await document.hasStorageAccess();
+        if (!hasAccess) {
+          await document.requestStorageAccess();
+        }
+        document.cookie = 'test-cookie=test-cookie SameSite=None; Secure';
+      };
+    </script>
+  </head>
+  <body>
+    <button onclick="acceptWithUserGesture()">Accept cookie</button>
+  </body>
+</html>

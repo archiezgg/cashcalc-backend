@@ -17,18 +17,21 @@ import (
 var isProcessOngoing bool
 
 // StartupRouter creates instance of registers all the routes of the subroutes, supposed to be called in main func
-func StartupRouter() (router *mux.Router) {
-	router = mux.NewRouter()
+func StartupRouter() *mux.Router {
+	router := mux.NewRouter()
 	router.HandleFunc("/", welcomeHandler).Methods(http.MethodGet, http.MethodOptions)
-	registerLoginRoutes(router)
-	registerCountriesRoutes(router)
-	registerPricingsRoutes(router)
-	registerPricingVarsRoutes(router)
-	registerTokenRoutes(router)
-	registerUserRoutes(router)
-	registerCalcRoutes(router)
-	router.Use(setHeaderMiddleWare)
-	return
+	staticRouter := router.NewRoute().Subrouter()
+	staticRouter.Handle("/consent", http.StripPrefix("/consent", http.FileServer(http.Dir("static"))))
+	apiRouter := router.NewRoute().Subrouter()
+	registerLoginRoutes(apiRouter)
+	registerCountriesRoutes(apiRouter)
+	registerPricingsRoutes(apiRouter)
+	registerPricingVarsRoutes(apiRouter)
+	registerTokenRoutes(apiRouter)
+	registerUserRoutes(apiRouter)
+	registerCalcRoutes(apiRouter)
+	apiRouter.Use(setHeaderMiddleWare)
+	return router
 }
 
 func welcomeHandler(w http.ResponseWriter, r *http.Request) {

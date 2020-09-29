@@ -42,7 +42,17 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	if err := security.DeleteTokensFromCookies(w, r); err != nil {
+	type requestedBody struct {
+		RefreshTokenString string `json:"refreshTokenString"`
+	}
+
+	var rb requestedBody
+	if err := json.NewDecoder(r.Body).Decode(&rb); err != nil ||
+		rb.RefreshTokenString == "" {
+		security.LogErrorAndSendHTTPError(w, err, http.StatusUnprocessableEntity)
+		return
+	}
+	if err := security.LogoutUser(rb.RefreshTokenString); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}

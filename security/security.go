@@ -61,7 +61,7 @@ func AccessLevelSuperuser(next http.Handler) http.Handler {
 	})
 }
 
-// IsTokenValidForAccessLevel checks if the role in the cookies can get the resources
+// IsTokenValidForAccessLevel checks if the role in the token can get the resources
 // for given access level
 func IsTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, r *http.Request) bool {
 	var token string
@@ -113,6 +113,14 @@ func AuthenticateUser(w http.ResponseWriter, userToAuth models.User) (models.Use
 	}
 	log.Printf("user '%v' has successfully logged in", u.Username)
 	return u, nil
+}
+
+// LogoutUser takes a refresh token string as input and deletes it from DB
+func LogoutUser(refreshTokenString string) error {
+	if err := repositories.DeleteRefreshTokenByTokenString(refreshTokenString); err != nil {
+		return err
+	}
+	return nil
 }
 
 // GenerateTokenPairsForUserAndSetThemAsHeaders generate access- and refresh token,

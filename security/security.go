@@ -67,7 +67,7 @@ func IsTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, 
 	var token string
 	var err error
 
-	token, err = extractTokenFromCookie(w, r)
+	token, err = extractTokenFromHeader(w, r)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return false
@@ -142,36 +142,36 @@ func generateAccessTokenAndSetItAsHeader(w http.ResponseWriter, user models.User
 	return at, nil
 }
 
-func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
-	accessTokenCookie, err := validateAccessTokenCookie(r)
+func extractTokenFromHeader(w http.ResponseWriter, r *http.Request) (string, error) {
+	accessToken, err := validateAndGetAccessTokenFromHeader(r)
 	if err == nil {
-		return accessTokenCookie.Value, nil
+		return accessToken, nil
 	}
 
-	refreshTokenCookie, err := r.Cookie(RefreshTokenCookieKey)
-	if err != nil {
-		return "", err
+	refreshToken := r.Header.Get(RefreshTokenHeaderKey)
+	if refreshToken == "" {
+		return "", fmt.Errorf("no header specified as %v", RefreshTokenHeaderKey)
 	}
 
-	accessToken, err := RefreshTokenAndSetTokensAsCookies(w, refreshTokenCookie.Value)
+	_, err = RefreshTokenAndSetTokensAsHeaders(w, refreshToken)
 	if err != nil {
 		return "", err
 	}
 	return accessToken, nil
 }
 
-func validateAccessTokenCookie(r *http.Request) (*http.Cookie, error) {
-	accessTokenCookie, err := r.Cookie(AccessTokenCookieKey)
-	if err != nil {
-		return &http.Cookie{}, err
+func validateAndGetAccessTokenFromHeader(r *http.Request) (string, error) {
+	accessToken := r.Header.Get(AccessTokenHeaderKey)
+	if accessToken == "" {
+		return "", fmt.Errorf("no header specified as %v", AccessTokenHeaderKey)
 	}
 
-	_, err = decodeClaimsFromToken(accessTokenCookie.Value, accessKey)
+	_, err := decodeClaimsFromToken(accessToken, accessKey)
 	if err != nil {
-		return &http.Cookie{}, err
+		return "", err
 	}
 
-	return accessTokenCookie, nil
+	return accessToken, nil
 }
 
 // decodeRoleFromAccessToken decodes the role from the access token JWT string

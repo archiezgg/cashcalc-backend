@@ -5,6 +5,10 @@ orbs:
   heroku: circleci/heroku@0.0.10
 
 workflows:
+  integrate:
+    jobs:
+      - build:
+          context: SonarCloud
   deploy:
     jobs:
       - build:

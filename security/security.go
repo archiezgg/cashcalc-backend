@@ -125,23 +125,20 @@ func GenerateTokenPairsForUserAndSetThemAsHeaders(w http.ResponseWriter, user mo
 		return "", err
 	}
 
+	w.Header().Set(AccessTokenHeaderKey, at)
+	w.Header().Set(RefreshTokenHeaderKey, rt)
+
 	return at, nil
 }
 
-func generateAccessTokenAndSetItAsCookie(w http.ResponseWriter, user models.User) (string, error) {
+func generateAccessTokenAndSetItAsHeader(w http.ResponseWriter, user models.User) (string, error) {
 	at, err := GenerateAccessToken(user)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return "", err
 	}
-	accessTokenCookie := &http.Cookie{
-		Name:     AccessTokenCookieKey,
-		Value:    at,
-		HttpOnly: true,
-		Path:     "/",
-	}
-	setCookieBasedOnEnvironment(accessTokenCookie)
-	http.SetCookie(w, accessTokenCookie)
+
+	w.Header().Set(AccessTokenHeaderKey, at)
 	return at, nil
 }
 

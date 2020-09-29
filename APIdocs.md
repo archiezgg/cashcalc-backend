@@ -2,7 +2,7 @@
 This section serves as an API documentation for the frontend side to be able to query data succesfully.
 
 ### /login
-Provides interface for login, returns with a JWT access token and a refresh token in cookies if the login was succesful.
+Provides interface for login, returns with a JWT access token and a refresh token in headers if the login was succesful.
 * HTTP method: _POST_
 * HTTP response: 
 	* _200 if successful_ 
@@ -32,11 +32,11 @@ Provides interface for login, returns with a JWT access token and a refresh toke
 ```
 
 ### /logout
-Provides interface for logout, deletes the access and refresh tokens from cookies.
+Provides interface for logout, invalidates refresh token provided in header.
 * HTTP method: _POST_
 * HTTP response: 
 	* _200 if successful_ 
-	* _500 if no cookie provided_
+	* _500 if no refresh token provided header_
 * Sample JSON response after succesful login:
 ```
 {

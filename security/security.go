@@ -115,8 +115,9 @@ func AuthenticateUser(w http.ResponseWriter, userToAuth models.User) (models.Use
 	return u, nil
 }
 
-// LogoutUser takes a refresh token string as input and deletes it from DB
-func LogoutUser(refreshTokenString string) error {
+// LogoutUser takes the refresh token from the header and deletes it from the DB
+func LogoutUser(r *http.Request) error {
+	refreshTokenString := r.Header.Get(RefreshTokenHeaderKey)
 	if err := repositories.DeleteRefreshTokenByTokenString(refreshTokenString); err != nil {
 		return err
 	}
@@ -161,11 +162,11 @@ func extractTokenFromHeader(w http.ResponseWriter, r *http.Request) (string, err
 		return "", fmt.Errorf("no header specified as %v", RefreshTokenHeaderKey)
 	}
 
-	_, err = RefreshTokenAndSetTokensAsHeaders(w, refreshToken)
+	newAccessToken, err := RefreshTokenAndSetTokensAsHeaders(w, refreshToken)
 	if err != nil {
 		return "", err
 	}
-	return accessToken, nil
+	return newAccessToken, nil
 }
 
 func validateAndGetAccessTokenFromHeader(r *http.Request) (string, error) {

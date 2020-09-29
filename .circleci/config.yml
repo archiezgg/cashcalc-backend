@@ -9,6 +9,9 @@ workflows:
     jobs:
       - build:
           context: SonarCloud
+          filters:
+            branches:
+              ignore: master
   deploy:
     jobs:
       - build:

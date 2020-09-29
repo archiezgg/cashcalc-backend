@@ -79,9 +79,9 @@ func GenerateRefreshToken(user models.User) (string, error) {
 	return refreshTokenString, nil
 }
 
-// RefreshTokenAndSetTokensAsCookies takes a refresh token and a writer,
-// refreshes the user's token and sends back as cookie
-func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken string) (string, error) {
+// RefreshTokenAndSetTokensAsHeaders takes a refresh token and a writer,
+// refreshes the user's token and sends back as headers
+func RefreshTokenAndSetTokensAsHeaders(w http.ResponseWriter, refreshToken string) (string, error) {
 	user, err := DecodeUserFromRefreshToken(refreshToken)
 	if err != nil {
 		return "", err
@@ -93,9 +93,9 @@ func RefreshTokenAndSetTokensAsCookies(w http.ResponseWriter, refreshToken strin
 			LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 			return "", err
 		}
-		accessToken, err = GenerateTokenPairsForUserAndSetThemAsCookies(w, user)
+		accessToken, err = GenerateTokenPairsForUserAndSetThemAsHeaders(w, user)
 	} else {
-		accessToken, err = generateAccessTokenAndSetItAsCookie(w, user)
+		accessToken, err = generateAccessTokenAndSetItAsHeader(w, user)
 	}
 	if err != nil {
 		return "", err
@@ -148,46 +148,4 @@ func checkIfRefreshTokenIsInDB(user models.User, refreshTokenString string) erro
 		}
 	}
 	return fmt.Errorf("refresh token %v for user %v is not in db", refreshTokenString, user.Username)
-}
-
-//DeleteTokensFromCookies sets access and refresh token cookies' MaxAge to 0
-// and deletes the refresh token from the DB
-func DeleteTokensFromCookies(w http.ResponseWriter, r *http.Request) error {
-	accessTokenCookie, err := r.Cookie(AccessTokenCookieKey)
-	if err != nil {
-		return err
-	}
-	invalidateCookie(accessTokenCookie)
-	http.SetCookie(w, accessTokenCookie)
-
-	refreshTokenCookie, err := r.Cookie(RefreshTokenCookieKey)
-	if err != nil {
-		return err
-	}
-
-	if err := repositories.DeleteRefreshTokenByTokenString(refreshTokenCookie.Value); err != nil {
-		return err
-	}
-	invalidateCookie(refreshTokenCookie)
-	http.SetCookie(w, refreshTokenCookie)
-
-	return nil
-}
-
-// setCookieBasedOnEnvironment sets cookie HttpOnly and Path for all env and
-// Secure and SameSite values based on the 'ENVIRONMENT' env variable
-func setCookieBasedOnEnvironment(cookie *http.Cookie) {
-	cookie.HttpOnly = true
-	cookie.Path = "/"
-
-	if os.Getenv("ENVIRONMENT") == "PROD" {
-		cookie.Secure = true
-		cookie.SameSite = http.SameSiteNoneMode
-	}
-}
-
-func invalidateCookie(cookie *http.Cookie) {
-	cookie.MaxAge = -1
-	cookie.Value = ""
-	setCookieBasedOnEnvironment(cookie)
 }

@@ -18,10 +18,10 @@ import (
 )
 
 const (
-	// AccessTokenCookieKey is the key for access tokens in cookies
-	AccessTokenCookieKey = "access-token"
-	// RefreshTokenCookieKey is the key for refresh tokens in cookies
-	RefreshTokenCookieKey = "refresh-token"
+	// AccessTokenHeaderKey is the key for access tokens in headers
+	AccessTokenHeaderKey = "access-token"
+	// RefreshTokenHeaderKey is the key for refresh tokens in headers
+	RefreshTokenHeaderKey = "refresh-token"
 )
 
 // LogErrorAndSendHTTPError takes and error and a http status code, and formats them to
@@ -108,36 +108,23 @@ func AuthenticateUser(w http.ResponseWriter, userToAuth models.User) (models.Use
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return models.User{}, err
 	}
-	if _, err := GenerateTokenPairsForUserAndSetThemAsCookies(w, u); err != nil {
+	if _, err := GenerateTokenPairsForUserAndSetThemAsHeaders(w, u); err != nil {
 		return models.User{}, err
 	}
 	log.Printf("user '%v' has successfully logged in", u.Username)
 	return u, nil
 }
 
-// GenerateTokenPairsForUserAndSetThemAsCookies generate access- and refresh token,
+// GenerateTokenPairsForUserAndSetThemAsHeaders generate access- and refresh token,
 // saves them for given user in DB,
 // sets them as http headers, and returns with the access token
-func GenerateTokenPairsForUserAndSetThemAsCookies(w http.ResponseWriter, user models.User) (string, error) {
+func GenerateTokenPairsForUserAndSetThemAsHeaders(w http.ResponseWriter, user models.User) (string, error) {
 	at, rt, err := generateTokenPairs(user)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return "", err
 	}
-	accessTokenCookie := &http.Cookie{
-		Name:  AccessTokenCookieKey,
-		Value: at,
-	}
-	setCookieBasedOnEnvironment(accessTokenCookie)
 
-	refreshTokenCookie := &http.Cookie{
-		Name:  RefreshTokenCookieKey,
-		Value: rt,
-	}
-	setCookieBasedOnEnvironment(refreshTokenCookie)
-
-	http.SetCookie(w, accessTokenCookie)
-	http.SetCookie(w, refreshTokenCookie)
 	return at, nil
 }
 

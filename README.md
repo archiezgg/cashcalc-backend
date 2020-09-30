@@ -1,5 +1,5 @@
 # cashcalc-backend 
-[![CircleCI](https://circleci.com/gh/IstvanN/cashcalc-backend.svg?style=svg)](https://circleci.com/gh/IstvanN/cashcalc-backend) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=IstvanN_cashcalc-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=IstvanN_cashcalc-backend)
+[![GitHub Actions](https://github.com/istvann/cashcalc-backend/workflows/CI%2FCD%20flow/badge.svg)](https://github.com/IstvanN/cashcalc-backend/actions) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=IstvanN_cashcalc-backend&metric=alert_status)](https://sonarcloud.io/dashboard?id=IstvanN_cashcalc-backend)
 
 Backend for the CashCalc application.
 

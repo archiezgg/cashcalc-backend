@@ -34,7 +34,7 @@ jobs:
           run: go build -x
 
         - name: SonarCloud scan
-          uses: onarsource/sonarcloud-github-action@master
+          uses: sonarsource/sonarcloud-github-action@master
           env:
             SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           

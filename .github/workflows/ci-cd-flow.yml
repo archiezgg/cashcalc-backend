@@ -1,0 +1,43 @@
+name: CI/CD flow
+on:
+    push:
+        branches: master
+    pull_request:
+        types: [opened, reopened, edited]
+        branches: master
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Set up Go 1.14
+          uses: actions/setup-go@v2
+          with:
+            go-version: 1.14
+          id: go
+
+        - name: Checkout the code
+          uses: actions/checkout@v2
+        
+        - name: Download dependencies
+          run: go get -v -t -d ./...
+
+        - name: Run unit tests and create report
+          run: go test -json ./... > test-report.json
+
+        - name: Create test coverage report
+          run: go test -coverprofile=coverage-report.out ./...
+
+        - name: Run go vet
+          run: go vet -json ./... > govet-report.json
+
+        - name: Build binary
+          run: go build -x
+
+        - name: SonarCloud scan
+          uses: onarsource/sonarcloud-github-action@master
+          env:
+            SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+          
+
+        
+              

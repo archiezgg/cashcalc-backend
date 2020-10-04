@@ -41,6 +41,7 @@ func setHeaderMiddleWare(next http.Handler) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE, PATCH")
+		w.Header().Set("Access-Control-Expose-Headers", "Access-Token, Refresh-Token")
 		w.Header().Set("Access-Control-Allow-Headers",
 			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Access-Token, Refresh-Token, Authorization, X-PINGOTHER")
 

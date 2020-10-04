@@ -42,7 +42,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	if err := security.DeleteTokensFromCookies(w, r); err != nil {
+	if err := security.LogoutUser(r); err != nil {
 		security.LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return
 	}

@@ -18,10 +18,10 @@ import (
 )
 
 const (
-	// AccessTokenCookieKey is the key for access tokens in cookies
-	AccessTokenCookieKey = "access-token"
-	// RefreshTokenCookieKey is the key for refresh tokens in cookies
-	RefreshTokenCookieKey = "refresh-token"
+	// AccessTokenHeaderKey is the key for access tokens in headers
+	AccessTokenHeaderKey = "access-token"
+	// RefreshTokenHeaderKey is the key for refresh tokens in headers
+	RefreshTokenHeaderKey = "refresh-token"
 )
 
 // LogErrorAndSendHTTPError takes and error and a http status code, and formats them to
@@ -61,13 +61,13 @@ func AccessLevelSuperuser(next http.Handler) http.Handler {
 	})
 }
 
-// IsTokenValidForAccessLevel checks if the role in the cookies can get the resources
+// IsTokenValidForAccessLevel checks if the role in the token can get the resources
 // for given access level
 func IsTokenValidForAccessLevel(accessLevel models.Role, w http.ResponseWriter, r *http.Request) bool {
 	var token string
 	var err error
 
-	token, err = extractTokenFromCookie(w, r)
+	token, err = extractTokenFromHeader(w, r)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return false
@@ -108,86 +108,79 @@ func AuthenticateUser(w http.ResponseWriter, userToAuth models.User) (models.Use
 		LogErrorAndSendHTTPError(w, err, http.StatusUnauthorized)
 		return models.User{}, err
 	}
-	if _, err := GenerateTokenPairsForUserAndSetThemAsCookies(w, u); err != nil {
+	if _, err := GenerateTokenPairsForUserAndSetThemAsHeaders(w, u); err != nil {
 		return models.User{}, err
 	}
 	log.Printf("user '%v' has successfully logged in", u.Username)
 	return u, nil
 }
 
-// GenerateTokenPairsForUserAndSetThemAsCookies generate access- and refresh token,
+// LogoutUser takes the refresh token from the header and deletes it from the DB
+func LogoutUser(r *http.Request) error {
+	refreshTokenString := r.Header.Get(RefreshTokenHeaderKey)
+	if err := repositories.DeleteRefreshTokenByTokenString(refreshTokenString); err != nil {
+		return err
+	}
+	return nil
+}
+
+// GenerateTokenPairsForUserAndSetThemAsHeaders generate access- and refresh token,
 // saves them for given user in DB,
 // sets them as http headers, and returns with the access token
-func GenerateTokenPairsForUserAndSetThemAsCookies(w http.ResponseWriter, user models.User) (string, error) {
+func GenerateTokenPairsForUserAndSetThemAsHeaders(w http.ResponseWriter, user models.User) (string, error) {
 	at, rt, err := generateTokenPairs(user)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return "", err
 	}
-	accessTokenCookie := &http.Cookie{
-		Name:  AccessTokenCookieKey,
-		Value: at,
-	}
-	setCookieBasedOnEnvironment(accessTokenCookie)
 
-	refreshTokenCookie := &http.Cookie{
-		Name:  RefreshTokenCookieKey,
-		Value: rt,
-	}
-	setCookieBasedOnEnvironment(refreshTokenCookie)
+	w.Header().Set(AccessTokenHeaderKey, at)
+	w.Header().Set(RefreshTokenHeaderKey, rt)
 
-	http.SetCookie(w, accessTokenCookie)
-	http.SetCookie(w, refreshTokenCookie)
 	return at, nil
 }
 
-func generateAccessTokenAndSetItAsCookie(w http.ResponseWriter, user models.User) (string, error) {
+func generateAccessTokenAndSetItAsHeader(w http.ResponseWriter, user models.User) (string, error) {
 	at, err := GenerateAccessToken(user)
 	if err != nil {
 		LogErrorAndSendHTTPError(w, err, http.StatusInternalServerError)
 		return "", err
 	}
-	accessTokenCookie := &http.Cookie{
-		Name:     AccessTokenCookieKey,
-		Value:    at,
-		HttpOnly: true,
-		Path:     "/",
-	}
-	setCookieBasedOnEnvironment(accessTokenCookie)
-	http.SetCookie(w, accessTokenCookie)
+
+	w.Header().Set(AccessTokenHeaderKey, at)
 	return at, nil
 }
 
-func extractTokenFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
-	accessTokenCookie, err := validateAccessTokenCookie(r)
+func extractTokenFromHeader(w http.ResponseWriter, r *http.Request) (string, error) {
+	accessToken, err := validateAndGetAccessTokenFromHeader(r)
 	if err == nil {
-		return accessTokenCookie.Value, nil
+		return accessToken, nil
 	}
 
-	refreshTokenCookie, err := r.Cookie(RefreshTokenCookieKey)
+	refreshToken := r.Header.Get(RefreshTokenHeaderKey)
+	if refreshToken == "" {
+		return "", fmt.Errorf("no header specified as %v", RefreshTokenHeaderKey)
+	}
+
+	newAccessToken, err := RefreshTokenAndSetTokensAsHeaders(w, refreshToken)
 	if err != nil {
 		return "", err
 	}
-
-	accessToken, err := RefreshTokenAndSetTokensAsCookies(w, refreshTokenCookie.Value)
-	if err != nil {
-		return "", err
-	}
-	return accessToken, nil
+	return newAccessToken, nil
 }
 
-func validateAccessTokenCookie(r *http.Request) (*http.Cookie, error) {
-	accessTokenCookie, err := r.Cookie(AccessTokenCookieKey)
-	if err != nil {
-		return &http.Cookie{}, err
+func validateAndGetAccessTokenFromHeader(r *http.Request) (string, error) {
+	accessToken := r.Header.Get(AccessTokenHeaderKey)
+	if accessToken == "" {
+		return "", fmt.Errorf("no header specified as %v", AccessTokenHeaderKey)
 	}
 
-	_, err = decodeClaimsFromToken(accessTokenCookie.Value, accessKey)
+	_, err := decodeClaimsFromToken(accessToken, accessKey)
 	if err != nil {
-		return &http.Cookie{}, err
+		return "", err
 	}
 
-	return accessTokenCookie, nil
+	return accessToken, nil
 }
 
 // decodeRoleFromAccessToken decodes the role from the access token JWT string

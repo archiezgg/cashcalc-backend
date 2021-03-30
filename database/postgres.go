@@ -30,7 +30,7 @@ func StartupPostgres() {
 		return
 	}
 	dbHost, dbUser, dbPort, dbPw, dbName := services.GetPostgresDBSpecsFromURL(postgresURL)
-	dbSpecs := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable TimeZone=Europe/Budapest",
+	dbSpecs := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=enable TimeZone=Europe/Budapest",
 		dbHost, dbPort, dbUser, dbPw, dbName)
 
 	var err error
